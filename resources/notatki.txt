@@ -6,3 +6,10 @@ trello
 ### APLIKACJA ###
 
 Monolit czy mikroserwisy?
+
+baza danych relacje/adnotacje:
+Team - Board @OneToMany
+Team - User @ManyToMany
+User - Task @ManyToMany
+Board - Task @OneToMany
+User - Board @ManyToMany
