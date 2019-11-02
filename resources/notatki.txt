@@ -5,27 +5,4 @@ trello
 
 ### APLIKACJA ###
 
-tworzenie zespołów
-
-
-co powinno być w bazie danych (DB):
-użytkownicy(id, name, surname, email)
-taski w zespole (projekcie) 
-zespoły użytkowników(id zespołu, tablica użytkowników, tablice, taski w tablicach)
-
-funkcjonalności:
-dodaj tablicę(wybierz nazwe tablicy, wybierz zespół do tej tablicy, opcjonalne- wybierz czy ma być prywatna/publiczna czy zespołowa)
-stwórz zespół
-karta gdzie są wszyscy członkowie zespołu- w niej można usuwać członków 
-ustawienia zespołu - prywatny/publiczny
-zespoł ma tablice
-administrator tablicy może zmienić jej zespół
-task powinien być modyfikowalny
-
-
-
-Jak wygląda task:
-task powinien mieć krótki opis wyświetlony na miniaturce. Po kliknięciu możliwe jest przeczytanie większego opisu taska. Task może mieć termin. Task może mieć liste zadań do zrobienia.
-
-Opcjonalne:
-karty(taski) mogą mieć etykiety mówiące o ważności danego zadania
+Monolit czy mikroserwisy?
