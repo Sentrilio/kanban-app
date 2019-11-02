@@ -1,0 +1,21 @@
+istniejące przykłady takich aplikacji:
+
+jira(attlasian)
+trello
+
+### APLIKACJA ###
+
+tworzenie zespołów
+
+
+co powinno być w bazie danych (DB):
+użytkownicy(id, name, surname, email)
+taski w zespole (projekcie) 
+zespoły użytkowników(id zespołu, tablica użytkowników, tablice, taski w tablicach)
+
+funkcjonalności:
+dodaj tablicę(wybierz nazwe tablicy, wybierz zespół do tej tablicy, opcjonalne- wybierz czy ma być prywatna/publiczna czy zespołowa)
+stwórz zespół
+karta gdzie są wszyscy członkowie zespołu- w niej można usuwać członków 
+ustawienia zespołu - prywatny/publiczny
+zespoł ma tablice
