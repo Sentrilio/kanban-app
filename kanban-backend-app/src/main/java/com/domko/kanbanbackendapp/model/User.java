@@ -1,5 +1,6 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user1")
+@Table(name = "user_account")
 public class User {
 
 	@Id
@@ -26,6 +27,11 @@ public class User {
 	@Column(name = "nickname")
 	private String nickname;
 
+	@JsonBackReference
 	@ManyToMany(mappedBy = "users")
 	private Set<Team> teams = new HashSet<>();
+
+	public boolean addTeam(Team team){
+		return teams.add(team);
+	}
 }
