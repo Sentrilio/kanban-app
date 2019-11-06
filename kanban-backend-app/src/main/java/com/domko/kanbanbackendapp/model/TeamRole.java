@@ -1,4 +1,6 @@
 package com.domko.kanbanbackendapp.model;
 
-public class Task {
+public enum TeamRole {
+	LEADER,
+	MEMBER,
 }
