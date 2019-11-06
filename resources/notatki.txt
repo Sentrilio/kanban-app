@@ -9,13 +9,11 @@ Monolit czy mikroserwisy?
 
 baza danych relacje/adnotacje:
 Team - Board @OneToMany
+Board - Task @OneToMany
 Team - User @ManyToMany
 User - Task @ManyToMany
-Board - Task @OneToMany
-User - Board @ManyToMany
 
 Team-Board - done
-Team-User - done
-User-Board - done
-User-Task - done
 Board-Task - done 
+Team-User - done
+User-Task - done
