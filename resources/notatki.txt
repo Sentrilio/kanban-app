@@ -13,3 +13,9 @@ Team - User @ManyToMany
 User - Task @ManyToMany
 Board - Task @OneToMany
 User - Board @ManyToMany
+
+Team-Board - done
+Team-User - done
+User-Board - done
+User-Task - done
+Board-Task - done 
