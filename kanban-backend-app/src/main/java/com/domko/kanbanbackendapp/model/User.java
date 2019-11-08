@@ -1,20 +1,20 @@
 package com.domko.kanbanbackendapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "user_account")
-public class User {
+public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class User {
 	@Column(name = "nickname")
 	private String nickname;
 
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToMany(mappedBy = "users")
 	private Set<Team> teams = new HashSet<>();
 

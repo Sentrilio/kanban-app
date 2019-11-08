@@ -14,7 +14,7 @@ public class UserController {
 	@Autowired
 	private UserServiceImpl userService;
 
-	@PostMapping(value = "/create")
+	@PostMapping(value = "/create", consumes = "application/json;charset=UTF-8")
 	public User createUser(@RequestBody User user) {
 		return userService.save(user);
 	}

@@ -1,23 +1,21 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-//@Data
-@Getter
-@Setter
+@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "team")
-public class Team {
+public class Team implements Serializable {
 
-	@JsonManagedReference
+	@JsonIgnore
 	@ManyToMany(cascade = {CascadeType.ALL})
 	@JoinTable(
 			name = "user_team",
@@ -25,7 +23,6 @@ public class Team {
 			inverseJoinColumns = {@JoinColumn(name = "user_id")}
 	)
 	Set<User> users = new HashSet<>();
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
