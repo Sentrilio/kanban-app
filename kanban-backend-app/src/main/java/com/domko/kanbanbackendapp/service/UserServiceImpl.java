@@ -31,4 +31,6 @@ public class UserServiceImpl implements UserService{
 	public Optional<User> findUser(Long id) {
 		return userRepository.findById(id);
 	}
+
+
 }
