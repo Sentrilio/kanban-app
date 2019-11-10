@@ -11,6 +11,7 @@ public class UserTeamServiceImpl implements UserTeamService {
 	@Autowired
 	private UserTeamRepository userTeamRepository;
 
+	@Override
 	public UserTeam save(UserTeam userTeam) {
 		return userTeamRepository.save(userTeam);
 	}

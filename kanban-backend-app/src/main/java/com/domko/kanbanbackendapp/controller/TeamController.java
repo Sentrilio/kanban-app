@@ -1,9 +1,6 @@
 package com.domko.kanbanbackendapp.controller;
 
-import com.domko.kanbanbackendapp.model.Team;
-import com.domko.kanbanbackendapp.model.TeamRole;
-import com.domko.kanbanbackendapp.model.User;
-import com.domko.kanbanbackendapp.model.UserTeam;
+import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.service.TeamServiceImpl;
 import com.domko.kanbanbackendapp.service.UserServiceImpl;
 import com.domko.kanbanbackendapp.service.UserTeamServiceImpl;
@@ -33,33 +30,20 @@ public class TeamController {
 		return teamService.findAll();
 	}
 
-	@PostMapping(value = "/add/{invitingUserId}/{teamId}/{invitedUserEmail}", consumes = "application/json;charset=UTF-8")
-	public UserTeam addUserToTeam(@PathVariable String invitingUserId, @PathVariable String teamId, @PathVariable String invitedUserEmail) {
-		Optional<User> invitingUser = userService.findUser(Long.parseLong(invitingUserId));
-		Optional<User> invitedUser = userService.findByEmail(invitedUserEmail);
-		Optional<Team> team = teamService.findTeam(Long.parseLong(teamId));
+	@PostMapping(value = "/add/{invitingUserId}/{teamId}/{invitedUserId}")
+	public UserTeam addUserToTeam(@PathVariable Long invitingUserId, @PathVariable Long teamId, @PathVariable Long invitedUserId) {
+		Optional<User> invitingUser = userService.findUser(invitingUserId);
+		Optional<User> invitedUser = userService.findUser(invitedUserId);
+		Optional<Team> team = teamService.findTeam(teamId);
 		UserTeam userTeam = new UserTeam();
 		if (invitingUser.isPresent() && team.isPresent() && invitedUser.isPresent()) {
-			team.get().addUser(invitedUser.get());
-			userService.save(invitedUser.get());
-			teamService.save(team.get());
-			//			userTeam.setUser(invitedUser.get());
-//			userTeam.setTeam(team.get());
-//			userTeam.setTeamRole(TeamRole.LEADER);
-//			System.out.println(userTeam.getTeamRole().toString());
-//			try {
-//				userTeamService.save(userTeam);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
 
-//			userTeam.setTeam(team.get());
-//			userTeam.setUser(invitedUser.get());
-//			userTeam.setTeamRole(TeamRole.LEADER);
-////			team.get().getUsers().add()
-//			System.out.println(userTeam.getTeamRole());
-//			teamService.save(team.get());
-
+			userTeam.setId(new UserTeamKey(invitedUserId,teamId));
+			userTeam.setTeam(team.get());
+			userTeam.setUser(invitedUser.get());
+			userTeam.setTeamRole(TeamRole.LEADER);
+			userTeamService.save(userTeam);
+			System.out.println("Saving user in team in the future");
 		}
 		return userTeam;
 	}
