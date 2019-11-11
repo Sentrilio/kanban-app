@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +48,18 @@ public class UserTeamController {
 		userTeam.setUser(user);
 		Example<UserTeam> example = Example.of(userTeam);
 		return userTeamService.findAll(example);
+	}
+	@GetMapping("/getTeams/{email}")
+	public List<Team> getTeamsOfUserByEmail1(@PathVariable String email) {
+		UserTeam userTeam = new UserTeam();
+		User user = new User();
+		user.setEmail(email);
+		userTeam.setUser(user);
+		Example<UserTeam> example = Example.of(userTeam);
+		List<UserTeam> userTeams = userTeamService.findAll(example);
+		List<Team> teams = new ArrayList<>();
+		userTeams.stream().forEach(value-> teams.add(value.getTeam()));
+		return teams;
 	}
 
 	@PostMapping(value = "/add/{invitingUserId}/{invitedUserId}/{teamId}")
