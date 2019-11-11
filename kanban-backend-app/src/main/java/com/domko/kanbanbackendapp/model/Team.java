@@ -34,4 +34,8 @@ public class Team {
 	public Team(String name) {
 		this.name = name;
 	}
+
+	public void addBoard(Board board) {
+		boards.add(board);
+	}
 }
