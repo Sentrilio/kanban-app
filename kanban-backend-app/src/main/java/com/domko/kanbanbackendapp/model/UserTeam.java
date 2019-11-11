@@ -1,5 +1,7 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,9 @@ import javax.persistence.*;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "user_team")
 public class UserTeam {
 
 	@EmbeddedId
