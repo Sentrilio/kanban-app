@@ -17,3 +17,5 @@ Team-Board - done
 Board-Task - done 
 Team-User - done
 User-Task - done
+
+mapowanie z tabeli user_team działa na klasę Object, a nie działa na klasę UserTeam
