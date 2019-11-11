@@ -37,7 +37,7 @@ public class UserTeamServiceImpl implements UserTeamService {
 		return userTeamRepository.findAllTeamsOfUser(userId);
 	}
 
-	public UserTeam createTeam(User user, Team team) {
-		return save(new UserTeam(new UserTeamKey(user.getUserId(), team.getTeamId()), user, team, TeamRole.LEADER));
+	public UserTeam addUserToTeam(User user, Team team,TeamRole role) {
+		return save(new UserTeam(new UserTeamKey(user.getUserId(), team.getTeamId()), user, team, role));
 	}
 }
