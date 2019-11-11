@@ -1,6 +1,8 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,6 +28,7 @@ public class User implements Serializable {
 	@Column(name = "nickname")
 	private String nickname;
 
+//	@JsonBackReference
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private Set<UserTeam> userTeams;
