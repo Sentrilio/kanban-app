@@ -28,20 +28,20 @@ public class Board {
 	@Column(name = "wip_limit")
 	private Integer wipLimit;
 
-	@Column(name = "team_id")
-	private Long teamId;
+//	@Column(name = "team_id", insertable = false, updatable = false)
+//	private Long teamId;
 
-//	@JsonIgnore
+	//	@JsonIgnore
 	@JsonManagedReference
 	@OneToMany(mappedBy = "board")
 	private Set<Task> tasks;
 
 	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name = "team_id",nullable = true)
+	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
 
-	public void addTask(Task task){
+	public void addTask(Task task) {
 		tasks.add(task);
 	}
 }
