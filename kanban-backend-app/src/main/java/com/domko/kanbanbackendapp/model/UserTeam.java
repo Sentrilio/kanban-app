@@ -22,7 +22,6 @@ public class UserTeam {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-
 	@ManyToOne
 	@MapsId("team_id")
 	@JoinColumn(name = "team_id")
