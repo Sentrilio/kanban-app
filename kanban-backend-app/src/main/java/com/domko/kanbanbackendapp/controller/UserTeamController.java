@@ -58,7 +58,7 @@ public class UserTeamController {
 		Example<UserTeam> example = Example.of(userTeam);
 		List<UserTeam> userTeams = userTeamService.findAll(example);
 		List<Team> teams = new ArrayList<>();
-		userTeams.stream().forEach(value-> teams.add(value.getTeam()));
+		userTeams.forEach(value-> teams.add(value.getTeam()));
 		return teams;
 	}
 

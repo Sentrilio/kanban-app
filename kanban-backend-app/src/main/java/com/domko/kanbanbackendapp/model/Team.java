@@ -7,7 +7,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "team")
@@ -25,6 +26,10 @@ public class Team {
 	@JsonIgnore
 	@OneToMany(mappedBy = "team")
 	private Set<UserTeam> userTeams;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "team")
+	private Set<Board> boards;
 
 	public Team(String name) {
 		this.name = name;
