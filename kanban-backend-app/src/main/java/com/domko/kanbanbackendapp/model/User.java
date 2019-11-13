@@ -33,4 +33,8 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "user")
 	private Set<UserTeam> userTeams;
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "user")
+	private Set<UserTask> userTasks;
+
 }
