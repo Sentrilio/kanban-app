@@ -1,5 +1,6 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -27,7 +28,7 @@ public class Team {
 	@OneToMany(mappedBy = "team")
 	private Set<UserTeam> userTeams;
 
-	@JsonManagedReference
+	@JsonBackReference
 	@OneToMany(mappedBy = "team")
 	private Set<Board> boards;
 
