@@ -21,8 +21,6 @@ public class TeamController {
 	@Autowired
 	private UserTeamServiceImpl userTeamService;
 
-
-
 	@GetMapping(value = "/all")
 	public List<Team> getTeams() {
 		return teamService.findAll();
