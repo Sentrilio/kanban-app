@@ -1,4 +1,5 @@
 package com.domko.kanbanbackendapp.security.jwt;
+
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
