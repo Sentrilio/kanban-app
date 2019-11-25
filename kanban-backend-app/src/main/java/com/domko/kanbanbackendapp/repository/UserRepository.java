@@ -20,6 +20,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
 	@Override
 	List<User> findAll();
 
-//	@Override
-//	<S extends User> List<S> findAll(Example<S> example);
+	Optional<User> findByUsername(String username);
+
+	Boolean existsByUsername(String username);
+
+	Boolean existsByEmail(String email);
 }
