@@ -28,15 +28,12 @@ public class Board {
 	@Column(name = "wip_limit")
 	private Integer wipLimit;
 
-//	@Column(name = "team_id", insertable = false, updatable = false)
-//	private Long teamId;
-
 	//	@JsonIgnore
-	@JsonManagedReference
+	@JsonBackReference
 	@OneToMany(mappedBy = "board")
 	private Set<Task> tasks;
 
-	@JsonBackReference
+	@JsonManagedReference
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
