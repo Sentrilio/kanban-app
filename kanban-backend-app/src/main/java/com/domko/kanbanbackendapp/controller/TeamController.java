@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = "/team")
 public class TeamController {
 
