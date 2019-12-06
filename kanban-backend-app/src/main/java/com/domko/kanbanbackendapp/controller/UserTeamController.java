@@ -19,8 +19,8 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-@RequestMapping(value = "/user-team")
+//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+@RequestMapping(value = "/api/userteam")
 public class UserTeamController {
 
     @Autowired
@@ -110,8 +110,9 @@ public class UserTeamController {
         return null;
     }
 
-    @PostMapping(value = "/create/{teamName}", consumes = "application/json", produces = "application/json")
-    public UserTeam createTeam(@PathVariable String teamName) {
+    @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
+    @PreAuthorize("hasRole('USER')")
+    public UserTeam createTeam(@RequestBody String teamName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String username = authentication.getName();
@@ -119,6 +120,7 @@ public class UserTeamController {
             Optional<User> user = userService.findByUsername(username);
             if (user.isPresent()) {
                 System.out.println("user present");
+                System.out.println(username);
                 Team team = teamService.save(new Team(teamName));
                 return userTeamService.addUserToTeam(user.get(), team, TeamRole.LEADER);
             } else {
