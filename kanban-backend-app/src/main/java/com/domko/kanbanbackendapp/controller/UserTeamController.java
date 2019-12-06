@@ -1,6 +1,7 @@
 package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.*;
+import com.domko.kanbanbackendapp.payload.request.CreateTeamRequest;
 import com.domko.kanbanbackendapp.security.jwt.JwtUtils;
 import com.domko.kanbanbackendapp.service.implementation.TeamServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.UserServiceImpl;
@@ -110,9 +111,10 @@ public class UserTeamController {
         return null;
     }
 
-    @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/create")
     @PreAuthorize("hasRole('USER')")
-    public UserTeam createTeam(@RequestBody String teamName) {
+    public UserTeam createTeam(@RequestBody CreateTeamRequest createTeamRequest) {
+        String teamName = createTeamRequest.getTeamName();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String username = authentication.getName();

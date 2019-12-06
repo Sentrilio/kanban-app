@@ -6,10 +6,7 @@ const API_URL = 'http://localhost:8000/api/test/';
 class UserService {
 
   createTeam(teamName) {
-    return axios.post("http://localhost:8000/api/userteam/create", {
-      headers: authHeader(),
-      teamName: teamName
-    });
+    return axios.post("http://localhost:8000/api/userteam/create/", { teamName: teamName }, { headers: authHeader() });
   }
 
   getBoards() {
