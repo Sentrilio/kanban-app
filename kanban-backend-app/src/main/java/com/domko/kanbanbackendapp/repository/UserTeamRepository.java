@@ -27,6 +27,6 @@ public interface UserTeamRepository extends JpaRepository<UserTeam, UserTeamKey>
 	@Override
 	<S extends UserTeam> List<S> findAll(Example<S> example);
 
-	List<UserTeam> findAllById(Long userId);
+//	List<UserTeam> findAllById(Long userId);
 
 }
