@@ -14,6 +14,7 @@
 
 <script>
 import UserService from "../services/user.service";
+import { log } from 'util';
 
 export default {
   name: "CreateTeam",
@@ -29,9 +30,11 @@ export default {
     createTeam() {
       UserService.createTeam(this.teamName).then(
         response => {
+          log(response)
           this.teams = response.data;
         },
         error => {
+          log(error.response)
           this.content = error.response.data.message;
         }
       );

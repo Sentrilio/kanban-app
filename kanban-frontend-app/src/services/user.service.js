@@ -6,15 +6,18 @@ const API_URL = 'http://localhost:8000/api/test/';
 class UserService {
 
   createTeam(teamName) {
-    return axios.post("http://localhost:8000/user-team/create/"+teamName, { headers: authHeader() });
+    return axios.post("http://localhost:8000/api/userteam/create", {
+      headers: authHeader(),
+      teamName: teamName
+    });
   }
 
   getBoards() {
     // return axios.get("http://localhost:8000/board/user-boards", { headers: authHeader() });
   }
-  getTeams() {
-    return axios.get("http://localhost:8000/user-team/get", { headers: authHeader() });
-  }
+  // getTeams() {
+  //   return axios.get("http://localhost:8000/api/userteam/get", { headers: authHeader() });
+  // }
   getPublicContent() {
     return axios.get(API_URL + 'all');
   }
