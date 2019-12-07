@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <nav class="navbar navbar-expand navbar-dark bg-dark" v-if="!$route.meta.hideNavigation">
       <!-- <a href="#" class="navbar-brand">Kanban</a> -->
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -19,17 +19,17 @@
               aria-expanded="false"
             >Teams</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li v-for="team in teams" v-on:click="selectedvalue(board)" v-bind:key="team.id">
+              <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
                 <a class="dropdown-item" href="#">{{team.name}}</a>
               </li>
-              <a class="dropdown-item" href="/create-team">Create Team</a>
+              <a class="dropdown-item" href="/team/create">Create Team</a>
               <!-- <li v-for="board in boards">{{ board }}</li> -->
               <!-- <a class="dropdown-item" href="#">Action</a> -->
             </div>
           </div>
         </li>
         <li>
-          <!-- <div class="dropdown" v-if="currentUser">
+          <div class="dropdown" v-if="currentUser">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
@@ -39,15 +39,16 @@
               aria-expanded="false"
             >Boards</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li v-for="board in boards" v-on:click="selectedvalue(board)" v-bind:key="board.id">
+              <li v-for="board in boards" v-on:click="selectBoard(board)" v-bind:key="board.id">
                 <a class="dropdown-item" href="#">{{board.name}}</a>
               </li>
-              <a class="dropdown-item" href="/create-board">Create</a>
-              <li v-for="board in boards">{{ board }}</li>
-              <a class="dropdown-item" href="#">Action</a>
+              <div v-if="this.$store.state.selectedTeam">
+                <a class="dropdown-item" href="/board/create">Create board</a>
+              </div>
             </div>
-          </div>-->
+          </div>
         </li>
+
         <li class="nav-item" v-if="showAdminBoard">
           <a href="/admin" class="nav-link">Admin Board</a>
         </li>
@@ -92,6 +93,7 @@
     </nav>
 
     <div class="container">
+      <!-- <a>{{selectedTeam.name}}</a> -->
       <router-view />
     </div>
   </div>
@@ -124,7 +126,23 @@ export default {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
+          if (this.teams != null) {
+            this.selectTeam(this.teams[0]);
+          }
           console.log("team retrieved");
+        })
+
+        // .then(() => {
+        //   this.selectedTeam = this.teams[0];
+        // })
+        .catch(e => {
+          console.log("Error", e);
+        });
+
+      UserService.getBoards()
+        .then(response => {
+          this.boards = response.data;
+          console.log("boards retrieved");
         })
         .catch(e => {
           console.log("Error", e);
@@ -133,13 +151,15 @@ export default {
     logOut() {
       this.$store.dispatch("auth/logout");
       this.$router.push("/login");
+    },
+    selectTeam(team) {
+      this.$store.commit("setSelectedTeam", team);
     }
   },
   data() {
     return {
-      boards: ["board1", "board2", "board3"],
+      boards: [],
       teams: [],
-      selectedTeam: ""
     };
   },
   created() {

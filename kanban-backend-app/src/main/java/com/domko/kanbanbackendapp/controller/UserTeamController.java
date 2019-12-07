@@ -34,8 +34,6 @@ public class UserTeamController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userService.findByUsername(authentication.getName());
         if (user.isPresent()) {
-//            return user.get().getUserTeams(); probably errors because of that
-//            return userTeamService.findTeamsOfUser(user.get().getUserId());
             List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getUserId());
             List<Team> teams = userTeams.stream()
                     .map(UserTeam::getTeam)
