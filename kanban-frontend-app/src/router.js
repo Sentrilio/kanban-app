@@ -3,6 +3,9 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
+import CreateBoard from './views/CreateBoard.vue';
+import CreateTeam from './views/CreateTeam.vue';
+
 
 Vue.use(Router);
 
@@ -17,6 +20,14 @@ export const router = new Router({
     {
       path: '/home',
       component: Home
+    },
+    {
+      path: '/create-board',
+      component: CreateBoard
+    },
+    {
+      path: '/create-team',
+      component: CreateTeam
     },
     {
       path: '/login',
@@ -49,7 +60,7 @@ export const router = new Router({
       name: 'user',
       // lazy-loaded
       component: () => import('./views/BoardUser.vue')
-    }
+    },
   ]
 });
 
@@ -59,11 +70,11 @@ export const router = new Router({
 //     const publicPages = ['/login', '/home'];
 //     const authRequired = !publicPages.includes(to.path);
 //     const loggedIn = localStorage.getItem('user');
-  
+
 //     // try to access a restricted page + not logged in
 //     if (authRequired && !loggedIn) {
 //       return next('/login');
 //     }
-  
+
 //     next();
 //   });

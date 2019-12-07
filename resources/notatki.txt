@@ -21,3 +21,6 @@ User-Task - done
 mapowanie z tabeli user_team działa na klasę Object, a nie działa na klasę UserTeam
 
 sonarqube token user: Dominik = 7f57fd7f4cf20d2e6ad37bcf4cffee20db6b4f99
+
+problem with authentication: PathVariable vs RequestParam and axios.post method was incorrect
+trzeba zmienić to, żeby lista zespołów pobierała się automatycznie po utworzeniu/przełączeniu na komponent App.vue 

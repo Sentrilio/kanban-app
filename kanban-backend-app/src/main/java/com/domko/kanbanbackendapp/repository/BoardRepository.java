@@ -15,4 +15,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
 	@Override
 	Optional<Board> findById(Long id);
+
+//	List<Board> findAllById(List<Long> idList);
 }
