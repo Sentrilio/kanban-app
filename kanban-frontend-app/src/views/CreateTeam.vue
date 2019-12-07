@@ -9,7 +9,6 @@
 
 <script>
 import UserService from "../services/user.service";
-// import { log } from 'util';
 
 export default {
   name: "CreateTeam",
@@ -17,7 +16,6 @@ export default {
   data() {
     return {
       teamName: "",
-      teams: []
     };
   },
   mounted() {
@@ -25,14 +23,12 @@ export default {
   methods: {
 
     createTeam() {
-      UserService.createTeam(this.teamName).then(
-        () => {
-          // log(response)
-          // this.teams = response.data;
+      UserService.createTeam(this.teamName)
+      .then((response) => {
+          console.log(response)
         },
         error => {
-          // log(error.response)
-          this.content = error.response.data.message;
+          console.log(error.response)
         }
       );
     }

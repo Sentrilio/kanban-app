@@ -22,12 +22,14 @@ export const router = new Router({
       component: Home
     },
     {
-      path: '/create-board',
-      component: CreateBoard
+      path: '/board/create',
+      component: CreateBoard,
+      meta: { hideNavigation: true }
     },
     {
-      path: '/create-team',
-      component: CreateTeam
+      path: '/team/create',
+      component: CreateTeam,
+      meta: { hideNavigation: true }
     },
     {
       path: '/login',

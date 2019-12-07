@@ -1,34 +1,37 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://localhost:8000/api/test/';
+const API_URL = 'http://localhost:8000/api/';
 
 class UserService {
 
   createTeam(teamName) {
-    return axios.post("http://localhost:8000/api/userteam/create/", { teamName: teamName }, { headers: authHeader() });
+    return axios.post(API_URL + "userteam/create", { teamName: teamName }, { headers: authHeader() });
+  }
+  createBoard(boardName, teamId) {
+    return axios.post(API_URL + "board/create", { boardName: boardName, teamId: teamId }, { headers: authHeader() })
   }
 
   getBoards() {
-    // return axios.get("http://localhost:8000/board/user-boards", { headers: authHeader() });
+    return axios.get("http://localhost:8000/api/board/get", { headers: authHeader() });
   }
   getTeams() {
     return axios.get("http://localhost:8000/api/userteam/get", { headers: authHeader() });
   }
   getPublicContent() {
-    return axios.get(API_URL + 'all');
+    return axios.get(API_URL + 'test/all');
   }
 
   getUserBoard() {
-    return axios.get(API_URL + 'user', { headers: authHeader() });
+    return axios.get(API_URL + 'test/user', { headers: authHeader() });
   }
 
   getModeratorBoard() {
-    return axios.get(API_URL + 'mod', { headers: authHeader() });
+    return axios.get(API_URL + 'test/mod', { headers: authHeader() });
   }
 
   getAdminBoard() {
-    return axios.get(API_URL + 'admin', { headers: authHeader() });
+    return axios.get(API_URL + 'test/admin', { headers: authHeader() });
   }
 }
 
