@@ -12,9 +12,9 @@ class UserService {
   getBoards() {
     // return axios.get("http://localhost:8000/board/user-boards", { headers: authHeader() });
   }
-  // getTeams() {
-  //   return axios.get("http://localhost:8000/api/userteam/get", { headers: authHeader() });
-  // }
+  getTeams() {
+    return axios.get("http://localhost:8000/api/userteam/get", { headers: authHeader() });
+  }
   getPublicContent() {
     return axios.get(API_URL + 'all');
   }
