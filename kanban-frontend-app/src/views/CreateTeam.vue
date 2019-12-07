@@ -4,17 +4,12 @@
       <input type="text" v-model="teamName" />
       <button type="submit">Create Team</button>
     </form>
-    <a>{{teamName}}</a>
-    <div>
-
-    </div>
   </div>
-      
 </template>
 
 <script>
 import UserService from "../services/user.service";
-import { log } from 'util';
+// import { log } from 'util';
 
 export default {
   name: "CreateTeam",
@@ -22,19 +17,21 @@ export default {
   data() {
     return {
       teamName: "",
-    //   teams: []
+      teams: []
     };
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
+
     createTeam() {
       UserService.createTeam(this.teamName).then(
-        response => {
-          log(response)
-          this.teams = response.data;
+        () => {
+          // log(response)
+          // this.teams = response.data;
         },
         error => {
-          log(error.response)
+          // log(error.response)
           this.content = error.response.data.message;
         }
       );
