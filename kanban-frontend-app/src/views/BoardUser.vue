@@ -8,6 +8,7 @@
 
 <script>
 import UserService from '../services/user.service';
+import { log } from 'util';
 
 export default {
   name: 'user',
@@ -19,6 +20,7 @@ export default {
   mounted() {
     UserService.getUserBoard().then(
       response => {
+        log(response)
         this.content = response.data;
       },
       error => {
