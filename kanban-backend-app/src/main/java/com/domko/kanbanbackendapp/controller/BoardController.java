@@ -1,24 +1,26 @@
 package com.domko.kanbanbackendapp.controller;
 
-import antlr.StringUtils;
 import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.model.Team;
+import com.domko.kanbanbackendapp.model.User;
+import com.domko.kanbanbackendapp.model.UserTeam;
+import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
 import com.domko.kanbanbackendapp.security.jwt.JwtUtils;
 import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TeamServiceImpl;
+import com.domko.kanbanbackendapp.service.implementation.UserServiceImpl;
+import com.domko.kanbanbackendapp.service.implementation.UserTeamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
-@RequestMapping(value = "/board")
+@RequestMapping(value = "/api/board")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BoardController {
 
@@ -28,33 +30,48 @@ public class BoardController {
     private TeamServiceImpl teamService;
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private UserServiceImpl userService;
+    @Autowired
+    private UserTeamServiceImpl userTeamService;
 
     @GetMapping(value = "/all")
-    public List<Board> getBoards() {
+    public List<Board> getAllBoards() {
         return boardService.findAllBoards();
     }
 
-    @GetMapping(value = "/user-boards")
-    public List<Board> getUserBoards(@RequestHeader("authorization") String jwt){
-//        System.out.println(jwt);
-//        jwt = jwt.replaceAll("[\\x00-\\x09\\x11\\x12\\x14-\\x1F\\x7F]", "");
-//		System.out.println(jwt);
-//        System.out.println(username);
-//        boardService.findAllBoards().forEach(e -> {
-//            System.out.println(e.getName());
-//        });
-        return boardService.findAllBoards();
-    }
-
-    @PostMapping(value = "/create/{teamId}")
-    public Board createBoard(@RequestBody Board board, @PathVariable Long teamId) {
-        Optional<Team> team = teamService.findTeam(teamId);
+    @PostMapping(value = "/create")
+    public ResponseEntity<String> createBoard(@RequestBody CreateBoardRequest createBoardRequest) {
+        Optional<Team> team = teamService.findTeam(createBoardRequest.getTeamId());
         if (team.isPresent()) {
-            team.get().addBoard(board);
+            Board board = new Board();
+            board.setName(createBoardRequest.getBoardName());
             board.setTeam(team.get());
-            teamService.save(team.get());
+            if (createBoardRequest.getWipLimit() == null) {
+                board.setWipLimit(5);
+            } else {
+                board.setWipLimit(createBoardRequest.getWipLimit());
+            }
+            boardService.saveBoard(board);
+            return new ResponseEntity<>("Board created", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return boardService.saveBoard(board);
+    }
+
+    @GetMapping(value = "/get")
+    public Set<Board> getUserBoards() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> user = userService.findByUsername(authentication.getName());
+        if (user.isPresent()) {
+            System.out.println("user present");
+            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getUserId());
+            Set<Board> boards = new HashSet<>();
+            userTeams.forEach(e -> boards.addAll(e.getTeam().getBoards()));
+            return boards;
+        }
+        System.out.println("user not present");
+        return null;
     }
 
     @GetMapping(value = "/get/{boardId}")
