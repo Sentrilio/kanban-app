@@ -117,8 +117,7 @@ export default {
       }
 
       return false;
-    },
-    
+    }
   },
   methods: {
     getData() {
@@ -140,14 +139,17 @@ export default {
     return {
       boards: ["board1", "board2", "board3"],
       teams: [],
-      selectedTeam: "",
+      selectedTeam: ""
     };
   },
-  created(){
-    this.getData();
+  created() {
+    if (this.currentUser) {
+      this.getData();
+    }
   },
-  // mounted() {
-    // this.getData();
-  // }
+  watch: {
+    // call again the method if the route changes
+    $route: "getData"
+  }
 };
 </script>
