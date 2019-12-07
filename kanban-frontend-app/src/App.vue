@@ -46,7 +46,7 @@
               <li v-for="board in boards">{{ board }}</li>
               <a class="dropdown-item" href="#">Action</a>
             </div>
-          </div> -->
+          </div>-->
         </li>
         <li class="nav-item" v-if="showAdminBoard">
           <a href="/admin" class="nav-link">Admin Board</a>
@@ -98,7 +98,7 @@
 </template>
 
 <script>
-// import UserService from "./services/user.service";
+import UserService from "./services/user.service";
 export default {
   computed: {
     currentUser() {
@@ -117,9 +117,20 @@ export default {
       }
 
       return false;
-    }
+    },
+    
   },
   methods: {
+    getData() {
+      UserService.getTeams()
+        .then(response => {
+          this.teams = response.data;
+          console.log("team retrieved");
+        })
+        .catch(e => {
+          console.log("Error", e);
+        });
+    },
     logOut() {
       this.$store.dispatch("auth/logout");
       this.$router.push("/login");
@@ -128,18 +139,15 @@ export default {
   data() {
     return {
       boards: ["board1", "board2", "board3"],
-      teams: []
+      teams: [],
+      selectedTeam: "",
     };
   },
+  created(){
+    this.getData();
+  },
   // mounted() {
-  //   UserService.getTeams().then(
-  //     response => {
-  //       this.teams = response.data;
-  //     },
-  //     () => {
-  //       this.teams = [];
-  //     }
-  //   );
+    // this.getData();
   // }
 };
 </script>
