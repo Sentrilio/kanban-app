@@ -102,6 +102,12 @@
 <script>
 import UserService from "./services/user.service";
 export default {
+  data() {
+    return {
+      boards: [],
+      teams: []
+    };
+  },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
@@ -110,14 +116,12 @@ export default {
       if (this.currentUser) {
         return this.currentUser.roles.includes("ROLE_ADMIN");
       }
-
       return false;
     },
     showModeratorBoard() {
       if (this.currentUser) {
         return this.currentUser.roles.includes("ROLE_MODERATOR");
       }
-
       return false;
     }
   },
@@ -131,10 +135,6 @@ export default {
           }
           console.log("team retrieved");
         })
-
-        // .then(() => {
-        //   this.selectedTeam = this.teams[0];
-        // })
         .catch(e => {
           console.log("Error", e);
         });
@@ -155,12 +155,6 @@ export default {
     selectTeam(team) {
       this.$store.commit("setSelectedTeam", team);
     }
-  },
-  data() {
-    return {
-      boards: [],
-      teams: [],
-    };
   },
   created() {
     if (this.currentUser) {
