@@ -172,16 +172,17 @@ export default {
     },
     selectTeam(team) {
       this.selectedTeam = team.name;
-      // this.$store.dispatch("selection/setSelectedTeam", team);
+      this.$store.dispatch("selection/setSelectedTeam", team);
     },
     selectBoard(board) {
       this.selectedBoard = board.name;
-      // this.$store.dispatch("selection/setSelectedBoard", board);
+      this.$store.dispatch("selection/setSelectedBoard", board);
     }
   },
   created() {
     if (this.currentUser) {
       this.getData();
+      // localStorage.clear();
     }
   },
   watch: {
