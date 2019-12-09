@@ -17,14 +17,12 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >Teams</button>
+            >{{selectedTeam}}</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
                 <a class="dropdown-item" href="#">{{team.name}}</a>
               </li>
               <a class="dropdown-item" href="/team/create">Create Team</a>
-              <!-- <li v-for="board in boards">{{ board }}</li> -->
-              <!-- <a class="dropdown-item" href="#">Action</a> -->
             </div>
           </div>
         </li>
@@ -37,12 +35,17 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >Boards</button>
+            >{{selectedBoard}}</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li v-for="board in boards" v-on:click="selectBoard(board)" v-bind:key="board.id">
+              <li
+                v-for="board in boards"
+                v-on:click="selectBoard(board)"
+                v-bind:key="board.boardId"
+              >
                 <a class="dropdown-item" href="#">{{board.name}}</a>
               </li>
-              <div v-if="this.$store.state.selectedTeam">
+              <!-- <div v-if="this.$store.state.selectedTeam"> -->
+                <div>
                 <a class="dropdown-item" href="/board/create">Create board</a>
               </div>
             </div>
@@ -105,7 +108,10 @@ export default {
   data() {
     return {
       boards: [],
-      teams: []
+      teams: [],
+      boardTeams: [[]],
+      selectedTeam: "Teams",
+      selectedBoard: "Boards"
     };
   },
   computed: {
@@ -130,9 +136,9 @@ export default {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
-          if (this.teams != null) {
-            this.selectTeam(this.teams[0]);
-          }
+          // if (this.teams != null) {
+            // this.selectTeam(this.teams[0]);
+          // }
           console.log("team retrieved");
         })
         .catch(e => {
@@ -142,6 +148,18 @@ export default {
       UserService.getBoards()
         .then(response => {
           this.boards = response.data;
+          // if (this.boards != null) {
+            // this.selectBoard(this.boards[0]);
+            // this.boards.sort(function(a,b){
+              // if(a.team.name>b.team.name){
+                // return -1;
+              // }
+              // if(b.team.name>b.team.name){
+                // return 1;
+              // }
+              // return 0;
+            // })
+          // }
           console.log("boards retrieved");
         })
         .catch(e => {
@@ -153,7 +171,12 @@ export default {
       this.$router.push("/login");
     },
     selectTeam(team) {
-      this.$store.commit("setSelectedTeam", team);
+      this.selectedTeam = team.name;
+      // this.$store.dispatch("selection/setSelectedTeam", team);
+    },
+    selectBoard(board) {
+      this.selectedBoard = board.name;
+      // this.$store.dispatch("selection/setSelectedBoard", board);
     }
   },
   created() {
@@ -164,6 +187,6 @@ export default {
   watch: {
     // call again the method if the route changes
     $route: "getData"
-  }
+  },
 };
 </script>
