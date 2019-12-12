@@ -23,4 +23,45 @@ mapowanie z tabeli user_team działa na klasę Object, a nie działa na klasę U
 sonarqube token user: Dominik = 7f57fd7f4cf20d2e6ad37bcf4cffee20db6b4f99
 
 problem with authentication: PathVariable vs RequestParam and axios.post method was incorrect
-trzeba zmienić to, żeby lista zespołów pobierała się automatycznie po utworzeniu/przełączeniu na komponent App.vue 
+trzeba zmienić to, żeby lista zespołów pobierała się automatycznie po utworzeniu/przełączeniu na komponent App.vue
+
+nazwa zespołu i nazwa tablicy powinny być wyświetlane zamiast Teams, Boards
+
+możliwe, że lepiej pobierać tablice użytkownika i wtedy zawierają one odrazu zespoły i taski tablic.
+
+WEB SOCKET:
+Sprawdzić czy coś w stylu:
+wss://localhost:8081/b/{boardId} - kanał do słuchania 
+
+Spring:
+@MessageMapping("/chat/{topic}")
+@SendTo("/topic/messages")
+public OutputMessage send(
+        @DestinationVariable("topic") String topic, Message message)
+        throws Exception {
+    return new OutputMessage(message.getFrom(), message.getText(), topic);
+}
+...
+@Override
+public void configureMessageBroker(MessageBrokerRegistry config) {
+    config.enableSimpleBroker("/topic");
+    config.setApplicationDestinationPrefixes("/app");
+}
+
+@Override
+public void registerStompEndpoints(StompEndpointRegistry registry) {
+    registry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
+}
+JS:
+var wsocket = new SockJS('/chat');
+var client = Stomp.over(wsocket);
+client.connect({}, function(frame) {
+    client.subscribe('/topic/messages', function (message) {
+        showMessage(JSON.parse(message.body));
+    });
+});
+//sending messages to the server
+client.send("/app/chat/" + topic, {}, JSON.stringify({
+    from: $("#from").val(),
+    text: $('#text').val(),
+}));

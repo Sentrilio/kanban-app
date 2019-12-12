@@ -37,4 +37,8 @@ public class TeamServiceImpl implements TeamService {
 		return save(team);
 	}
 
+	public boolean exists(Long id){
+		return teamRepository.existsById(id);
+	}
+
 }

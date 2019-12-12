@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <nav class="navbar navbar-expand navbar-dark bg-dark" v-if="!$route.meta.hideNavigation">
       <!-- <a href="#" class="navbar-brand">Kanban</a> -->
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -9,7 +9,7 @@
           </a>
         </li>
         <li>
-          <div class="dropdown" v-if="currentUser">
+          <div class="dropdown" v-if="currentUser && selectedTeam">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
@@ -17,19 +17,17 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >Teams</button>
+            >{{selectedTeam.name}}</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li v-for="team in teams" v-on:click="selectedvalue(board)" v-bind:key="team.id">
+              <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
                 <a class="dropdown-item" href="#">{{team.name}}</a>
               </li>
-              <a class="dropdown-item" href="/create-team">Create Team</a>
-              <!-- <li v-for="board in boards">{{ board }}</li> -->
-              <!-- <a class="dropdown-item" href="#">Action</a> -->
+              <a class="dropdown-item" href="/team/create">Create Team</a>
             </div>
           </div>
         </li>
         <li>
-          <!-- <div class="dropdown" v-if="currentUser">
+          <div class="dropdown" v-if="currentUser && selectedBoard">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
@@ -37,17 +35,25 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >Boards</button>
+            >{{selectedBoard.name}}</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li v-for="board in boards" v-on:click="selectedvalue(board)" v-bind:key="board.id">
-                <a class="dropdown-item" href="#">{{board.name}}</a>
-              </li>
-              <a class="dropdown-item" href="/create-board">Create</a>
-              <li v-for="board in boards">{{ board }}</li>
-              <a class="dropdown-item" href="#">Action</a>
+              <div v-for="(teamBoards, teamName) in boardTeams" v-bind:key="teamName">
+                <h6 class="dropdown-header">{{teamName}}</h6>
+                <div
+                  v-for="board in teamBoards"
+                  :key="board.boardId"
+                  v-on:click="selectBoard(board)"
+                >
+                  <a class="dropdown-item" href="#">{{board.name}}</a>
+                </div>
+              </div>
+              <div>
+                <a class="dropdown-item" href="#" @click="boardCreate">Create board</a>
+              </div>
             </div>
-          </div>-->
+          </div>
         </li>
+
         <li class="nav-item" v-if="showAdminBoard">
           <a href="/admin" class="nav-link">Admin Board</a>
         </li>
@@ -92,6 +98,7 @@
     </nav>
 
     <div class="container">
+      <!-- <a>{{selectedTeam.name}}</a> -->
       <router-view />
     </div>
   </div>
@@ -100,6 +107,15 @@
 <script>
 import UserService from "./services/user.service";
 export default {
+  data() {
+    return {
+      boards: [],
+      teams: [],
+      boardTeams: {},
+      selectedTeam: "Teams",
+      selectedBoard: "Boards"
+    };
+  },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
@@ -108,24 +124,64 @@ export default {
       if (this.currentUser) {
         return this.currentUser.roles.includes("ROLE_ADMIN");
       }
-
       return false;
     },
     showModeratorBoard() {
       if (this.currentUser) {
         return this.currentUser.roles.includes("ROLE_MODERATOR");
       }
-
       return false;
-    },
-    
+    }
   },
   methods: {
     getData() {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
+          if (this.teams != null) {
+            this.selectTeam(this.teams[0]);
+          }
+          this.$store.dispatch("user/setTeams", this.teams);
           console.log("team retrieved");
+        })
+        .catch(e => {
+          console.log("Error", e);
+        });
+
+      UserService.getBoards()
+        .then(response => {
+          this.boards = response.data;
+          this.boards.forEach(function(board) {
+            console.log(board.team.name);
+          });
+
+          if (this.boards != null) {
+            this.selectBoard(this.boards[0]);
+            this.boards.sort(function(a, b) {
+              if (a.team.name > b.team.name) {
+                return -1;
+              }
+              if (b.team.name > b.team.name) {
+                return 1;
+              }
+              return 0;
+            });
+          }
+          console.log("boards retrieved");
+        })
+        .then(() => {
+          this.boardTeams = {};
+          this.boards.forEach(board => {
+            if (!this.boardTeams[board.team.name]) {
+              this.boardTeams[board.team.name] = [];
+            }
+            this.boardTeams[board.team.name].push({
+              name: board.name,
+              boardId: board.boardId
+            });
+            console.log("added board to map");
+          });
+          console.log(this.boardTeams);
         })
         .catch(e => {
           console.log("Error", e);
@@ -134,20 +190,27 @@ export default {
     logOut() {
       this.$store.dispatch("auth/logout");
       this.$router.push("/login");
+    },
+    boardCreate() {
+      this.$router.push({ path: "/board/create" });
+    },
+    selectTeam(team) {
+      this.selectedTeam = team;
+      this.$store.dispatch("selection/setSelectedTeam", team);
+    },
+    selectBoard(board) {
+      this.selectedBoard = board;
+      this.$store.dispatch("selection/setSelectedBoard", board);
     }
   },
-  data() {
-    return {
-      boards: ["board1", "board2", "board3"],
-      teams: [],
-      selectedTeam: "",
-    };
+  created() {
+    if (this.currentUser) {
+      this.getData();
+    }
   },
-  created(){
-    this.getData();
-  },
-  // mounted() {
-    // this.getData();
-  // }
+  watch: {
+    // call again the method if the route changes
+    $route: "getData"
+  }
 };
 </script>

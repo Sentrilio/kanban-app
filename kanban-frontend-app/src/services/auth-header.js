@@ -3,7 +3,6 @@ export default function authHeader() {
 
   if (user && user.accessToken) {
     let authorizationHeader = 'Bearer ' + user.accessToken;
-    console.log(authorizationHeader);
     return { Authorization: authorizationHeader };
   } else {
     return {};
