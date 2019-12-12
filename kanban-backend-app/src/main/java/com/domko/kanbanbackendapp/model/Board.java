@@ -29,7 +29,7 @@ public class Board {
 	private Integer wipLimit;
 
 	//	@JsonIgnore
-	@JsonBackReference
+//	@JsonBackReference
 	@OneToMany(mappedBy = "board")
 	private Set<Task> tasks;
 
