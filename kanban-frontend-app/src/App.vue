@@ -37,15 +37,15 @@
               aria-expanded="false"
             >{{selectedBoard}}</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li
-                v-for="board in boards"
+              <div v-for="(teamBoards, teamName) in boardTeams" v-bind:key="teamName">
+                <h6 class="dropdown-header">{{teamName}}</h6>
+                <div v-for="board in teamBoards" :key="board.boardId"
                 v-on:click="selectBoard(board)"
-                v-bind:key="board.boardId"
-              >
-                <a class="dropdown-item" href="#">{{board.name}}</a>
-              </li>
-              <!-- <div v-if="this.$store.state.selectedTeam"> -->
-                <div>
+                >
+                  <a class="dropdown-item" href="#">{{board.name}}</a>
+                </div>
+              </div>
+              <div>
                 <a class="dropdown-item" href="/board/create">Create board</a>
               </div>
             </div>
@@ -109,7 +109,8 @@ export default {
     return {
       boards: [],
       teams: [],
-      boardTeams: [[]],
+      printedTeams: [],
+      boardTeams: {},
       selectedTeam: "Teams",
       selectedBoard: "Boards"
     };
@@ -132,13 +133,22 @@ export default {
     }
   },
   methods: {
+    teamNamePrinted(teamName) {
+      if (!this.printedTeams.includes(teamName)) {
+        this.printedTeams.push(teamName);
+        console.log("not included");
+        return false;
+      }
+      console.log("included");
+      return true;
+    },
     getData() {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
-          // if (this.teams != null) {
-            // this.selectTeam(this.teams[0]);
-          // }
+          if (this.teams != null) {
+            this.selectTeam(this.teams[0]);
+          }
           console.log("team retrieved");
         })
         .catch(e => {
@@ -148,19 +158,37 @@ export default {
       UserService.getBoards()
         .then(response => {
           this.boards = response.data;
-          // if (this.boards != null) {
-            // this.selectBoard(this.boards[0]);
-            // this.boards.sort(function(a,b){
-              // if(a.team.name>b.team.name){
-                // return -1;
-              // }
-              // if(b.team.name>b.team.name){
-                // return 1;
-              // }
-              // return 0;
-            // })
-          // }
+          this.boards.forEach(function(board) {
+            console.log(board.team.name);
+          });
+
+          if (this.boards != null) {
+            this.selectBoard(this.boards[0]);
+            this.boards.sort(function(a, b) {
+              if (a.team.name > b.team.name) {
+                return -1;
+              }
+              if (b.team.name > b.team.name) {
+                return 1;
+              }
+              return 0;
+            });
+          }
           console.log("boards retrieved");
+        })
+        .then(() => {
+          this.boardTeams = {};
+          this.boards.forEach(board => {
+            if (!this.boardTeams[board.team.name]) {
+              this.boardTeams[board.team.name] = [];
+            }
+            this.boardTeams[board.team.name].push({
+              name: board.name,
+              boardId: board.boardId
+            });
+            console.log("added board to map");
+          });
+          console.log(this.boardTeams);
         })
         .catch(e => {
           console.log("Error", e);
@@ -188,6 +216,6 @@ export default {
   watch: {
     // call again the method if the route changes
     $route: "getData"
-  },
+  }
 };
 </script>
