@@ -70,17 +70,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/api/userteam/**").authenticated()
                 .anyRequest().authenticated();
-                //
-//                .antMatchers("/api/auth/**").permitAll()
-//                .antMatchers("/api/test/**").permitAll()
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                .antMatchers(HttpMethod.GET, "/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/**").hasAnyRole("ADMIN","USER","MODERATOR")
-//                .antMatchers("/user-team/**").permitAll()
-//                .antMatchers("/board/**").permitAll()
-//                .antMatchers("/team/**").permitAll()
-//                .antMatchers("/task/**").permitAll()
-//                .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

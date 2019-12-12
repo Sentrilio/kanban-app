@@ -15,4 +15,8 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
 	@Override
 	List<Team> findAll();
+
+	@Override
+	boolean existsById(Long id);
+
 }
