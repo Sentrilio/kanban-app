@@ -5,23 +5,23 @@ export const selection = {
         selectedBoardId: null,
     },
     mutations: {
-        setSelectedTeam(state, selectedTeam) {
+        setSelectedTeam(state, team) {
             console.log("team mutation");
-            state.selectedTeamId = selectedTeam.teamId;
+            state.selectedTeamId = team.teamId;
         },
-        setSelectedBoard(state, selectedBoard) {
+        setSelectedBoard(state, board) {
             console.log("board mutation");
-            state.selectedBoardId = selectedBoard.boardId;
+            state.selectedBoardId = board.boardId;
         }
     },
     actions: {
-        setSelectedTeam({ commit }, selectedTeam) {
+        setSelectedTeam({ commit }, team) {
             console.log("team action");
-            commit('setSelectedTeam', selectedTeam);
+            commit('setSelectedTeam', team);
         },
-        setSelectedBoard({ commit }, selectedBoard) {
+        setSelectedBoard({ commit }, board) {
             console.log("board action");
-            commit('setSelectedBoard', selectedBoard);
+            commit('setSelectedBoard', board);
         }
     },
 };
