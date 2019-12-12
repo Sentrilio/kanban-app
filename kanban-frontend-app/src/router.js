@@ -25,6 +25,7 @@ export const router = new Router({
       path: '/board/create',
       component: CreateBoard,
       meta: { hideNavigation: true }
+
     },
     {
       path: '/team/create',

@@ -9,7 +9,7 @@
           </a>
         </li>
         <li>
-          <div class="dropdown" v-if="currentUser">
+          <div class="dropdown" v-if="currentUser && selectedTeam">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
@@ -17,7 +17,7 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >{{selectedTeam}}</button>
+            >{{selectedTeam.name}}</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
                 <a class="dropdown-item" href="#">{{team.name}}</a>
@@ -27,7 +27,7 @@
           </div>
         </li>
         <li>
-          <div class="dropdown" v-if="currentUser">
+          <div class="dropdown" v-if="currentUser && selectedBoard">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
@@ -35,18 +35,20 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >{{selectedBoard}}</button>
+            >{{selectedBoard.name}}</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <div v-for="(teamBoards, teamName) in boardTeams" v-bind:key="teamName">
                 <h6 class="dropdown-header">{{teamName}}</h6>
-                <div v-for="board in teamBoards" :key="board.boardId"
-                v-on:click="selectBoard(board)"
+                <div
+                  v-for="board in teamBoards"
+                  :key="board.boardId"
+                  v-on:click="selectBoard(board)"
                 >
                   <a class="dropdown-item" href="#">{{board.name}}</a>
                 </div>
               </div>
               <div>
-                <a class="dropdown-item" href="/board/create">Create board</a>
+                <a class="dropdown-item" href="#" @click="boardCreate">Create board</a>
               </div>
             </div>
           </div>
@@ -109,7 +111,6 @@ export default {
     return {
       boards: [],
       teams: [],
-      printedTeams: [],
       boardTeams: {},
       selectedTeam: "Teams",
       selectedBoard: "Boards"
@@ -133,15 +134,6 @@ export default {
     }
   },
   methods: {
-    teamNamePrinted(teamName) {
-      if (!this.printedTeams.includes(teamName)) {
-        this.printedTeams.push(teamName);
-        console.log("not included");
-        return false;
-      }
-      console.log("included");
-      return true;
-    },
     getData() {
       UserService.getTeams()
         .then(response => {
@@ -149,6 +141,7 @@ export default {
           if (this.teams != null) {
             this.selectTeam(this.teams[0]);
           }
+          this.$store.dispatch("user/setTeams", this.teams);
           console.log("team retrieved");
         })
         .catch(e => {
@@ -198,19 +191,21 @@ export default {
       this.$store.dispatch("auth/logout");
       this.$router.push("/login");
     },
+    boardCreate() {
+      this.$router.push({ path: "/board/create" });
+    },
     selectTeam(team) {
-      this.selectedTeam = team.name;
+      this.selectedTeam = team;
       this.$store.dispatch("selection/setSelectedTeam", team);
     },
     selectBoard(board) {
-      this.selectedBoard = board.name;
+      this.selectedBoard = board;
       this.$store.dispatch("selection/setSelectedBoard", board);
     }
   },
   created() {
     if (this.currentUser) {
       this.getData();
-      // localStorage.clear();
     }
   },
   watch: {
