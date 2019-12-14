@@ -1,17 +1,18 @@
 export const selection = {
     namespaced: true,
     state: {
-        selectedTeamId: null,
-        selectedBoardId: null,
+        selectedTeam: {},
+        selectedBoard: {},
     },
     mutations: {
         setSelectedTeam(state, team) {
             console.log("team mutation");
-            state.selectedTeamId = team.teamId;
+            state.selectedTeam = team;
         },
         setSelectedBoard(state, board) {
             console.log("board mutation");
-            state.selectedBoardId = board.boardId;
+            state.selectedBoard = { name: board.name, id: board.boardId }
+            // state.selectedBoardId = board.boardId;
         }
     },
     actions: {
@@ -24,4 +25,12 @@ export const selection = {
             commit('setSelectedBoard', board);
         }
     },
+    getters: {
+        getTeam: state => {
+            return state.selectedTeam;
+        },
+        getBoard: state => {
+            return state.selectedBoard;
+        }
+    }
 };

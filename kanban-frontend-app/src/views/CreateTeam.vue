@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="currentUser">
     <form @submit.prevent="createTeam">
       <input type="text" v-model="teamName" />
       <button type="submit">Create Team</button>
@@ -12,7 +12,11 @@ import UserService from "../services/user.service";
 
 export default {
   name: "CreateTeam",
-
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
   data() {
     return {
       teamName: "",
