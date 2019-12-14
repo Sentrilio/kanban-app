@@ -13,8 +13,6 @@ import com.domko.kanbanbackendapp.service.implementation.UserTeamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +55,7 @@ public class BoardController {
             boardService.saveBoard(board);
             return new ResponseEntity<>("Board created", HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Team does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -78,7 +76,7 @@ public class BoardController {
 
     @GetMapping(value = "/get/{boardId}")
     public Board getBoard(@PathVariable Long boardId) {
-        Optional<Board> board = boardService.findById(boardId);
+        Optional<Board> board = boardService.findBoard(boardId);
         if (board.isPresent()) {
             board.get().getTasks()
                     .forEach(value -> System.out.println(value.getDescription()));

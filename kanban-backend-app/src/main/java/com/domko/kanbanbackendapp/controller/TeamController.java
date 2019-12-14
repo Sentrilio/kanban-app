@@ -12,7 +12,7 @@ import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping(value = "/team")
+@RequestMapping(value = "/api/team")
 public class TeamController {
 
 	@Autowired

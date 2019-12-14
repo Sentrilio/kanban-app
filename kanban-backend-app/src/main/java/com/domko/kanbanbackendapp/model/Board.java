@@ -38,6 +38,7 @@ public class Board {
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
 
+
 	public void addTask(Task task) {
 		tasks.add(task);
 	}
