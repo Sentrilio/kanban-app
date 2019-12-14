@@ -3,6 +3,7 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.model.Task;
+import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping(value = "/task")
+@RequestMapping(value = "/api/task")
 public class TaskController {
 
 	@Autowired
@@ -26,9 +27,9 @@ public class TaskController {
 		return taskService.findById(id);
 	}
 
-	@PostMapping(value = "/create/{boardId}")
-	public Task createTask(@RequestBody Task task, @PathVariable Long boardId) {
-		Optional<Board> board = boardService.findById(boardId);
+	@PostMapping(value = "/create")
+	public Task createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+		Optional<Board> board = boardService.findBoard(createTaskRequest.getBoardId());
 		if (board.isPresent()) {
 			task.setBoard(board.get());
 			return taskService.saveTask(task);

@@ -36,6 +36,11 @@ public class Task {
 	@JoinColumn(name = "board_id", nullable = false)
 	private Board board;
 
+	@JsonManagedReference
+	@ManyToOne
+	@JoinColumn(name = "list_id", nullable = false)
+	private List list;
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "task")
 	private Set<UserTask> userTasks;
