@@ -21,9 +21,6 @@ public class Task {
 	@Column(name = "task_id")
 	private Long taskId;
 
-//	@Column(name = "board_id", updatable = false, insertable = false)
-//	private Long boardId;
-
 	@Column(name = "description")
 	private String description;
 

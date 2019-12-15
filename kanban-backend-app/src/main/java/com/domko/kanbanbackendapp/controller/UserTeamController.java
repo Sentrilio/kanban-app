@@ -80,65 +80,8 @@ public class UserTeamController {
             } else {
                 System.out.println("Użytkownik ten nie jest jeszcze w tej drużynie");
                 return userTeamService.addUserToTeam(invitedUser.get(), team.get(), TeamRole.MEMBER);
-//				userTeam = new UserTeam(userTeamKey,invitedUser.get(),team.get(), TeamRole.MEMBER);
-//				userTeamService.save(userTeam);
             }
-
         }
         return null;
     }
-    //	@GetMapping("/get/{userId}")
-//	public List<UserTeam> getTeamsOfUserById(@PathVariable Long userId) {
-//		UserTeam userTeam = new UserTeam();
-//		User user = new User();
-//		user.setUserId(userId);
-//		userTeam.setUser(user);
-//		Example<UserTeam> example = Example.of(userTeam);
-//		return userTeamService.findAll(example);
-//	}
-
-
-//    @GetMapping(value = "/get")
-//    public List<UserTeam> getUserTeams(@RequestHeader("authorization") String headerAuth) {
-//        String username = jwtUtils.getUserNameFromToken(headerAuth);
-//        Optional<User> user = userService.findByUsername(username);
-//        if (user.isPresent()) {
-//            UserTeam userTeam = new UserTeam();
-//            userTeam.setUser(user.get());
-//            Example<UserTeam> example = Example.of(userTeam);
-//            List<UserTeam> teams = userTeamService.findAll(example);
-//            System.out.println("Teams");
-//            if (teams.isEmpty()) {
-//                System.out.println("No Teams");
-//            } else {
-//                teams.forEach(e -> System.out.println(e.getTeam().getBoards()));
-//            }
-//            return userTeamService.findAll(example);
-//        } else {
-//            System.out.println("teams not found");
-//            return new ArrayList<>();
-//        }
-//    }
-//	@GetMapping("/get/{email}")
-//	public List<UserTeam> getTeamsOfUserByEmail(@PathVariable String email) {
-//		UserTeam userTeam = new UserTeam();
-//		User user = new User();
-//		user.setEmail(email);
-//		userTeam.setUser(user);
-//		Example<UserTeam> example = Example.of(userTeam);
-//		return userTeamService.findAll(example);
-//	}
-
-//    @GetMapping("/getTeams/{email}")
-//    public List<Team> getTeamsOfUserByEmail1(@PathVariable String email) {
-//        UserTeam userTeam = new UserTeam();
-//        User user = new User();
-//        user.setEmail(email);
-//        userTeam.setUser(user);
-//        Example<UserTeam> example = Example.of(userTeam);
-//        List<UserTeam> userTeams = userTeamService.findAll(example);
-//        List<Team> teams = new ArrayList<>();
-//        userTeams.forEach(value-> teams.add(value.getTeam()));
-//        return teams;
-//    }
 }

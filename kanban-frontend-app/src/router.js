@@ -6,6 +6,7 @@ import Register from './views/Register.vue';
 import Team from './views/Team.vue';
 import CreateBoard from './views/CreateBoard.vue';
 import CreateTeam from './views/CreateTeam.vue';
+import Board from './views/Board.vue';
 
 
 Vue.use(Router);
@@ -17,6 +18,11 @@ export const router = new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/board/:boardId-:boardName',
+      name: 'board',
+      component: Board
     },
     {
       path: '/home',

@@ -6,6 +6,8 @@ import com.domko.kanbanbackendapp.service.ListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ListServiceImpl implements ListService {
 
@@ -14,5 +16,9 @@ public class ListServiceImpl implements ListService {
 
     public List save(List list) {
         return listRepository.save(list);
+    }
+
+    public Optional<List> findList(Long id) {
+        return listRepository.findById(id);
     }
 }
