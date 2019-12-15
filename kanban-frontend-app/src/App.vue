@@ -1,30 +1,11 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark" v-if="!$route.meta.hideNavigation">
-      <!-- <a href="#" class="navbar-brand">Kanban</a> -->
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
           <a href="/home" class="nav-link">
-            <font-awesome-icon icon="home" />Home
+            <font-awesome-icon icon="home" />
           </a>
-        </li>
-        <li>
-          <div class="dropdown" v-if="currentUser && selectedTeam">
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >{{selectedTeam.name}}</button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
-                <a class="dropdown-item" href="#">{{team.name}}</a>
-              </li>
-              <a class="dropdown-item" href="/team/create">Create Team</a>
-            </div>
-          </div>
         </li>
         <li>
           <div class="dropdown" v-if="currentUser && selectedBoard">
@@ -35,38 +16,41 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >{{selectedBoard.name}}</button>
+            >Boards</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <div v-for="(teamBoards, teamName) in boardTeams" v-bind:key="teamName">
-                <h6 class="dropdown-header">{{teamName}}</h6>
+              <div v-for="(teamBoards, teamName) in boardTeams" :key="teamName">
+                <h4 class="dropdown-header">{{teamName}}</h4>
                 <div
                   v-for="board in teamBoards"
                   :key="board.boardId"
-                  v-on:click="selectBoard(board)"
+                  v-on:click="switchToBoard(teamName,board)"
                 >
-                  <a class="dropdown-item" href="#">{{board.name}}</a>
+                  <a class="dropdown-item" href>{{board.name}}</a>
                 </div>
               </div>
               <div>
-                <a class="dropdown-item" href="#" @click="boardCreate">Create board</a>
+                <a class="dropdown-item" href="#" @click="createBoard">Create board</a>
               </div>
             </div>
           </div>
         </li>
-
+        <!-- <li class="nav-item" v-if="currentUser && currentBoard">
+          <a class="nav-link">{{currentBoard.name}}</a>
+        </li>
+        <li class="nav-item" v-if="currentUser && currentTeam">
+          <a class="nav-link">{{currentTeam.name}}</a>
+        </li>-->
+        <!-- 
         <li class="nav-item" v-if="showAdminBoard">
           <a href="/admin" class="nav-link">Admin Board</a>
         </li>
 
-        <li class="nav-item" v-if="showAdminBoard">
-          <!-- <a href="/boards" class="nav-button" v-if="currentUser">Boards</a> -->
-        </li>
         <li class="nav-item" v-if="showModeratorBoard">
           <a href="/mod" class="nav-link">Moderator Board</a>
         </li>
         <li class="nav-item">
           <a href="/user" class="nav-link" v-if="currentUser">User</a>
-        </li>
+        </li>-->
       </div>
 
       <div class="navbar-nav ml-auto" v-if="!currentUser">
@@ -96,7 +80,8 @@
         </li>
       </div>
     </nav>
-
+    <div>
+    </div>
     <div class="container">
       <!-- <a>{{selectedTeam.name}}</a> -->
       <router-view />
@@ -117,6 +102,13 @@ export default {
     };
   },
   computed: {
+    currentBoard() {
+      // return this.$store.state.selection.board;
+      return this.$store.state.selection.selectedBoard;
+    },
+    currentTeam() {
+      return this.$store.state.selection.selectedTeam;
+    },
     currentUser() {
       return this.$store.state.auth.user;
     },
@@ -138,9 +130,9 @@ export default {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
-          if (this.teams != null) {
-            this.selectTeam(this.teams[0]);
-          }
+          // if (this.teams != null) {
+          //   this.selectTeam(this.teams[0]);
+          // }
           this.$store.dispatch("user/setTeams", this.teams);
           console.log("team retrieved");
         })
@@ -155,18 +147,18 @@ export default {
             console.log(board.team.name);
           });
 
-          if (this.boards != null) {
-            this.selectBoard(this.boards[0]);
-            this.boards.sort(function(a, b) {
-              if (a.team.name > b.team.name) {
-                return -1;
-              }
-              if (b.team.name > b.team.name) {
-                return 1;
-              }
-              return 0;
-            });
-          }
+          // if (this.boards != null) {
+          //   this.selectBoard(this.boards[0]);
+          //   this.boards.sort(function(a, b) {
+          //     if (a.team.name > b.team.name) {
+          //       return -1;
+          //     }
+          //     if (b.team.name > b.team.name) {
+          //       return 1;
+          //     }
+          //     return 0;
+          //   });
+          // }
           console.log("boards retrieved");
         })
         .then(() => {
@@ -187,23 +179,58 @@ export default {
           console.log("Error", e);
         });
     },
+
+    redirectToTeam(teamName) {
+      console.log("redirection");
+      let team = this.getTeamByName(teamName);
+      if (team) {
+        console.log("team found");
+        this.selectTeam(team);
+        this.$router.push("/team-info").catch(err => {
+          console.log(err);
+        });
+      } else {
+        console.log("team not found");
+      }
+    },
+    getTeamByName(teamName) {
+      return this.teams.find(team => (team.name = teamName));
+    },
+
     logOut() {
       this.$store.dispatch("auth/logout");
       this.$router.push("/login");
     },
-    boardCreate() {
+    createBoard() {
       this.$router.push({ path: "/board/create" });
     },
     selectTeam(team) {
+      console.log("team selected");
       this.selectedTeam = team;
       this.$store.dispatch("selection/setSelectedTeam", team);
     },
     selectBoard(board) {
+      // localStorage.clear();
+      console.log("board selected");
       this.selectedBoard = board;
       this.$store.dispatch("selection/setSelectedBoard", board);
+    },
+    switchToBoard(teamName, board) {
+      let team = this.getTeamByName(teamName);
+      if (team) {
+        console.log("board switching");
+        this.selectBoard(board);
+        this.selectTeam(team);
+        let boardId = board.boardId;
+        let boardName = board.name;
+        this.$router.push({ name: "board", params: { boardId, boardName } });
+        this.$route.params.pathMatch;
+      } else {
+        console.log("team does not exists");
+      }
     }
   },
-  created() {
+  mounted() {
     if (this.currentUser) {
       this.getData();
     }

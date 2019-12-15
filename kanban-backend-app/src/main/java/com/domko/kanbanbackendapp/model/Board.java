@@ -28,8 +28,7 @@ public class Board {
 	@Column(name = "wip_limit")
 	private Integer wipLimit;
 
-	//	@JsonIgnore
-//	@JsonBackReference
+
 	@OneToMany(mappedBy = "board")
 	private Set<Task> tasks;
 
@@ -37,6 +36,10 @@ public class Board {
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
+
+	@OneToMany(mappedBy = "board")
+	private Set<List> lists;
+
 
 	public void addTask(Task task) {
 		tasks.add(task);
