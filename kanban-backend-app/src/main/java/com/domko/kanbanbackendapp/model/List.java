@@ -18,8 +18,8 @@ public class List {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "list_id")
+    private Long listId;
 
     @Column(name = "name")
     private String name;
