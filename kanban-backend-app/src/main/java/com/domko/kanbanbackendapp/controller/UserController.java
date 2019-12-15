@@ -10,16 +10,11 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
 	@Autowired
 	private UserServiceImpl userService;
-
-	@PostMapping(value = "/create", consumes = "application/json;charset=UTF-8")
-	public User createUser(@RequestBody User user) {
-		return userService.save(user);
-	}
 
 	@GetMapping(value = "/all")
 	public List<User> getUsers(){

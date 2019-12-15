@@ -21,9 +21,6 @@ public class Task {
 	@Column(name = "task_id")
 	private Long taskId;
 
-//	@Column(name = "board_id", updatable = false, insertable = false)
-//	private Long boardId;
-
 	@Column(name = "description")
 	private String description;
 
@@ -35,6 +32,11 @@ public class Task {
 	@ManyToOne
 	@JoinColumn(name = "board_id", nullable = false)
 	private Board board;
+
+	@JsonManagedReference
+	@ManyToOne
+	@JoinColumn(name = "list_id", nullable = false)
+	private List list;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "task")

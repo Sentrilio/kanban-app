@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="dropdown" v-if="this.$store.state.auth.user && selectedTeam">
+  <div v-if="currentUser">
+    <div class="dropdown">
       <button
         class="btn btn-secondary dropdown-toggle"
         type="button"
@@ -29,7 +29,11 @@ import UserService from "../services/user.service";
 
 export default {
   name: "CreateBoard",
-
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
   data() {
     return {
       selectedTeam: null,
@@ -41,7 +45,7 @@ export default {
     this.teams = this.$store.state.user.teams;
     if (this.teams != null) {
       this.selectedTeam = this.teams[0];
-    }      
+    }
   },
   methods: {
     selectTeam(team) {
@@ -52,10 +56,7 @@ export default {
       this.teams = this.$store.state.user.teams;
     },
     createBoard() {
-      UserService.createBoard(
-        this.boardName,
-        this.selectedTeam.teamId
-      ).then(
+      UserService.createBoard(this.boardName, this.selectedTeam.teamId).then(
         response => {
           console.log(response);
           this.$router.push("/"); //should be prompted info about successful creation and ok to click
