@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
     @GetMapping("/all")
     public String allAccess() {
-        return "Public Content.";
+        return "Best kanban application ever.";
     }
 
     @GetMapping("/user")

@@ -5,6 +5,8 @@
 </template>
 
 <script>
+// import UserService from '../services/user.service';
+
 export default {
   name: "Team",
   computed: {
@@ -23,6 +25,7 @@ export default {
   methods: {
     getTeam() {
       let team = this.$store.state.selection.team;
+      // UserService.getTeam();
       if(team){
           console.log("team exists");
           this.teamName=team.name;

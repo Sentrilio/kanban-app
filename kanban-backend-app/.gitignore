@@ -28,5 +28,8 @@ out/
 /nbdist/
 /.nb-gradle/
 
+### My folders
+./resources
+
 ### VS Code ###
 .vscode/
