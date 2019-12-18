@@ -7,72 +7,88 @@ import Team from './views/Team.vue';
 import CreateBoard from './views/CreateBoard.vue';
 import CreateTeam from './views/CreateTeam.vue';
 import Board from './views/Board.vue';
+import store from './store/index';
 
 
 Vue.use(Router);
 
+function isLoggedIn(to, from, next) {
+  if (store.state.auth.user) {
+    next();
+  }else{
+    next('/login');
+  }
+}
 export const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
     },
     {
       path: '/board/:boardId-:boardName',
       name: 'board',
-      component: Board
+      component: Board,
+      beforeEnter: isLoggedIn,
     },
     {
       path: '/home',
-      component: Home
+      component: Home,
     },
     {
       path: '/board/create',
       component: CreateBoard,
-      meta: { hideNavigation: true }
+      meta: { hideNavigation: true },
+      beforeEnter: isLoggedIn,
 
     },
     {
       path: '/team-info',
       component: Team,
-      // meta: { hideNavigation: true }
+      beforeEnter: isLoggedIn,
+      // meta: { hideNavigation: true },
     },
     {
       path: '/team/create',
       component: CreateTeam,
-      meta: { hideNavigation: true }
+      meta: { hideNavigation: true },
+      beforeEnter: isLoggedIn,
     },
     {
       path: '/login',
-      component: Login
+      component: Login,
     },
     {
       path: '/register',
-      component: Register
+      component: Register,
     },
     {
       path: '/profile',
       name: 'profile',
+      beforeEnter: isLoggedIn,
       // lazy-loaded
       component: () => import('./views/Profile.vue')
     },
     {
       path: '/admin',
       name: 'admin',
+      beforeEnter: isLoggedIn,
       // lazy-loaded
       component: () => import('./views/BoardAdmin.vue')
     },
     {
       path: '/mod',
       name: 'moderator',
+      beforeEnter: isLoggedIn,
       // lazy-loaded
       component: () => import('./views/BoardModerator.vue')
     },
     {
       path: '/user',
       name: 'user',
+      beforeEnter: isLoggedIn,
       // lazy-loaded
       component: () => import('./views/BoardUser.vue')
     },
