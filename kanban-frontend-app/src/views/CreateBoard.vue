@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentUser">
+  <div v-if="currentUser" class="jumbotron text-center">
     <div class="dropdown">
       <button
         class="btn btn-secondary dropdown-toggle"
