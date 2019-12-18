@@ -65,3 +65,6 @@ client.send("/app/chat/" + topic, {}, JSON.stringify({
     from: $("#from").val(),
     text: $('#text').val(),
 }));
+
+Zaliczenie inżynierki:
+Warto mówić dlaczego to co robimy jest spoko, np. firmy stosują takie rozwiązania.

@@ -10,7 +10,7 @@
       <list-component v-bind:tasks="tasks"></list-component>
       <!-- </li> -->
     </ul>
-    <button v-bind="createTask">Create task</button>
+    <!-- <button v-bind="createTask">Create task</button> -->
   </div>
 </template>
 

@@ -19,7 +19,10 @@
             >Boards</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <div v-for="(teamBoards, teamName) in boardTeams" :key="teamName">
-                <h4 class="dropdown-header">{{teamName}}</h4>
+                <h4
+                  class="dropdown-header"
+                  style="color: #000066; text-decoration: underline;"
+                >{{teamName}}</h4>
                 <div
                   v-for="board in teamBoards"
                   :key="board.boardId"
@@ -30,6 +33,27 @@
               </div>
               <div>
                 <a class="dropdown-item" href="#" @click="createBoard">Create board</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="dropdown" v-if="currentUser">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >Teams</button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <div v-for="team in teams" :key="team.teamId">
+                <a class="dropdown-item">{{team.name}}</a>
+                <!-- <a class="dropdown-item" @click="redirectToTeam">{{team.name}}</a> -->
+              </div>
+              <div>
+                <a class="dropdown-item" href="#" @click="createTeam">Create Team</a>
               </div>
             </div>
           </div>
@@ -80,8 +104,7 @@
         </li>
       </div>
     </nav>
-    <div>
-    </div>
+    <div></div>
     <div class="container">
       <!-- <a>{{selectedTeam.name}}</a> -->
       <router-view />
@@ -203,6 +226,9 @@ export default {
     },
     createBoard() {
       this.$router.push({ path: "/board/create" });
+    },
+    createTeam() {
+      this.$router.push({ path: "/team/create" });
     },
     selectTeam(team) {
       console.log("team selected");

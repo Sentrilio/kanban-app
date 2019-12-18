@@ -1,9 +1,11 @@
 <template>
-  <div v-if="currentUser">
-    <form @submit.prevent="createTeam">
-      <input type="text" v-model="teamName" />
-      <button type="submit">Create Team</button>
-    </form>
+  <div class="jumbotron text-center">
+    <div v-if="currentUser">
+      <form @submit.prevent="createTeam">
+        <input type="text" placeholder="Team Name" v-model="teamName" />
+        <button type="submit">Create Team</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -19,25 +21,28 @@ export default {
   },
   data() {
     return {
-      teamName: "",
+      teamName: ""
     };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-
     createTeam() {
-      UserService.createTeam(this.teamName)
-      .then((response) => {
-          console.log(response)
+      UserService.createTeam(this.teamName).then(
+        response => {
+          console.log(response);
+          this.$router.push("/");
         },
         error => {
-          console.log(error.response)
+          console.log(error.response);
         }
       );
     }
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="css">
+/* .jumbotron{ */
+/* background-color: blue !important; */
+/* przy tworzeniu klasy możliwe, że też important zadziała */
+/* } */
 </style>
