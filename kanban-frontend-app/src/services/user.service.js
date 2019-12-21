@@ -21,6 +21,10 @@ class UserService {
   getBoard(boardId) {
     return axios.get("http://localhost:8000/api/board/get/"+ boardId, { headers: authHeader() });
   }
+  getTeam(teamId) {
+    return axios.get("http://localhost:8000/api/team/get/"+ teamId, { headers: authHeader() });
+  }
+
   getBoards() {
     return axios.get("http://localhost:8000/api/board/get", { headers: authHeader() });
   }
