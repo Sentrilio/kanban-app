@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -32,13 +31,16 @@ public class Board {
 	@OneToMany(mappedBy = "board")
 	private Set<Task> tasks;
 
+
 	@JsonManagedReference
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
 
+	@JsonIgnore
+//	@JsonBackReference
 	@OneToMany(mappedBy = "board")
-	private Set<List> lists;
+	private Set<BList> bLists;
 
 
 	public void addTask(Task task) {

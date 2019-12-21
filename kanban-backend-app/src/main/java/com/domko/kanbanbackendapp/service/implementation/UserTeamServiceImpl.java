@@ -5,6 +5,8 @@ import com.domko.kanbanbackendapp.repository.UserTeamRepository;
 import com.domko.kanbanbackendapp.service.UserTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,5 +41,15 @@ public class UserTeamServiceImpl implements UserTeamService {
 
 	public UserTeam addUserToTeam(User user, Team team,TeamRole role) {
 		return save(new UserTeam(new UserTeamKey(user.getUserId(), team.getTeamId()), user, team, role));
+	}
+	public List<UserTeam> findUsersOfTeam(Long teamId){
+		return userTeamRepository.findAllById_TeamId(teamId);
+	}
+	public boolean hasPermission(List<UserTeam> userTeams){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		return userTeams
+				.stream()
+				.anyMatch(e -> e.getUser().getUsername().equals(authentication.getName()));
 	}
 }

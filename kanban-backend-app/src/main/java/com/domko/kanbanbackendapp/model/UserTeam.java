@@ -30,4 +30,5 @@ public class UserTeam {
 	@Column(name = "team_role")
 	@Enumerated(EnumType.STRING)
 	private TeamRole teamRole;
+
 }

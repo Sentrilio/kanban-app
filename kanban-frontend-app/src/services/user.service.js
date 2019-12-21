@@ -12,10 +12,17 @@ class UserService {
     return axios.post(API_URL + "board/create", { boardName: boardName, teamId: teamId }, { headers: authHeader() })
   }
   createList(listName, boardId) {
-    return axios.post(API_URL + "board/create", { listName: listName, boardId: boardId }, { headers: authHeader() })
+    return axios.post(API_URL + "list/create", { listName: listName, boardId: boardId }, { headers: authHeader() })
   }
   createTask(listId, teamId, description, content) {
     return axios.post(API_URL + "board/create", { listId: listId, teamId: teamId, description: description, content: content }, { headers: authHeader() })
+  }
+
+  getBoard(boardId) {
+    return axios.get("http://localhost:8000/api/board/get/"+ boardId, { headers: authHeader() });
+  }
+  getTeam(teamId) {
+    return axios.get("http://localhost:8000/api/team/get/"+ teamId, { headers: authHeader() });
   }
 
   getBoards() {
