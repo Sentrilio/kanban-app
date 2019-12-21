@@ -104,8 +104,8 @@
         </li>
       </div>
     </nav>
-    <div></div>
-    <div class="container">
+    <!-- <div class="container"> -->
+    <div>
       <!-- <a>{{selectedTeam.name}}</a> -->
       <router-view />
     </div>
@@ -165,6 +165,7 @@ export default {
 
       UserService.getBoards()
         .then(response => {
+          console.log(response);
           this.boards = response.data;
           this.boards.forEach(function(board) {
             console.log(board.team.name);
@@ -267,3 +268,8 @@ export default {
   }
 };
 </script>
+<style lang="css">
+.btn {
+  margin-right: 10px !important;
+}
+</style>

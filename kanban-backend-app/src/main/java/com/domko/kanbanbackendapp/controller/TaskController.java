@@ -2,7 +2,7 @@ package com.domko.kanbanbackendapp.controller;
 
 
 import com.domko.kanbanbackendapp.model.Board;
-import com.domko.kanbanbackendapp.model.List;
+import com.domko.kanbanbackendapp.model.BList;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
@@ -37,13 +37,13 @@ public class TaskController {
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
         Optional<Board> board = boardService.findBoard(createTaskRequest.getBoardId());
-        Optional<List> list = listService.findList(createTaskRequest.getListId());
+        Optional<BList> list = listService.findList(createTaskRequest.getListId());
         if (board.isPresent() && list.isPresent()) {
             Task task = new Task();
             task.setDescription(createTaskRequest.getDescription());
             task.setContent(createTaskRequest.getContent());
             task.setBoard(board.get());
-            task.setList(list.get());
+            task.setBList(list.get());
             taskService.saveTask(task);
             return new ResponseEntity<>("Task created", HttpStatus.CREATED);
         } else {
