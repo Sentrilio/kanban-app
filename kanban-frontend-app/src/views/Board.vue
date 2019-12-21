@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="currentUser">
+  <div class="container">
     <a>Board name: {{board.name}}</a>
     <br />
     <a>Team name: {{team.name}}</a>
@@ -16,15 +16,17 @@
 
 <script>
 import ListComponent from "../components/list.vue";
+import UserService from "../services/user.service";
+
 export default {
   name: "Board",
   components: {
     ListComponent
   },
   computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
-    }
+    // currentUser() {
+    //   return this.$store.state.auth.user;
+    // }
   },
   data() {
     return {
@@ -35,25 +37,31 @@ export default {
   },
   methods: {
     createTask() {
-      let boardId= this.getBoard().boardId;
+      let boardId = this.getBoard().boardId;
       let listId = this.getList().listId;
-      this.$route.push({name: 'createTask',params: {boardId,listId}})
+      this.$route.push({ name: "createTask", params: { boardId, listId } });
     },
     getData() {
       this.getBoard();
       this.getTeam();
     },
     getBoard() {
-      this.board = this.$store.state.selection.selectedBoard;
+      UserService.getBoard(this.$route.params.boardId).then(
+        response => {
+          this.board = response.data;
+        },
+        error => {
+          this.content = error.response.data.message;
+        }
+      );
+      // this.board = this.$store.state.selection.selectedBoard;
     },
     getTeam() {
       this.team = this.$store.state.selection.selectedTeam;
     }
   },
   mounted() {
-    if (this.currentUser) {
-      this.getData();
-    }
+    this.getData();
   },
   watch: {
     $route: "getData"
