@@ -28,7 +28,8 @@ public class Team {
 	@OneToMany(mappedBy = "team")
 	private Set<UserTeam> userTeams;
 
-	@JsonBackReference
+	@JsonIgnore
+//	@JsonBackReference
 	@OneToMany(mappedBy = "team")
 	private Set<Board> boards;
 

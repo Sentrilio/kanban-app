@@ -60,7 +60,7 @@ public class BoardController {
     }
 
     @GetMapping(value = "/get")
-    public Set<Board> getUserBoards() {
+    public ResponseEntity<Set<Board>> getUserBoards() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userService.findByUsername(authentication.getName());
         if (user.isPresent()) {
@@ -68,10 +68,9 @@ public class BoardController {
             List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getUserId());
             Set<Board> boards = new HashSet<>();
             userTeams.forEach(e -> boards.addAll(e.getTeam().getBoards()));
-            return boards;
+            return new ResponseEntity<>(boards, HttpStatus.OK);
         }
-        System.out.println("user not present");
-        return null;
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/get/{boardId}")
@@ -82,9 +81,6 @@ public class BoardController {
             List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getTeamId());
             if (!userTeams.isEmpty()) {
                 System.out.println("Users of team found");
-//                boolean hasPermissions = userTeams
-//                        .stream()
-//                        .anyMatch(e -> e.getUser().getUsername().equals(authentication.getName()));
                 if (userTeamService.hasPermission(userTeams)) {
                     board.get().getTasks()
                             .forEach(value -> System.out.println(value.getDescription()));

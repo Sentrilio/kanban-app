@@ -14,7 +14,7 @@
       <div v-for="index in 5" :key="index">
         <board-list v-bind:tasks="tasks"></board-list>
       </div>
-      <create-list v-bind:tasks="tasks"></create-list>
+      <create-list v-bind:tasks="tasks" v-bind:boardId="board.boardId"></create-list>
     </div>
   </div>
 </template>
