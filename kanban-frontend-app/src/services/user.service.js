@@ -18,6 +18,9 @@ class UserService {
     return axios.post(API_URL + "board/create", { listId: listId, teamId: teamId, description: description, content: content }, { headers: authHeader() })
   }
 
+  getBoard(boardId) {
+    return axios.get("http://localhost:8000/api/board/get/"+ boardId, { headers: authHeader() });
+  }
   getBoards() {
     return axios.get("http://localhost:8000/api/board/get", { headers: authHeader() });
   }
