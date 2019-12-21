@@ -21,6 +21,7 @@ public interface UserTeamRepository extends JpaRepository<UserTeam, UserTeamKey>
 	@Query(value = "SELECT * FROM public.user_team ut WHERE ut.user_id = :userId", nativeQuery = true)
 	List<UserTeam> findAllTeamsOfUser(@Param("userId") Long userId);
 
+	List<UserTeam> findAllById_TeamId(long teamId);
 	@Override
 	List<UserTeam> findAll();
 

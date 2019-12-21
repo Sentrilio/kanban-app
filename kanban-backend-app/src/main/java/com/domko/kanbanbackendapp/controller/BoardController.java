@@ -75,13 +75,27 @@ public class BoardController {
     }
 
     @GetMapping(value = "/get/{boardId}")
-    public Board getBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Board> getBoard(@PathVariable Long boardId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<Board> board = boardService.findBoard(boardId);
         if (board.isPresent()) {
-            board.get().getTasks()
-                    .forEach(value -> System.out.println(value.getDescription()));
-            return board.get();
+            List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getTeamId());
+            if (!userTeams.isEmpty()) {
+                System.out.println("Users of team found");
+//                boolean hasPermissions = userTeams
+//                        .stream()
+//                        .anyMatch(e -> e.getUser().getUsername().equals(authentication.getName()));
+                if (userTeamService.hasPermission(userTeams)) {
+                    board.get().getTasks()
+                            .forEach(value -> System.out.println(value.getDescription()));
+                    return new ResponseEntity<>(board.get(), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
         }
-        return null;
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+
+
 }
