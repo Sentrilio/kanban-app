@@ -4,12 +4,13 @@
     <!-- <link rel="stylesheet" type="text/css" href="css/style.css" /> -->
     <div class="myGrid">
       <!-- <input class="myinput1" type="text" value="lista 1" />
-      <br> -->
-      <button class="btn" data-toggle="collapse" data-target="#demo">Create List</button>
+      <br>-->
+      <button class="btn" data-toggle="collapse" data-target="#demo">Create another List</button>
       <div id="demo" class="collapse">
-        <input type="text" placeholder="list name" />
-        <button class="button">Create List</button>
+        <input v-model="listNameInput" type="text" placeholder="list name" />
+        <button class="button" @click="createList" :disabled="!listNameInput">Create List</button>
       </div>
+      <a>{{boardId}}</a>
     </div>
     <!-- <div>
       <b-button
@@ -37,24 +38,40 @@
     </div>-->
     <!-- <div class="container">
       <div v-for="task in tasks" :key="task.id">{{task}}</div>
-    </div> -->
+    </div>-->
   </div>
 </template>
 
 <script>
-module.exports = {
+import UserService from "../services/user.service";
+// module.exports = {
+export default {
   props: {
-    tasks: Array
+    tasks: Array,
+    boardId: Number
+  },
+  methods: {
+    createList() {
+      console.log("Creating list");
+      UserService.createList(this.listNameInput, this.boardId)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   },
   data() {
     return {
-      visible: false
+      visible: false,
+      listNameInput: ""
     };
   }
 };
 </script>
 <style lang="css" scoped>
-.my-container{
+.my-container {
   align-content: right;
 }
 .myinput1 {
@@ -77,11 +94,10 @@ module.exports = {
 .btn {
   background-color: #888888;
 }
-.button {
-  /* background-color:#888888; */
-  background-color: #4cd137;
-  color: black;
-}
+/* .button { */
+/* background-color: #4cd137; */
+/* color: black; */
+/* } */
 .btn:hover {
   color: black;
 }

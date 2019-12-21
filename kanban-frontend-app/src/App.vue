@@ -165,6 +165,7 @@ export default {
 
       UserService.getBoards()
         .then(response => {
+          console.log(response);
           this.boards = response.data;
           this.boards.forEach(function(board) {
             console.log(board.team.name);

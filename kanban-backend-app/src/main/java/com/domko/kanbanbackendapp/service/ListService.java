@@ -1,7 +1,7 @@
 package com.domko.kanbanbackendapp.service;
 
-import com.domko.kanbanbackendapp.model.List;
+import com.domko.kanbanbackendapp.model.BList;
 
 public interface ListService {
-    List save(List list);
+    BList save(BList bList);
 }
