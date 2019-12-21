@@ -104,8 +104,8 @@
         </li>
       </div>
     </nav>
-    <div></div>
-    <div class="container">
+    <!-- <div class="container"> -->
+    <div>
       <!-- <a>{{selectedTeam.name}}</a> -->
       <router-view />
     </div>
@@ -267,3 +267,8 @@ export default {
   }
 };
 </script>
+<style lang="css">
+.btn {
+  margin-right: 10px !important;
+}
+</style>
