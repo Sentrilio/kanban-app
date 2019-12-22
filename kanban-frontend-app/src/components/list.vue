@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper">
-    <input style="outline:none;" type="text" v-model="listName" />
+    <!-- <form> -->
+    <input type="text" v-model="bListName" />
+    <!-- </form> -->
     <a>{{blist.position}}</a>
     <!-- <button class="btn" data-toggle="collapse" data-target="#demo">Create List</button>
     <div id="demo" class="collapse">
@@ -29,11 +31,11 @@ module.exports = {
       bListName: ""
     };
   },
-  computed: {
-    listName() {
-      return this.bListName;
-    }
-  },
+//   computed: {
+//     listName() {
+//       return this.bListName;
+//     }
+//   },
 
   created() {
     this.bListName = this.$props.blist.name;
@@ -48,5 +50,12 @@ module.exports = {
   /* padding-left: 20px; */
   margin-left: 20px;
 }
-
+input {
+  border-style: none;
+  /* border-top-style: hidden; */
+  /* border-right-style: hidden; */
+  /* border-left-style: hidden; */
+  /* border-bottom-style: groove; */
+  /* background-color: #eee; */
+}
 </style>

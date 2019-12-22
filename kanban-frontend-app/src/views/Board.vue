@@ -49,20 +49,8 @@ export default {
     };
   },
   methods: {
-    printBlists(){
-      this.blists.array.forEach((value, index) => {
-        console.log(value);
-        console.log(index);
-      });
-    },
     compare(a, b) {
-      if (a.position < b.position) {
-        return -1;
-      }
-      if (a.position > b.position) {
-        return 1;
-      }
-      return 0;
+      return a.position - b.position;
     },
     sortBList() {
       this.blists.sort(this.compare);
@@ -84,22 +72,14 @@ export default {
           this.board = response.data;
           this.blists = this.board.blists;
           this.sortBList();
-          // this.printBlists();
         })
-        // .then(() => {
-        //   this.blists = this.board.blists;
-        //   this.board.blists.foreach(e=>{
-        //     this.blists.push(e);
-        //   })
-        //   this.sortBList();
-        //   console.log("Board lists:" + this.blists);
-        // })
+
         .catch(error => {
           console.log(error);
           // console.log("status: " + error.response.status);
-          // if (error.response.status === 401) {
-            // this.$router.push("/home"); // to do component with info about not having perrmision redirection
-          // }
+          if (error.response.status === 401) {
+            this.$router.push("/home"); // to do component with info about not having perrmision redirection
+          }
         });
     },
     getTeam() {
