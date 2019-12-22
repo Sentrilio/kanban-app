@@ -10,7 +10,7 @@
         aria-expanded="false"
       >
         <a v-if="!selectedTeam">Select Team</a>
-        <a v-else>{{selectedTeam}}</a>
+        <a v-else>{{selectedTeam.name}}</a>
       </button>
 
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -40,9 +40,9 @@ export default {
   },
   data() {
     return {
-      selectedTeam: "",
-      boardName: "",
-      teams: []
+      teams: [],
+      selectedTeam: null,
+      boardName: ""
     };
   },
   created() {
@@ -66,16 +66,16 @@ export default {
           // if (this.teams != null) {
           //   this.selectTeam(this.teams[0]);
           // }
-          this.$store.dispatch("user/setTeams", this.teams);
-          console.log("team retrieved");
+          // this.$store.dispatch("user/setTeams", this.teams);
+          // console.log("team retrieved");
         })
         .catch(e => {
           console.log("Error", e);
         });
     },
     selectTeam(team) {
-      this.selectedTeam = team.name;
-      this.$store.dispatch("selection/setSelectedTeam", team);
+      this.selectedTeam = team;
+      // this.$store.dispatch("selection/setSelectedTeam", team);
     },
 
     createBoard() {
