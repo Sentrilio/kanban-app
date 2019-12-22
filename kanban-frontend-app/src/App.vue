@@ -18,17 +18,21 @@
               aria-expanded="false"
             >Boards</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <div v-for="(teamBoards, teamName) in boardTeams" :key="teamName">
-                <h4
-                  class="dropdown-header"
-                  style="color: #000066; text-decoration: underline;"
-                >{{teamName}}</h4>
-                <div
-                  v-for="board in teamBoards"
-                  :key="board.boardId"
-                  v-on:click="switchToBoard(teamName,board)"
-                >
-                  <a class="dropdown-item" href>{{board.name}}</a>
+              <!-- <div v-for="(boards, teamName) in teams" :key="teamName"> -->
+              <div v-for="team in teams" :key="team.teamId">
+                <!-- <div v-if="team.boards.length>0"> -->
+                  <div>
+                  <h4
+                    class="dropdown-header"
+                    style="color: #000066; text-decoration: underline;"
+                  >{{team.name}}</h4>
+                  <div
+                    v-for="board in team.boards"
+                    :key="board.boardId"
+                    v-on:click="switchToBoard(team,board)"
+                  >
+                    <a class="dropdown-item" href>{{board.name}}</a>
+                  </div>
                 </div>
               </div>
               <div>
@@ -149,10 +153,11 @@ export default {
     }
   },
   methods: {
-    getData() {
+    getTeams() {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
+          console.log(this.teams);
           // if (this.teams != null) {
           //   this.selectTeam(this.teams[0]);
           // }
@@ -162,46 +167,49 @@ export default {
         .catch(e => {
           console.log("Error", e);
         });
+    },
+    getData() {
+      this.getTeams();
 
-      UserService.getBoards()
-        .then(response => {
-          console.log(response);
-          this.boards = response.data;
-          this.boards.forEach(function(board) {
-            console.log(board.team.name);
-          });
+      // UserService.getBoards()
+      //   .then(response => {
+      //     console.log(response);
+      //     this.boards = response.data;
+      //     this.boards.forEach(function(board) {
+      //       console.log(board.team.name);
+      //     });
 
-          // if (this.boards != null) {
-          //   this.selectBoard(this.boards[0]);
-          //   this.boards.sort(function(a, b) {
-          //     if (a.team.name > b.team.name) {
-          //       return -1;
-          //     }
-          //     if (b.team.name > b.team.name) {
-          //       return 1;
-          //     }
-          //     return 0;
-          //   });
-          // }
-          console.log("boards retrieved");
-        })
-        .then(() => {
-          this.boardTeams = {};
-          this.boards.forEach(board => {
-            if (!this.boardTeams[board.team.name]) {
-              this.boardTeams[board.team.name] = [];
-            }
-            this.boardTeams[board.team.name].push({
-              name: board.name,
-              boardId: board.boardId
-            });
-            console.log("added board to map");
-          });
-          console.log(this.boardTeams);
-        })
-        .catch(e => {
-          console.log("Error", e);
-        });
+      //     // if (this.boards != null) {
+      //     //   this.selectBoard(this.boards[0]);
+      //     //   this.boards.sort(function(a, b) {
+      //     //     if (a.team.name > b.team.name) {
+      //     //       return -1;
+      //     //     }
+      //     //     if (b.team.name > b.team.name) {
+      //     //       return 1;
+      //     //     }
+      //     //     return 0;
+      //     //   });
+      //     // }
+      //     console.log("boards retrieved");
+      //   })
+      //   .then(() => {
+      //     this.boardTeams = {};
+      //     this.boards.forEach(board => {
+      //       if (!this.boardTeams[board.team.name]) {
+      //         this.boardTeams[board.team.name] = [];
+      //       }
+      //       this.boardTeams[board.team.name].push({
+      //         name: board.name,
+      //         boardId: board.boardId
+      //       });
+      //       console.log("added board to map");
+      //     });
+      //     console.log(this.boardTeams);
+      //   })
+      //   .catch(e => {
+      //     console.log("Error", e);
+      //   });
     },
 
     redirectToTeam(teamName) {
@@ -242,29 +250,36 @@ export default {
       this.selectedBoard = board;
       this.$store.dispatch("selection/setSelectedBoard", board);
     },
-    switchToBoard(teamName, board) {
-      let team = this.getTeamByName(teamName);
+    switchToBoard(team, board) {
+      // let team = this.getTeamByName(teamName);
       if (team) {
         console.log("board switching");
-        this.selectBoard(board);
-        this.selectTeam(team);
+        // this.selectBoard(board);
+        // this.selectTeam(team);
         let boardId = board.boardId;
         let boardName = board.name;
-        this.$router.push({ name: "board", params: { boardId, boardName } });
+        let teamId = team.teamId;
+        this.$router.push({
+          name: "board",
+          params: { teamId, boardId, boardName }
+        });
         this.$route.params.pathMatch;
       } else {
         console.log("team does not exists");
       }
     }
   },
-  mounted() {
-    if (this.currentUser) {
-      this.getData();
-    }
+  created() {
+    this.getData();
   },
+  // mounted() {
+  // if (this.currentUser) {
+  // this.getData();
+  // }
+  // },
   watch: {
     // call again the method if the route changes
-    $route: "getData"
+    // $route: "getData"
   }
 };
 </script>

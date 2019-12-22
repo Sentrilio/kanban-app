@@ -16,34 +16,33 @@ import java.util.Set;
 @Table(name = "board")
 public class Board {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "board_id")
-	private Long boardId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_id")
+    private Long boardId;
 
-	@Column(name = "name")
-	private String name;
+    @Column(name = "name")
+    private String name;
 
-	@Column(name = "wip_limit")
-	private Integer wipLimit;
-
-
-	@OneToMany(mappedBy = "board")
-	private Set<Task> tasks;
+    @Column(name = "wip_limit")
+    private Integer wipLimit;
 
 
-	@JsonManagedReference
-	@ManyToOne
-	@JoinColumn(name = "team_id", nullable = false)
-	private Team team;
-
-	@JsonIgnore
-//	@JsonBackReference
-	@OneToMany(mappedBy = "board")
-	private Set<BList> bLists;
+//    @OneToMany(mappedBy = "board")
+//    private Set<Task> tasks;
 
 
-	public void addTask(Task task) {
-		tasks.add(task);
-	}
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
+
+
+    @OneToMany(mappedBy = "board")
+    private Set<BList> bLists;
+
+
+//    public void addTask(Task task) {
+//        tasks.add(task);
+//    }
 }

@@ -29,7 +29,7 @@ class UserService {
     return axios.get("http://localhost:8000/api/board/get", { headers: authHeader() });
   }
   getTeams() {
-    return axios.get("http://localhost:8000/api/userteam/get", { headers: authHeader() });
+    return axios.get("http://localhost:8000/api/team/get", { headers: authHeader() });
   }
   getPublicContent() {
     return axios.get(API_URL + 'test/all');
