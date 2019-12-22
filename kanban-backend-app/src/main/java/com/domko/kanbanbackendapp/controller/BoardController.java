@@ -74,24 +74,38 @@ public class BoardController {
     }
 
     @GetMapping(value = "/get/{boardId}")
-    public ResponseEntity<Board> getBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Board> getBoardById(@PathVariable("boardId") long boardId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<Board> board = boardService.findBoard(boardId);
-        if (board.isPresent()) {
-            List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getTeamId());
-            if (!userTeams.isEmpty()) {
-                System.out.println("Users of team found");
-                if (userTeamService.hasPermission(userTeams)) {
-                    board.get().getTasks()
-                            .forEach(value -> System.out.println(value.getDescription()));
-                    return new ResponseEntity<>(board.get(), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-                }
+        Optional<User> user = userService.findByUsername(authentication.getName());
+        if (user.isPresent()) {
+            Optional<Board> board = boardService.findBoard(boardId);
+            if (board.isPresent()) {
+                return new ResponseEntity<>(board.get(), HttpStatus.OK);
             }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+//    @GetMapping(value = "/get/{boardId}")
+//    public ResponseEntity<Board> getBoard(@PathVariable Long boardId) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Optional<Board> board = boardService.findBoard(boardId);
+//        if (board.isPresent()) {
+//            List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getTeamId());
+//            if (!userTeams.isEmpty()) {
+//                System.out.println("Users of team found");
+//                if (userTeamService.hasPermission(userTeams)) {
+//                    board.get().getTasks()
+//                            .forEach(value -> System.out.println(value.getDescription()));
+//                    return new ResponseEntity<>(board.get(), HttpStatus.OK);
+//                } else {
+//                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//                }
+//            }
+//        }
+//        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//    }
 
 
 }

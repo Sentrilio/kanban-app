@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
-    <input type="text" value="listName" />
+    <input style="outline:none;" type="text" v-model="listName" />
+    <a>{{blist.position}}</a>
     <!-- <button class="btn" data-toggle="collapse" data-target="#demo">Create List</button>
     <div id="demo" class="collapse">
       <input type="text" placeholder="list name" />
@@ -20,12 +21,23 @@
 <script>
 module.exports = {
   props: {
+    blist: Object,
     tasks: Array
   },
   data() {
     return {
-      listId: 1
+      bListName: ""
     };
+  },
+  computed: {
+    listName() {
+      return this.bListName;
+    }
+  },
+
+  created() {
+    this.bListName = this.$props.blist.name;
+    console.log(this.bListName);
   }
 };
 </script>
@@ -36,4 +48,5 @@ module.exports = {
   /* padding-left: 20px; */
   margin-left: 20px;
 }
+
 </style>
