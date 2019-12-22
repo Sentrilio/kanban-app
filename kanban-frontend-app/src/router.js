@@ -28,6 +28,12 @@ export const router = new Router({
       component: Home,
     },
     {
+      path: '/t/:teamId-:teamName',
+      name: 'team',
+      component: Team,
+      beforeEnter: isLoggedIn,
+    },
+    {
       path: '/t/:teamId/b/:boardId-:boardName',
       name: 'board',
       component: Board,
