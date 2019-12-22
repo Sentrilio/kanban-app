@@ -1,47 +1,39 @@
 <template>
-  <div class="container" v-if="currentUser">
-    <a>{{teamName}}</a>
+  <div class="container" v-if="team">
+    <a>{{team.name}}</a>
+    <br>
+    <a>{{team.teamId}}</a>
   </div>
 </template>
 
 <script>
-// import UserService from '../services/user.service';
+import UserService from "../services/user.service";
 
 export default {
   name: "Team",
-  computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
-    }
-    // getTeam() {
-    //   this.teamName = this.$store.state.selection.team.name;
-    // }
-  },
   data() {
     return {
-      teamName: "TEAM NAME"
+      team: null
     };
   },
   methods: {
-    getTeam() {
-      let team = this.$store.state.selection.team;
-      // UserService.getTeam();
-      if(team){
-          console.log("team exists");
-          this.teamName=team.name;
-      }else{
-          console.log("team not exists");
-      }
+    getData() {
+      UserService.getTeam(this.$route.params.teamId)
+        .then(response => {
+          this.team = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   },
-  mounted() {
-    if (this.currentUser) {
-      this.getTeam();
-    }
+  created() {
+    this.getData();
   },
+
   watch: {
     // call again the method if the route changes
-    $route: "getTeam"
+    $route: "getData"
   }
 };
 </script>

@@ -3,15 +3,14 @@
     <nav class="navbar navbar-expand navbar-dark bg-white" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <button>{{board.name}}</button>
+          <input class="board-name-box" type="text" v-model="currentBoard.name" />
         </li>
         <li class="nav-item">
-          <button>{{team.name}}</button>
+          <button @click="switchToTeam(currentTeam)">{{team.name}}</button>
         </li>
       </div>
     </nav>
     <div class="list-container">
-      <!-- <div v-for="blist in board.blists" :key="blist.position"> -->
       <div v-for="blist in blists" :key="blist.position">
         <board-list v-bind:blist="blist" v-bind:tasks="tasks"></board-list>
       </div>
@@ -31,15 +30,6 @@ export default {
     CreateList,
     BoardList
   },
-  computed: {
-    orderedBList() {
-      return this.blists;
-    }
-  },
-  // currentUser() {
-  //   return this.$store.state.auth.user;
-  // }
-
   data() {
     return {
       tasks: ["Task 1", "Task 2", "Task 3", "Task 4"],
@@ -48,8 +38,31 @@ export default {
       blists: []
     };
   },
+  computed: {
+    currentBoard() {
+      return this.board;
+    },
+    currentTeam() {
+      return this.team;
+    },
+    orderedBList() {
+      return this.blists;
+    }
+  },
+
   methods: {
-    refresh(){
+    switchToTeam(team) {
+      if (team) {
+        console.log("team switching");
+        let teamId = team.teamId;
+        let teamName = team.name;
+        this.$router.push({
+          name: "team",
+          params: { teamId, teamName }
+        });
+      }
+    },
+    refresh() {
       this.getData();
     },
     compare(a, b) {
@@ -99,11 +112,19 @@ export default {
     this.getData();
   },
   watch: {
-    // $route: "getData"
+    $route: "getData"
   }
 };
 </script>
 <style lang="css" scoped>
+.board-name-box {
+  /* outline-style: none; */
+  border-style: none;
+}
+.board-name-box:hover {
+  /* outline-style: none; */
+  background-color: #f5f5f5;
+}
 .nav-item {
   padding-left: 20px;
   /* padding-right: 20px; */
