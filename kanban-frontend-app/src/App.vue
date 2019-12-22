@@ -18,20 +18,24 @@
               aria-expanded="false"
             >Boards</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <!-- <div v-for="(boards, teamName) in teams" :key="teamName"> -->
               <div v-for="team in teams" :key="team.teamId">
-                <!-- <div v-if="team.boards.length>0"> -->
                 <div>
-                  <h4
-                    class="dropdown-header"
+                  <button
+                    v-on:click="switchToTeam(team)"
+                    class="dropdown-item"
                     style="color: #000066; text-decoration: underline;"
-                  >{{team.name}}</h4>
-                  <div
-                    v-for="board in team.boards"
-                    :key="board.boardId"
-                    v-on:click="switchToBoard(team,board)"
-                  >
-                    <a class="dropdown-item" href>{{board.name}}</a>
+                  >{{team.name}}</button>
+                  <div v-for="board in team.boards" :key="board.boardId">
+                    <div class="board-btn">
+                      <!-- <button
+                      v-on:click="switchToBoard(team,board)"
+                      class="dropdown-item"
+                      >{{board.name}}</button>-->
+                      <button
+                        v-on:click="switchToBoard(team,board)"
+                        class="dropdown-item"
+                      >{{board.name}}</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -41,7 +45,7 @@
             </div>
           </div>
         </li>
-        <li>
+        <!-- <li>
           <div class="dropdown" v-if="currentUser">
             <button
               class="btn btn-secondary dropdown-toggle"
@@ -54,30 +58,12 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <div v-for="team in teams" :key="team.teamId">
                 <a class="dropdown-item">{{team.name}}</a>
-                <!-- <a class="dropdown-item" @click="redirectToTeam">{{team.name}}</a> -->
               </div>
               <div>
                 <a class="dropdown-item" href="#" @click="createTeam">Create Team</a>
               </div>
             </div>
           </div>
-        </li>
-        <!-- <li class="nav-item" v-if="currentUser && currentBoard">
-          <a class="nav-link">{{currentBoard.name}}</a>
-        </li>
-        <li class="nav-item" v-if="currentUser && currentTeam">
-          <a class="nav-link">{{currentTeam.name}}</a>
-        </li>-->
-        <!-- 
-        <li class="nav-item" v-if="showAdminBoard">
-          <a href="/admin" class="nav-link">Admin Board</a>
-        </li>
-
-        <li class="nav-item" v-if="showModeratorBoard">
-          <a href="/mod" class="nav-link">Moderator Board</a>
-        </li>
-        <li class="nav-item">
-          <a href="/user" class="nav-link" v-if="currentUser">User</a>
         </li>-->
       </div>
 
@@ -108,9 +94,7 @@
         </li>
       </div>
     </nav>
-    <!-- <div class="container"> -->
     <div>
-      <!-- <a>{{selectedTeam.name}}</a> -->
       <router-view />
     </div>
   </div>
@@ -163,16 +147,16 @@ export default {
     },
     sortBoards() {
       console.log("Boards: ");
-      this.teams.forEach(team=>{
+      this.teams.forEach(team => {
         team.boards.sort(this.compare);
         // team.boards.forEach(board=>{
-          // console.log(board.name);
-          // board.sort(this.compare);
-        // })
-      })
-      // this.teams.boards.forEach(board => {
-        // console.log(board);
+        // console.log(board.name);
         // board.sort(this.compare);
+        // })
+      });
+      // this.teams.boards.forEach(board => {
+      // console.log(board);
+      // board.sort(this.compare);
       // });
     },
     getTeams() {
@@ -194,19 +178,6 @@ export default {
       this.getTeams();
     },
 
-    redirectToTeam(teamName) {
-      console.log("redirection");
-      let team = this.getTeamByName(teamName);
-      if (team) {
-        console.log("team found");
-        this.selectTeam(team);
-        this.$router.push("/team-info").catch(err => {
-          console.log(err);
-        });
-      } else {
-        console.log("team not found");
-      }
-    },
     getTeamByName(teamName) {
       return this.teams.find(team => (team.name = teamName));
     },
@@ -232,12 +203,20 @@ export default {
       this.selectedBoard = board;
       this.$store.dispatch("selection/setSelectedBoard", board);
     },
+    switchToTeam(team) {
+      if (team) {
+        console.log("team switching");
+        let teamId = team.teamId;
+        let teamName = team.name;
+        this.$router.push({
+          name: "team",
+          params: { teamId, teamName }
+        });
+      }
+    },
     switchToBoard(team, board) {
-      // let team = this.getTeamByName(teamName);
       if (team) {
         console.log("board switching");
-        // this.selectBoard(board);
-        // this.selectTeam(team);
         let boardId = board.boardId;
         let boardName = board.name;
         let teamId = team.teamId;
@@ -265,6 +244,16 @@ export default {
 };
 </script>
 <style lang="css">
+.board-btn:hover {
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+
+.board-btn {
+  background-color: #F5F5F5;
+  color: black;
+}
+
 .btn {
   margin-right: 10px !important;
 }
