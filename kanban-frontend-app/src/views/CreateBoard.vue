@@ -8,7 +8,11 @@
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-      >{{selectedTeam.name}}</button>
+      >
+        <a v-if="!selectedTeam">Select Team</a>
+        <a v-else>{{selectedTeam}}</a>
+      </button>
+
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
           <a class="dropdown-item" href="#">{{team.name}}</a>
@@ -36,25 +40,44 @@ export default {
   },
   data() {
     return {
-      selectedTeam: null,
+      selectedTeam: "",
       boardName: "",
       teams: []
     };
   },
-  mounted() {
-    this.teams = this.$store.state.user.teams;
-    if (this.teams != null) {
-      this.selectedTeam = this.teams[0];
-    }
+  created() {
+    this.getData();
   },
+  // mounted() {
+  // this.teams = this.$store.state.user.teams;
+  // if (this.teams != null) {
+  // this.selectedTeam = this.teams[0];
+  // }
+  // },
   methods: {
-    selectTeam(team) {
-      this.selectedTeam = team;
-      this.$store.dispatch("selection/setSelectedTeam", team);
+    getData() {
+      this.getTeams();
     },
     getTeams() {
-      this.teams = this.$store.state.user.teams;
+      UserService.getTeams()
+        .then(response => {
+          this.teams = response.data;
+          console.log(this.teams);
+          // if (this.teams != null) {
+          //   this.selectTeam(this.teams[0]);
+          // }
+          this.$store.dispatch("user/setTeams", this.teams);
+          console.log("team retrieved");
+        })
+        .catch(e => {
+          console.log("Error", e);
+        });
     },
+    selectTeam(team) {
+      this.selectedTeam = team.name;
+      this.$store.dispatch("selection/setSelectedTeam", team);
+    },
+
     createBoard() {
       UserService.createBoard(this.boardName, this.selectedTeam.teamId).then(
         response => {

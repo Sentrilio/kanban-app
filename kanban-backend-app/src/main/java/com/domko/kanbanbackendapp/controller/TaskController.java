@@ -42,7 +42,7 @@ public class TaskController {
             Task task = new Task();
             task.setDescription(createTaskRequest.getDescription());
             task.setContent(createTaskRequest.getContent());
-            task.setBoard(board.get());
+//            task.setBoard(board.get());
             task.setBList(list.get());
             taskService.saveTask(task);
             return new ResponseEntity<>("Task created", HttpStatus.CREATED);

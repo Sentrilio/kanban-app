@@ -28,7 +28,7 @@ export const router = new Router({
       component: Home,
     },
     {
-      path: '/board/:boardId-:boardName',
+      path: '/t/:teamId/b/:boardId-:boardName',
       name: 'board',
       component: Board,
       beforeEnter: isLoggedIn,

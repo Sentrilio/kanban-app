@@ -1,5 +1,6 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -30,14 +31,10 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer position;
 
-    @JsonManagedReference
-    @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
 
-//    @JsonManagedReference
-    @JsonIgnore
+    @JsonBackReference
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "list_id", nullable = false)
     private BList bList;
 

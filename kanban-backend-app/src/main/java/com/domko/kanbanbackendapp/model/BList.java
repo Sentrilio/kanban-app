@@ -26,7 +26,6 @@ public class BList {
     @Column(name = "name", nullable = false)
     private String name;
 
-//    @JsonManagedReference
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
@@ -36,7 +35,8 @@ public class BList {
     @Column(name = "position", unique = true, nullable = false)
     private Integer position;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "list")
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "bList")
     private Set<Task> tasks;
 }
