@@ -24,7 +24,7 @@ export default {
       UserService.createList(this.listNameInput, this.boardId)
         .then(response => {
           console.log(response);
-          this.$emit('getData')
+          this.$emit('refresh')
         })
         .catch(err => {
           console.log(err);

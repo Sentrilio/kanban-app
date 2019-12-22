@@ -15,7 +15,7 @@
       <div v-for="blist in blists" :key="blist.position">
         <board-list v-bind:blist="blist" v-bind:tasks="tasks"></board-list>
       </div>
-      <create-list v-on:my-event="getData" v-bind:tasks="tasks" v-bind:boardId="board.boardId"></create-list>
+      <create-list v-on:refresh="getData" v-bind:tasks="tasks" v-bind:boardId="board.boardId"></create-list>
     </div>
   </div>
 </template>
@@ -49,6 +49,9 @@ export default {
     };
   },
   methods: {
+    refresh(){
+      this.getData();
+    },
     compare(a, b) {
       return a.position - b.position;
     },
