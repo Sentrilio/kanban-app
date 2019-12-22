@@ -21,7 +21,7 @@
               <!-- <div v-for="(boards, teamName) in teams" :key="teamName"> -->
               <div v-for="team in teams" :key="team.teamId">
                 <!-- <div v-if="team.boards.length>0"> -->
-                  <div>
+                <div>
                   <h4
                     class="dropdown-header"
                     style="color: #000066; text-decoration: underline;"
@@ -153,15 +153,37 @@ export default {
     }
   },
   methods: {
+    compare(a, b) {
+      // console.log("a:" + a.name + " b:" + b.name);
+      return a.name.localeCompare(b.name);
+      // return b.name - a.name;
+    },
+    sortTeams() {
+      this.teams.sort(this.compare);
+    },
+    sortBoards() {
+      console.log("Boards: ");
+      this.teams.forEach(team=>{
+        team.boards.sort(this.compare);
+        // team.boards.forEach(board=>{
+          // console.log(board.name);
+          // board.sort(this.compare);
+        // })
+      })
+      // this.teams.boards.forEach(board => {
+        // console.log(board);
+        // board.sort(this.compare);
+      // });
+    },
     getTeams() {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
+          this.sortTeams();
+          this.sortBoards();
           console.log(this.teams);
-          // if (this.teams != null) {
-          //   this.selectTeam(this.teams[0]);
-          // }
-          this.$store.dispatch("user/setTeams", this.teams);
+          // console.log(this.teams);
+          // this.$store.dispatch("user/setTeams", this.teams);
           console.log("team retrieved");
         })
         .catch(e => {
@@ -170,46 +192,6 @@ export default {
     },
     getData() {
       this.getTeams();
-
-      // UserService.getBoards()
-      //   .then(response => {
-      //     console.log(response);
-      //     this.boards = response.data;
-      //     this.boards.forEach(function(board) {
-      //       console.log(board.team.name);
-      //     });
-
-      //     // if (this.boards != null) {
-      //     //   this.selectBoard(this.boards[0]);
-      //     //   this.boards.sort(function(a, b) {
-      //     //     if (a.team.name > b.team.name) {
-      //     //       return -1;
-      //     //     }
-      //     //     if (b.team.name > b.team.name) {
-      //     //       return 1;
-      //     //     }
-      //     //     return 0;
-      //     //   });
-      //     // }
-      //     console.log("boards retrieved");
-      //   })
-      //   .then(() => {
-      //     this.boardTeams = {};
-      //     this.boards.forEach(board => {
-      //       if (!this.boardTeams[board.team.name]) {
-      //         this.boardTeams[board.team.name] = [];
-      //       }
-      //       this.boardTeams[board.team.name].push({
-      //         name: board.name,
-      //         boardId: board.boardId
-      //       });
-      //       console.log("added board to map");
-      //     });
-      //     console.log(this.boardTeams);
-      //   })
-      //   .catch(e => {
-      //     console.log("Error", e);
-      //   });
     },
 
     redirectToTeam(teamName) {
@@ -278,8 +260,7 @@ export default {
   // }
   // },
   watch: {
-    // call again the method if the route changes
-    // $route: "getData"
+    $route: "getData"
   }
 };
 </script>

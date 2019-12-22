@@ -31,11 +31,6 @@ module.exports = {
       bListName: ""
     };
   },
-//   computed: {
-//     listName() {
-//       return this.bListName;
-//     }
-//   },
 
   created() {
     this.bListName = this.$props.blist.name;
