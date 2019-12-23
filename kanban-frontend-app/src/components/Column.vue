@@ -1,60 +1,69 @@
 <template>
   <div class="wrapper">
     <div class="container">
-      <input type="text" v-model="columnName" />
+      <input class="col-input" type="text" v-model="columnName" />
       <button>
         <font-awesome-icon icon="minus" />
       </button>
     </div>
-    <a>{{column.position}}</a>
+    <!-- <a>{{currentColumn.position}}</a> -->
     <div>
-      <div v-for="task in tasks" :key="task.id">{{task}}</div>
+      <div v-for="task in currentColumn.tasks" :key="task.id">{{task.description}}</div>
     </div>
 
-    <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn">
+    <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn.id">
       <font-awesome-icon icon="plus" style="padding-right:5px;" />Create Task
     </button>
-    <div :id="'currentColumn'+currentColumn" class="collapse">
+    <div :id="'currentColumn'+currentColumn.id" class="collapse">
       <input
         type="text"
         style="margin-top:5px;"
         v-model="taskDescription"
         placeholder="task description"
       />
-      <button class="button" >Create</button>
+      <button class="button" @click="createTask" :disabled="!taskDescription">Create</button>
     </div>
   </div>
 </template>
 
 <script>
-import UserService from '../services/user.service';
+import UserService from "../services/user.service";
 
 export default {
   data() {
     return {
-      columnName: "",
       taskDescription: "",
+      columnName: ""
     };
   },
   props: {
-    column: Object,
-    tasks: Array
-  },
-  methods: {
-    createTask(boardId,taskDescription) {
-      UserService.createTask(boardId,taskDescription)
-      .then(response=>{
-        console.log(response.data);
-      })
-    }
+    column: Object
   },
   computed: {
     currentColumn() {
-      return this.$props.column.id;
+      return this.$props.column;
+    },
+    currentColumnId() {
+      return this.column.id;
     }
   },
+  methods: {
+    createTask() {
+      UserService.createTask(this.column.id, this.taskDescription)
+        .then(response => {
+          console.log(response);
+          this.$emit("refresh");
+          this.taskDescription = "";
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+
   created() {
-    this.columnName = this.$props.column.name;
+    // this.column = this.$props.currentColumn;
+    this.columnName = this.column.name;
   }
 };
 </script>
@@ -67,6 +76,9 @@ export default {
   border-style: solid;
   /* padding-left: 20px; */
   margin-left: 20px;
+}
+.col-input {
+  background-color: aliceblue;
 }
 input {
   border-style: none;
