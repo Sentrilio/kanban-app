@@ -79,7 +79,7 @@ export default {
     },
 
     createBoard() {
-      UserService.createBoard(this.boardName, this.selectedTeam.teamId).then(
+      UserService.createBoard(this.boardName, this.selectedTeam.id).then(
         response => {
           console.log(response);
           this.$router.push("/"); //should be prompted info about successful creation and ok to click

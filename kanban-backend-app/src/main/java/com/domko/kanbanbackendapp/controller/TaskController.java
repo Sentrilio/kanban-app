@@ -1,13 +1,10 @@
 package com.domko.kanbanbackendapp.controller;
 
 
-import com.domko.kanbanbackendapp.model.Board;
-import com.domko.kanbanbackendapp.model.BList;
+import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
-import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.ListServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.TaskServiceImpl;
+import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +21,9 @@ public class TaskController {
     private TaskServiceImpl taskService;
 
     @Autowired
-    private BoardServiceImpl boardService;
-
+    private PermissionService permissionService;
     @Autowired
-    private ListServiceImpl listService;
+    private ColumnServiceImpl boardListService;
 
     @GetMapping(value = "/get/{id}")
     public Optional<Task> findById(@PathVariable Long id) {
@@ -36,19 +32,19 @@ public class TaskController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        Optional<Board> board = boardService.findBoard(createTaskRequest.getBoardId());
-        Optional<BList> list = listService.findList(createTaskRequest.getListId());
-        if (board.isPresent() && list.isPresent()) {
-            Task task = new Task();
-            task.setDescription(createTaskRequest.getDescription());
-            task.setContent(createTaskRequest.getContent());
-//            task.setBoard(board.get());
-            task.setBList(list.get());
-            taskService.saveTask(task);
-            return new ResponseEntity<>("Task created", HttpStatus.CREATED);
+        Optional<BColumn> boardList = boardListService.findList(createTaskRequest.getBoardListId());
+        if (boardList.isPresent()) {
+            if (permissionService.hasPermissionToBoardList(boardList.get())) {
+                Task task = new Task();
+                task.setDescription(createTaskRequest.getDescription());
+                task.setColumn(boardList.get());
+                taskService.saveTask(task);
+                return new ResponseEntity<>("Task created", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("Board or list does not exists", HttpStatus.FORBIDDEN);
+            }
         } else {
             return new ResponseEntity<>("Board or list does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 }

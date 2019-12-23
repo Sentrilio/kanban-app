@@ -32,7 +32,7 @@ public class TeamServiceImpl implements TeamService {
 
 	public Team createTeam(User user, String teamName) {
 		Team team = new Team(teamName);
-		Set<UserTeam> users = Set.of(new UserTeam(new UserTeamKey(user.getUserId(), team.getTeamId()), user, team, TeamRole.LEADER));
+		Set<UserTeam> users = Set.of(new UserTeam(new UserTeamKey(user.getId(), team.getId()), user, team, TeamRole.LEADER));
 		team.setUserTeams(users);
 		return save(team);
 	}
