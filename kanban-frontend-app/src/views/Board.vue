@@ -12,9 +12,9 @@
     </nav>
     <div class="column-container">
       <div v-for="column in columns" :key="column.position">
-        <column v-bind:column="column" v-bind:tasks="tasks"></column>
+        <column @refresh="refresh" v-bind:column="column"></column>
       </div>
-      <create-column v-on:refresh="getData" v-bind:tasks="tasks" v-bind:boardId="board.id"></create-column>
+      <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
     </div>
   </div>
 </template>
@@ -33,7 +33,6 @@ export default {
   data() {
     return {
       columns: [],
-      tasks: ["Task 1", "Task 2", "Task 3", "Task 4"],
       board: {},
       team: {}
     };
@@ -49,7 +48,6 @@ export default {
       return this.columns;
     }
   },
-
   methods: {
     switchToTeam(team) {
       if (team) {
@@ -63,6 +61,7 @@ export default {
       }
     },
     refresh() {
+      console.log("refreshing");
       this.getData();
     },
     compare(a, b) {
@@ -71,11 +70,6 @@ export default {
     sortColumns() {
       this.columns.sort(this.compare);
     },
-    createTask() {
-      // let boardId = this.getBoard().id;
-      // let columnId = this.getColumn().id;
-      // this.$route.push({ name: "createTask", params: { boardId, columnId } });
-    },
 
     getData() {
       this.getBoard();
@@ -83,15 +77,13 @@ export default {
     },
     getBoard() {
       UserService.getBoard(this.$route.params.boardId)
-        .then(response => {
-          console.log("status 200");
+        .then(response => { 
           this.board = response.data;
           this.columns = this.board.columns;
           this.sortColumns();
         })
         .catch(error => {
           console.log(error);
-          // console.log("status: " + error.response.status);
           if (error.response.status === 401) {
             this.$router.push("/home"); // to do component with info about not having perrmision redirection
           }

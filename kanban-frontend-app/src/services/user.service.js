@@ -18,6 +18,8 @@ class UserService {
     return axios.post(API_URL + "column/create", { columnName: columnName, boardId: boardId }, { headers: authHeader() })
   }
   createTask(columnId, description) {
+    console.log(columnId);
+    console.log(description);
     return axios.post(API_URL + "task/create", { columnId: columnId, description: description}, { headers: authHeader() })
   }
 
