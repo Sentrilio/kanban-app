@@ -48,12 +48,6 @@ export default {
   created() {
     this.getData();
   },
-  // mounted() {
-  // this.teams = this.$store.state.user.teams;
-  // if (this.teams != null) {
-  // this.selectedTeam = this.teams[0];
-  // }
-  // },
   methods: {
     getData() {
       this.getTeams();
@@ -63,11 +57,6 @@ export default {
         .then(response => {
           this.teams = response.data;
           console.log(this.teams);
-          // if (this.teams != null) {
-          //   this.selectTeam(this.teams[0]);
-          // }
-          // this.$store.dispatch("user/setTeams", this.teams);
-          // console.log("team retrieved");
         })
         .catch(e => {
           console.log("Error", e);
@@ -75,7 +64,6 @@ export default {
     },
     selectTeam(team) {
       this.selectedTeam = team;
-      // this.$store.dispatch("selection/setSelectedTeam", team);
     },
 
     createBoard() {
@@ -91,7 +79,6 @@ export default {
     }
   },
   watch: {
-    // call again the method if the route changes
     $route: "getTeams"
   }
 };
