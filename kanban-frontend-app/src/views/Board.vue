@@ -43,9 +43,6 @@ export default {
     },
     currentTeam() {
       return this.team;
-    },
-    orderedColumns() {
-      return this.columns;
     }
   },
   methods: {
@@ -70,6 +67,9 @@ export default {
     sortColumns() {
       this.columns.sort(this.compare);
     },
+    sortTasks() {
+      this.column.tasks.sort(this.compare);
+    },
 
     getData() {
       this.getBoard();
@@ -77,10 +77,13 @@ export default {
     },
     getBoard() {
       UserService.getBoard(this.$route.params.boardId)
-        .then(response => { 
+        .then(response => {
           this.board = response.data;
           this.columns = this.board.columns;
           this.sortColumns();
+          this.columns.forEach(column => {
+            column.tasks.sort(this.compare);
+          });
         })
         .catch(error => {
           console.log(error);

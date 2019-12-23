@@ -1,12 +1,12 @@
 <template>
   <div class="wrapper">
     <div class="container">
-      <input type="text" v-model="columnName" />
+      <input class="col-input" type="text" v-model="columnName" />
       <button>
         <font-awesome-icon icon="minus" />
       </button>
     </div>
-    <a>{{currentColumn.position}}</a>
+    <!-- <a>{{currentColumn.position}}</a> -->
     <div>
       <div v-for="task in currentColumn.tasks" :key="task.id">{{task.description}}</div>
     </div>
@@ -21,7 +21,7 @@
         v-model="taskDescription"
         placeholder="task description"
       />
-      <button class="button"  @click="createTask"  :disabled="!taskDescription">Create</button>
+      <button class="button" @click="createTask" :disabled="!taskDescription">Create</button>
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       taskDescription: "",
-      columnName: "",
+      columnName: ""
     };
   },
   props: {
@@ -53,7 +53,7 @@ export default {
         .then(response => {
           console.log(response);
           this.$emit("refresh");
-          this.taskDescription="";
+          this.taskDescription = "";
         })
         .catch(err => {
           console.log(err);
@@ -76,6 +76,9 @@ export default {
   border-style: solid;
   /* padding-left: 20px; */
   margin-left: 20px;
+}
+.col-input {
+  background-color: aliceblue;
 }
 input {
   border-style: none;
