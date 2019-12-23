@@ -27,11 +27,9 @@ public class Task {
     private String content;
 
     @Column(name = "position")
-	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer position;
 
-
-    @JsonBackReference
+//    @JsonBackReference
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "column_id", nullable = false)
