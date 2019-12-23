@@ -1,8 +1,6 @@
 package com.domko.kanbanbackendapp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,8 +16,8 @@ public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
-    private Long boardId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -27,10 +25,8 @@ public class Board {
     @Column(name = "wip_limit")
     private Integer wipLimit;
 
-
 //    @OneToMany(mappedBy = "board")
 //    private Set<Task> tasks;
-
 
     @JsonIgnore
     @ManyToOne
@@ -39,7 +35,7 @@ public class Board {
 
 
     @OneToMany(mappedBy = "board")
-    private Set<BList> bLists;
+    private Set<BColumn> columns;
 
 
 //    public void addTask(Task task) {

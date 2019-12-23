@@ -2,7 +2,6 @@ package com.domko.kanbanbackendapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,8 +17,8 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "task_id")
-    private Long taskId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "description")
     private String description;
@@ -35,8 +34,8 @@ public class Task {
     @JsonBackReference
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "list_id", nullable = false)
-    private BList bList;
+    @JoinColumn(name = "column_id", nullable = false)
+    private BColumn column;
 
     @JsonIgnore
     @OneToMany(mappedBy = "task")
