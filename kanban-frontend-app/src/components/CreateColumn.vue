@@ -14,28 +14,29 @@
 <script>
 import UserService from "../services/user.service";
 export default {
-  props: {
-    tasks: Array,
-    boardId: Number
-  },
   data() {
     return {
-      visible: false,
       columnNameInput: ""
     };
   },
+  props: {
+    boardId: Number,
+  },
+
   methods: {
     createColumn() {
-      console.log("Creating column"+ this.columnNameInput+" id: "+ this.boardId);
+      console.log(
+        "Creating column" + this.columnNameInput + " id: " + this.boardId
+      );
       UserService.createColumn(this.columnNameInput, this.boardId)
         .then(response => {
           console.log(response);
-          this.$emit("refresh");
+          this.$emit('refresh')
         })
         .catch(err => {
           console.log(err);
         });
-    }
+    },
   }
 };
 </script>
@@ -50,10 +51,7 @@ export default {
 .myInput1:focus {
   border: 1px;
 }
-/* .collapseButton {
-  background-color: green;
-  width: 250px;
-} */
+
 .myGrid {
   padding: 5px;
   outline-style: solid;
@@ -64,10 +62,7 @@ export default {
 .btn {
   background-color: #888888;
 }
-/* .button { */
-/* background-color: #4cd137; */
-/* color: black; */
-/* } */
+
 .btn:hover {
   color: black;
 }

@@ -32,12 +32,14 @@ public class TaskController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        Optional<BColumn> boardList = boardListService.findList(createTaskRequest.getBoardListId());
-        if (boardList.isPresent()) {
-            if (permissionService.hasPermissionToBoardList(boardList.get())) {
+        Optional<BColumn> column = boardListService.findList(createTaskRequest.getColumnId());
+        if (column.isPresent()) {
+            if (permissionService.hasPermissionToBoardList(column.get())) {
                 Task task = new Task();
                 task.setDescription(createTaskRequest.getDescription());
-                task.setColumn(boardList.get());
+                task.setColumn(column.get());
+                task.setPosition(column.get().getTasks().size() + 1);
+                System.out.println("task info: " + task.getColumn().getName() + "description: " + task.getDescription());
                 taskService.saveTask(task);
                 return new ResponseEntity<>("Task created", HttpStatus.CREATED);
             } else {

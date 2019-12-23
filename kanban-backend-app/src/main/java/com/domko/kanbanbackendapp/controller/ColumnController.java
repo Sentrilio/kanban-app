@@ -28,19 +28,18 @@ public class ColumnController {
     private UserTeamServiceImpl userTeamService;
 
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createList(@RequestBody CreateColumnRequest createBoardRequest) {
-        Optional<Board> board = boardService.findBoard(createBoardRequest.getBoardId());
+    public ResponseEntity<String> createColumn(@RequestBody CreateColumnRequest createColumnRequest) {
+        Optional<Board> board = boardService.findBoard(createColumnRequest.getBoardId());
         if (board.isPresent()) {
             List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getId());
             if (userTeamService.hasPermission(userTeams)) {
-                int size = board.get().getColumns().size();
                 BColumn column = new BColumn();
-                column.setName(createBoardRequest.getColumnName());
+                column.setName(createColumnRequest.getColumnName());
                 column.setBoard(board.get());
-                column.setPosition(size + 1);
-                System.out.println("name: "+column.getName());
+                column.setPosition(board.get().getColumns().size() + 1);
+                System.out.println("column name: " + column.getName());
                 columnService.save(column);
-                return new ResponseEntity<>("List created", HttpStatus.CREATED);
+                return new ResponseEntity<>("Column created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
             }

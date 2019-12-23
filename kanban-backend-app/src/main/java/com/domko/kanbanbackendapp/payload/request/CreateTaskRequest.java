@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateTaskRequest {
-    private Long boardListId;
+    private Long columnId;
     private String description;
 }
