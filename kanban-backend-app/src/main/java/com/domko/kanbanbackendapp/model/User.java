@@ -1,12 +1,7 @@
 package com.domko.kanbanbackendapp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -26,8 +21,8 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private Long userId;
+	@Column(name = "id")
+	private Long id;
 
 	@NotBlank
 	@Size(max = 20)
@@ -41,10 +36,9 @@ public class User implements Serializable {
 
 	@NotBlank
 	@Size(max = 120)
-	@Column(name = "password_hash")
-	private String passwordHash;
+	@Column(name = "password")
+	private String password;
 
-	//	@JsonBackReference
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private Set<UserTeam> userTeams;
@@ -59,10 +53,10 @@ public class User implements Serializable {
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	public User(String username, String email, String passwordHash) {
+	public User(String username, String email, String password) {
 		this.username = username;
 		this.email = email;
-		this.passwordHash = passwordHash;
+		this.password = password;
 	}
 
 	public User() {

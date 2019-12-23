@@ -10,32 +10,32 @@
         </li>
       </div>
     </nav>
-    <div class="list-container">
-      <div v-for="blist in blists" :key="blist.position">
-        <board-list v-bind:blist="blist" v-bind:tasks="tasks"></board-list>
+    <div class="column-container">
+      <div v-for="column in columns" :key="column.position">
+        <column v-bind:column="column" v-bind:tasks="tasks"></column>
       </div>
-      <create-list v-on:refresh="getData" v-bind:tasks="tasks" v-bind:boardId="board.boardId"></create-list>
+      <create-column v-on:refresh="getData" v-bind:tasks="tasks" v-bind:boardId="board.id"></create-column>
     </div>
   </div>
 </template>
 
 <script>
-import CreateList from "../components/CreateList.vue";
-import BoardList from "../components/List.vue";
+import CreateColumn from "../components/CreateColumn.vue";
+import Column from "../components/Column.vue";
 import UserService from "../services/user.service";
 
 export default {
   name: "Board",
   components: {
-    CreateList,
-    BoardList
+    CreateColumn,
+    Column
   },
   data() {
     return {
+      columns: [],
       tasks: ["Task 1", "Task 2", "Task 3", "Task 4"],
       board: {},
-      team: {},
-      blists: []
+      team: {}
     };
   },
   computed: {
@@ -45,8 +45,8 @@ export default {
     currentTeam() {
       return this.team;
     },
-    orderedBList() {
-      return this.blists;
+    orderedColumns() {
+      return this.columns;
     }
   },
 
@@ -54,7 +54,7 @@ export default {
     switchToTeam(team) {
       if (team) {
         console.log("team switching");
-        let teamId = team.teamId;
+        let teamId = team.id;
         let teamName = team.name;
         this.$router.push({
           name: "team",
@@ -68,13 +68,13 @@ export default {
     compare(a, b) {
       return a.position - b.position;
     },
-    sortBList() {
-      this.blists.sort(this.compare);
+    sortColumns() {
+      this.columns.sort(this.compare);
     },
     createTask() {
-      let boardId = this.getBoard().boardId;
-      let listId = this.getList().listId;
-      this.$route.push({ name: "createTask", params: { boardId, listId } });
+      // let boardId = this.getBoard().id;
+      // let columnId = this.getColumn().id;
+      // this.$route.push({ name: "createTask", params: { boardId, columnId } });
     },
 
     getData() {
@@ -86,10 +86,9 @@ export default {
         .then(response => {
           console.log("status 200");
           this.board = response.data;
-          this.blists = this.board.blists;
-          this.sortBList();
+          this.columns = this.board.columns;
+          this.sortColumns();
         })
-
         .catch(error => {
           console.log(error);
           // console.log("status: " + error.response.status);
@@ -135,7 +134,7 @@ export default {
 .my-container {
   align-content: left;
 }
-.list-container {
+.column-container {
   padding-top: 10px;
   display: grid;
   grid-template-columns: repeat(10, 1000fr);

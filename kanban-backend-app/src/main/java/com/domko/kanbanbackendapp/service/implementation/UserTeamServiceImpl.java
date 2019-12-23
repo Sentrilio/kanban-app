@@ -15,41 +15,44 @@ import java.util.Optional;
 @Service
 public class UserTeamServiceImpl implements UserTeamService {
 
-	@Autowired
-	private UserTeamRepository userTeamRepository;
+    @Autowired
+    private UserTeamRepository userTeamRepository;
 
-	@Override
-	public UserTeam save(UserTeam userTeam) {
-		return userTeamRepository.save(userTeam);
-	}
+    @Override
+    public UserTeam save(UserTeam userTeam) {
+        return userTeamRepository.save(userTeam);
+    }
 
-	public Optional<UserTeam> findById(UserTeamKey userTeamKey) {
-		return userTeamRepository.findById(userTeamKey);
-	}
+    public Optional<UserTeam> findById(UserTeamKey userTeamKey) {
+        return userTeamRepository.findById(userTeamKey);
+    }
 
-	public List<UserTeam> findAll() {
-		return userTeamRepository.findAll();
-	}
+    public List<UserTeam> findAll() {
+        return userTeamRepository.findAll();
+    }
 
-	public List<UserTeam> findAll(Example<UserTeam> example) {
-		return userTeamRepository.findAll(example);
-	}
+    public List<UserTeam> findAll(Example<UserTeam> example) {
+        return userTeamRepository.findAll(example);
+    }
 
-	public List<UserTeam> findTeamsOfUser(Long userId) {
-		return userTeamRepository.findAllTeamsOfUser(userId);
-	}
+    public List<UserTeam> findTeamsOfUser(Long userId) {
+        return userTeamRepository.findAllTeamsOfUser(userId);
+    }
 
-	public UserTeam addUserToTeam(User user, Team team,TeamRole role) {
-		return save(new UserTeam(new UserTeamKey(user.getUserId(), team.getTeamId()), user, team, role));
-	}
-	public List<UserTeam> findUsersOfTeam(Long teamId){
-		return userTeamRepository.findAllById_TeamId(teamId);
-	}
-	public boolean hasPermission(List<UserTeam> userTeams){
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public UserTeam addUserToTeam(User user, Team team, TeamRole role) {
+        return save(new UserTeam(new UserTeamKey(user.getId(), team.getId()), user, team, role));
+    }
 
-		return userTeams
-				.stream()
-				.anyMatch(e -> e.getUser().getUsername().equals(authentication.getName()));
-	}
+    public List<UserTeam> findUsersOfTeam(Long teamId) {
+        return userTeamRepository.findAllById_TeamId(teamId);
+    }
+
+    public boolean hasPermission(List<UserTeam> userTeams) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userTeams
+                .stream()
+                .anyMatch(e -> e.getUser().getUsername().equals(authentication.getName()));
+    }
+
+
 }

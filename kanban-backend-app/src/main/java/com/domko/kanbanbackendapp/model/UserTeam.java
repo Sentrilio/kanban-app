@@ -1,6 +1,5 @@
 package com.domko.kanbanbackendapp.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,8 +26,8 @@ public class UserTeam {
 	@JoinColumn(name = "team_id")
 	private Team team;
 
-	@Column(name = "team_role")
+	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
-	private TeamRole teamRole;
+	private TeamRole role;
 
 }
