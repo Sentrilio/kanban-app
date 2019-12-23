@@ -34,7 +34,7 @@ public class UserTeamController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userService.findByUsername(authentication.getName());
         if (user.isPresent()) {
-            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getUserId());
+            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getId());
             List<Team> teams = userTeams.stream()
                     .map(UserTeam::getTeam)
                     .collect(Collectors.toList());
@@ -52,13 +52,11 @@ public class UserTeamController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String username = authentication.getName();
-            System.out.println(username);
             Optional<User> user = userService.findByUsername(username);
             if (user.isPresent()) {
-                System.out.println("user present");
-                System.out.println(username);
                 Team team = teamService.save(new Team(teamName));
-                return userTeamService.addUserToTeam(user.get(), team, TeamRole.LEADER);
+                userTeamService.addUserToTeam(user.get(), team, TeamRole.LEADER);
+                return null;
             } else {
                 return null;
             }

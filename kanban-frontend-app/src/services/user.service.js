@@ -9,27 +9,30 @@ class UserService {
     return axios.post(API_URL + "userteam/create", { teamName: teamName }, { headers: authHeader() });
   }
   createBoard(boardName, teamId) {
+
     return axios.post(API_URL + "board/create", { boardName: boardName, teamId: teamId }, { headers: authHeader() })
   }
-  createList(listName, boardId) {
-    return axios.post(API_URL + "list/create", { listName: listName, boardId: boardId }, { headers: authHeader() })
+  createColumn(columnName, boardId) {
+    console.log(columnName);
+    console.log(boardId);
+    return axios.post(API_URL + "column/create", { columnName: columnName, boardId: boardId }, { headers: authHeader() })
   }
-  createTask(listId, teamId, description, content) {
-    return axios.post(API_URL + "board/create", { listId: listId, teamId: teamId, description: description, content: content }, { headers: authHeader() })
+  createTask(columnId, description) {
+    return axios.post(API_URL + "task/create", { columnId: columnId, description: description}, { headers: authHeader() })
   }
 
   getBoard(boardId) {
-    return axios.get("http://localhost:8000/api/board/get/"+ boardId, { headers: authHeader() });
+    return axios.get(API_URL + "board/get/"+ boardId, { headers: authHeader() });
   }
   getTeam(teamId) {
-    return axios.get("http://localhost:8000/api/team/get/"+ teamId, { headers: authHeader() });
+    return axios.get(API_URL + "team/get/"+ teamId, { headers: authHeader() });
   }
 
   getBoards() {
-    return axios.get("http://localhost:8000/api/board/get", { headers: authHeader() });
+    return axios.get(API_URL + "board/get", { headers: authHeader() });
   }
   getTeams() {
-    return axios.get("http://localhost:8000/api/team/get", { headers: authHeader() });
+    return axios.get(API_URL + "team/get", { headers: authHeader() });
   }
   getPublicContent() {
     return axios.get(API_URL + 'test/all');

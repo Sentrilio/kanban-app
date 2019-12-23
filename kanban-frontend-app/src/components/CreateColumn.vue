@@ -1,10 +1,10 @@
 <template>
   <div class="my-container">
     <div class="myGrid">
-      <button class="btn" data-toggle="collapse" data-target="#demo">Create another List</button>
+      <button class="btn" data-toggle="collapse" data-target="#demo">Create another Column</button>
       <div id="demo" class="collapse">
-        <input v-model="listNameInput" type="text" placeholder="list name" />
-        <button class="button" @click="createList" :disabled="!listNameInput">Create List</button>
+        <input v-model="columnNameInput" type="text" placeholder="column name" />
+        <button class="button" @click="createColumn" :disabled="!columnNameInput">Create Column</button>
       </div>
       <a>Board id : {{boardId}}</a>
     </div>
@@ -18,24 +18,24 @@ export default {
     tasks: Array,
     boardId: Number
   },
+  data() {
+    return {
+      visible: false,
+      columnNameInput: ""
+    };
+  },
   methods: {
-    createList() {
-      console.log("Creating list");
-      UserService.createList(this.listNameInput, this.boardId)
+    createColumn() {
+      console.log("Creating column"+ this.columnNameInput+" id: "+ this.boardId);
+      UserService.createColumn(this.columnNameInput, this.boardId)
         .then(response => {
           console.log(response);
-          this.$emit('refresh')
+          this.$emit("refresh");
         })
         .catch(err => {
           console.log(err);
         });
     }
-  },
-  data() {
-    return {
-      visible: false,
-      listNameInput: ""
-    };
   }
 };
 </script>

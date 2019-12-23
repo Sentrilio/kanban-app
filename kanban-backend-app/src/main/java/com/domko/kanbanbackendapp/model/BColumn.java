@@ -15,13 +15,13 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "list")
-public class BList {
+@Table(name = "b_column")
+public class BColumn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "list_id")
-    private Long listId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -37,6 +37,6 @@ public class BList {
 
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "bList")
+    @OneToMany(mappedBy = "column")
     private Set<Task> tasks;
 }
