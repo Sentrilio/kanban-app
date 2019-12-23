@@ -3,7 +3,7 @@ package com.domko.kanbanbackendapp.payload.request;
 import lombok.Data;
 
 @Data
-public class CreateListRequest {
-    private String listName;
+public class CreateColumnRequest {
+    private String columnName;
     private long boardId;
 }

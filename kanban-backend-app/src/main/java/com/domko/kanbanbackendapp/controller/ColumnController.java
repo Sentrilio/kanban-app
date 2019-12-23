@@ -1,11 +1,11 @@
 package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.Board;
-import com.domko.kanbanbackendapp.model.BList;
+import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.UserTeam;
-import com.domko.kanbanbackendapp.payload.request.CreateListRequest;
+import com.domko.kanbanbackendapp.payload.request.CreateColumnRequest;
 import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.ListServiceImpl;
+import com.domko.kanbanbackendapp.service.implementation.ColumnServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.UserTeamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,30 +16,30 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api/list")
+@RequestMapping(value = "/api/column")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class ListController {
+public class ColumnController {
 
     @Autowired
     private BoardServiceImpl boardService;
-
     @Autowired
-    private ListServiceImpl listService;
+    private ColumnServiceImpl columnService;
     @Autowired
     private UserTeamServiceImpl userTeamService;
 
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createList(@RequestBody CreateListRequest createBoardRequest) {
+    public ResponseEntity<String> createList(@RequestBody CreateColumnRequest createBoardRequest) {
         Optional<Board> board = boardService.findBoard(createBoardRequest.getBoardId());
         if (board.isPresent()) {
-            List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getTeamId());
+            List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getId());
             if (userTeamService.hasPermission(userTeams)) {
-                int size = board.get().getBLists().size();
-                BList bList = new BList();
-                bList.setName(createBoardRequest.getListName());
-                bList.setBoard(board.get());
-                bList.setPosition(size + 1);
-                listService.save(bList);
+                int size = board.get().getColumns().size();
+                BColumn column = new BColumn();
+                column.setName(createBoardRequest.getColumnName());
+                column.setBoard(board.get());
+                column.setPosition(size + 1);
+                System.out.println("name: "+column.getName());
+                columnService.save(column);
                 return new ResponseEntity<>("List created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);

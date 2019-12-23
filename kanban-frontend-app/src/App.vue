@@ -8,7 +8,7 @@
           </a>
         </li>
         <li>
-          <div class="dropdown" v-if="currentUser && selectedBoard">
+          <div class="dropdown" v-if="currentUser">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
@@ -18,19 +18,15 @@
               aria-expanded="false"
             >Boards</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <div v-for="team in teams" :key="team.teamId">
+              <div v-for="team in teams" :key="team.id">
                 <div>
                   <button
                     v-on:click="switchToTeam(team)"
                     class="dropdown-item"
                     style="color: #000066; text-decoration: underline;"
                   >{{team.name}}</button>
-                  <div v-for="board in team.boards" :key="board.boardId">
+                  <div v-for="board in team.boards" :key="board.id">
                     <div class="board-btn">
-                      <!-- <button
-                      v-on:click="switchToBoard(team,board)"
-                      class="dropdown-item"
-                      >{{board.name}}</button>-->
                       <button
                         v-on:click="switchToBoard(team,board)"
                         class="dropdown-item"
@@ -45,26 +41,6 @@
             </div>
           </div>
         </li>
-        <!-- <li>
-          <div class="dropdown" v-if="currentUser">
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >Teams</button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <div v-for="team in teams" :key="team.teamId">
-                <a class="dropdown-item">{{team.name}}</a>
-              </div>
-              <div>
-                <a class="dropdown-item" href="#" @click="createTeam">Create Team</a>
-              </div>
-            </div>
-          </div>
-        </li>-->
       </div>
 
       <div class="navbar-nav ml-auto" v-if="!currentUser">
@@ -105,21 +81,10 @@ import UserService from "./services/user.service";
 export default {
   data() {
     return {
-      boards: [],
       teams: [],
-      boardTeams: {},
-      selectedTeam: "Teams",
-      selectedBoard: "Boards"
     };
   },
   computed: {
-    currentBoard() {
-      // return this.$store.state.selection.board;
-      return this.$store.state.selection.selectedBoard;
-    },
-    currentTeam() {
-      return this.$store.state.selection.selectedTeam;
-    },
     currentUser() {
       return this.$store.state.auth.user;
     },
@@ -175,7 +140,9 @@ export default {
         });
     },
     getData() {
-      this.getTeams();
+      if (this.$store.state.auth.user) {
+        this.getTeams();
+      }
     },
 
     getTeamByName(teamName) {
@@ -192,21 +159,10 @@ export default {
     createTeam() {
       this.$router.push({ path: "/team/create" });
     },
-    selectTeam(team) {
-      console.log("team selected");
-      this.selectedTeam = team;
-      this.$store.dispatch("selection/setSelectedTeam", team);
-    },
-    selectBoard(board) {
-      // localStorage.clear();
-      console.log("board selected");
-      this.selectedBoard = board;
-      this.$store.dispatch("selection/setSelectedBoard", board);
-    },
     switchToTeam(team) {
       if (team) {
         console.log("team switching");
-        let teamId = team.teamId;
+        let teamId = team.id;
         let teamName = team.name;
         this.$router.push({
           name: "team",
@@ -217,9 +173,9 @@ export default {
     switchToBoard(team, board) {
       if (team) {
         console.log("board switching");
-        let boardId = board.boardId;
+        let boardId = board.id;
         let boardName = board.name;
-        let teamId = team.teamId;
+        let teamId = team.id;
         this.$router.push({
           name: "board",
           params: { teamId, boardId, boardName }
@@ -233,11 +189,6 @@ export default {
   created() {
     this.getData();
   },
-  // mounted() {
-  // if (this.currentUser) {
-  // this.getData();
-  // }
-  // },
   watch: {
     $route: "getData"
   }
@@ -250,7 +201,7 @@ export default {
 }
 
 .board-btn {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   color: black;
 }
 

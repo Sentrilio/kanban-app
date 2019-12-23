@@ -1,10 +1,8 @@
 package com.domko.kanbanbackendapp.controller;
 
-import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.model.Team;
 import com.domko.kanbanbackendapp.model.User;
 import com.domko.kanbanbackendapp.model.UserTeam;
-import com.domko.kanbanbackendapp.service.TeamService;
 import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TeamServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.UserServiceImpl;
@@ -43,7 +41,7 @@ public class TeamController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userService.findByUsername(authentication.getName());
         if (user.isPresent()) {
-            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getUserId());
+            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getId());
             List<Team> teams = userTeams.stream()
                     .map(UserTeam::getTeam)
                     .collect(Collectors.toList());

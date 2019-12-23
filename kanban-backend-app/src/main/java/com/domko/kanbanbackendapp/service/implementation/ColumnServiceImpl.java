@@ -1,24 +1,24 @@
 package com.domko.kanbanbackendapp.service.implementation;
 
-import com.domko.kanbanbackendapp.model.BList;
+import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.repository.ListRepository;
-import com.domko.kanbanbackendapp.service.ListService;
+import com.domko.kanbanbackendapp.service.BoardListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class ListServiceImpl implements ListService {
+public class ColumnServiceImpl implements BoardListService {
 
     @Autowired
     private ListRepository listRepository;
 
-    public BList save(BList bList) {
-        return listRepository.save(bList);
+    public BColumn save(BColumn BColumn) {
+        return listRepository.save(BColumn);
     }
 
-    public Optional<BList> findList(Long id) {
+    public Optional<BColumn> findList(Long id) {
         return listRepository.findById(id);
     }
 }
