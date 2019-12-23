@@ -103,9 +103,7 @@ export default {
   },
   methods: {
     compare(a, b) {
-      // console.log("a:" + a.name + " b:" + b.name);
       return a.name.localeCompare(b.name);
-      // return b.name - a.name;
     },
     sortTeams() {
       this.teams.sort(this.compare);
