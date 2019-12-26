@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -38,5 +39,5 @@ public class BColumn {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "column")
-    private Set<Task> tasks;
+    private List<Task> tasks;
 }

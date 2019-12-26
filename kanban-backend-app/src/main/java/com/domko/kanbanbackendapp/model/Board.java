@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -35,7 +36,7 @@ public class Board {
 
 
     @OneToMany(mappedBy = "board")
-    private Set<BColumn> columns;
+    private List<BColumn> columns;
 
 
 //    public void addTask(Task task) {
