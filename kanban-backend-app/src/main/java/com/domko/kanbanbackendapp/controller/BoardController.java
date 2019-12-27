@@ -1,10 +1,8 @@
 package com.domko.kanbanbackendapp.controller;
 
-import com.domko.kanbanbackendapp.model.Board;
-import com.domko.kanbanbackendapp.model.Team;
-import com.domko.kanbanbackendapp.model.User;
-import com.domko.kanbanbackendapp.model.UserTeam;
+import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
+import com.domko.kanbanbackendapp.payload.request.UpdateBoardRequest;
 import com.domko.kanbanbackendapp.security.jwt.JwtUtils;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,8 @@ public class BoardController {
     private UserTeamServiceImpl userTeamService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private TaskServiceImpl taskService;
 
     @GetMapping(value = "/all")
     public List<Board> getAllBoards() {
@@ -65,17 +65,75 @@ public class BoardController {
     }
 
     @PostMapping(value = "/update", consumes = "application/json;charset=UTF-8")
-    public ResponseEntity<String> updateBoard(@RequestBody Board requestedBoard) {
-        Optional<Board> board = boardService.findBoard(requestedBoard.getId());
+    public ResponseEntity<String> updateBoard(@RequestBody UpdateBoardRequest updateBoardRequest) {
+//        System.out.println(updateBoardRequest.getBoardId());
+//        System.out.println(updateBoardRequest.getColumns().toString());
+        Optional<Board> board = boardService.findBoard(updateBoardRequest.getBoardId());
         if (board.isPresent()) {
             if (permissionService.hasPermissionToBoard(board.get())) {
-                board.get().setColumns(requestedBoard.getColumns());
-                boardService.saveBoard(board.get());
+                for (BColumn column : updateBoardRequest.getColumns()) {
+                    for (int i = 0; i < column.getTasks().size(); i++) {
+                        Optional<Task> task1 = taskService.findById(column.getTasks().get(i).getId());
+                        if (task1.isPresent()) {
+                            task1.get().setPosition(i);
+                            taskService.saveTask(task1.get());
+                        }
+                    }
+                }
+//                updateBoardRequest.getColumns().forEach(e -> {
+//                    e.setBoard(board.get());
+//                    System.out.println(e.getName());
+//                    System.out.println(e.getBoard().getId());
+//                    System.out.println(e.getBoard().getTeam());
+//                    System.out.println(e.getId());
+//                    System.out.println(e.getPosition());
+
+//                    e.getTasks().forEach(task -> {
+//                        Optional<Task> task1 = taskService.findById(task.getId());
+//                        if (task1.isPresent()) {
+//                            task1.get().setPosition();
+//                        }
+//                        System.out.println("column of task: " + task.getColumn());
+//                        taskService.saveTask(task1.get());
+//                        System.out.println(task.getColumn());
+//                        System.out.println(task.getDescription() + "position: " + task.getPosition());
+//                });
+//                });
+
+//                for (BColumn column : updateBoardRequest.getColumns()) {
+//                    for (int i = 0; i < column.getTasks().size(); i++) {
+//                        column.getTasks().get(i).setPosition(i);
+//                    }
+//                }
+
+//                board.get().setColumns(updateBoardRequest.getColumns());
+//                System.out.println("after");
+//                board.get().getColumns().forEach(e -> {
+//                    System.out.println(e.getName());
+//                    e.getTasks().forEach(task -> {
+//                        System.out.println(task.getDescription() + "position: " + task.getPosition());
+//                    });
+//                });
+//                System.out.println(board.get().getColumns().toString());
+
+//                boardToSave.setName(board.get().getName());
+//                boardToSave.setTeam(board.get().getTeam());
+//                boardToSave.setWipLimit(board.get().getWipLimit());
+//                boardToSave.setId(board.get().getId());
+//                boardToSave.setColumns(updateBoardRequest.getColumns());
+//                board.get().setColumns(updateBoardRequest.getColumns());
+//                Board board1 = boardService.saveBoard(board.get());
+//                board1.getColumns().forEach(bColumn -> {
+//                    bColumn.getTasks().forEach(task -> {
+//                        System.out.println(task.getDescription()+": "+ task.getPosition());
+//                    });
+//                });
                 return new ResponseEntity<>("Board updated", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("You do not participate in this board", HttpStatus.FORBIDDEN);
             }
         } else {
+            System.out.println("board does not exists");
             return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -107,26 +165,6 @@ public class BoardController {
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
-
-//    @GetMapping(value = "/get/{boardId}")
-//    public ResponseEntity<Board> getBoard(@PathVariable Long boardId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Optional<Board> board = boardService.findBoard(boardId);
-//        if (board.isPresent()) {
-//            List<UserTeam> userTeams = userTeamService.findUsersOfTeam(board.get().getTeam().getTeamId());
-//            if (!userTeams.isEmpty()) {
-//                System.out.println("Users of team found");
-//                if (userTeamService.hasPermission(userTeams)) {
-//                    board.get().getTasks()
-//                            .forEach(value -> System.out.println(value.getDescription()));
-//                    return new ResponseEntity<>(board.get(), HttpStatus.OK);
-//                } else {
-//                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-//                }
-//            }
-//        }
-//        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//    }
 
 
 }

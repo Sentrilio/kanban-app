@@ -52,7 +52,7 @@ export default {
     },
     boardUpdate() {
       console.log("sending updated board into backend...")
-      UserService.updateBoard(this.board)
+      UserService.updateBoard(this.board.id,this.board.columns)
         .then(response => {
           console.log(response);
         })
@@ -68,10 +68,10 @@ export default {
       return a.position - b.position;
     },
     sortColumns() {
-      // this.columns.sort(this.compare);
+      this.columns.sort(this.compare);
     },
     sortTasks() {
-      // this.column.tasks.sort(this.compare);
+      this.column.tasks.sort(this.compare);
     },
 
     getData() {
