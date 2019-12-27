@@ -76,6 +76,7 @@ public class BoardController {
                         Optional<Task> task1 = taskService.findById(column.getTasks().get(i).getId());
                         if (task1.isPresent()) {
                             task1.get().setPosition(i);
+                            task1.get().setColumn(column);
                             taskService.saveTask(task1.get());
                         }
                     }
