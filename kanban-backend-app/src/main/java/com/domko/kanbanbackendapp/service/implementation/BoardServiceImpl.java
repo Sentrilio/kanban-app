@@ -6,6 +6,7 @@ import com.domko.kanbanbackendapp.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class BoardServiceImpl implements BoardService {
 		return boardRepository.findAll();
 	}
 
+	@Transactional
 	public Board saveBoard(Board board) {
 		return boardRepository.save(board);
 	}

@@ -1,6 +1,8 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,13 +28,13 @@ public class Board {
     @Column(name = "wip_limit")
     private Integer wipLimit;
 
-
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "board")
     private List<BColumn> columns;
 
