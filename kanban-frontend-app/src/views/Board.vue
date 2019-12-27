@@ -51,7 +51,14 @@ export default {
       }
     },
     boardUpdate() {
-
+      console.log("sending updated board into backend...")
+      UserService.updateBoard(this.board)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     refresh() {
       console.log("refreshing");
