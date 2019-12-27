@@ -1,5 +1,6 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -26,7 +28,8 @@ public class BColumn {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
@@ -38,5 +41,5 @@ public class BColumn {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "column")
-    private Set<Task> tasks;
+    private List<Task> tasks;
 }
