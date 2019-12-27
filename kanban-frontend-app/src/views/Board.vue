@@ -1,34 +1,27 @@
 <template>
-  <div class="my-container">
-    <nav class="navbar navbar-expand navbar-dark bg-white" v-if="!$route.meta.hideNavigation">
-      <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <input class="board-name-box" type="text" v-model="currentBoard.name" />
-        </li>
-        <li class="nav-item">
-          <button @click="switchToTeam(currentTeam)">{{team.name}}</button>
-        </li>
+  <div class="board">
+    <div class="row">
+      <div class="column">
+        <div v-for="column in columns" :key="column.position">
+          <h3>{{column.name}}</h3>
+          <vue-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></vue-draggable>
+        </div>
+        <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
       </div>
-    </nav>
-    <div class="column-container">
-      <div v-for="column in columns" :key="column.position">
-        <column @refresh="refresh" v-bind:column="column"></column>
-      </div>
-      <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
     </div>
   </div>
 </template>
 
 <script>
 import CreateColumn from "../components/CreateColumn.vue";
-import Column from "../components/Column.vue";
 import UserService from "../services/user.service";
+import VueDraggable from "../components/VueDraggable.vue";
 
 export default {
   name: "Board",
   components: {
     CreateColumn,
-    Column
+    VueDraggable
   },
   data() {
     return {
@@ -57,6 +50,17 @@ export default {
         });
       }
     },
+    boardUpdate() {
+      console.log("sending updated board into backend...")
+      UserService.updateBoard(this.board.id,this.board.columns)
+        .then(response => {
+          this.getBoard();
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     refresh() {
       console.log("refreshing");
       this.getData();
@@ -78,6 +82,7 @@ export default {
     getBoard() {
       UserService.getBoard(this.$route.params.boardId)
         .then(response => {
+          console.log("getting board")
           this.board = response.data;
           this.columns = this.board.columns;
           this.sortColumns();
@@ -100,6 +105,20 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    add: function() {
+      this.list.push({ name: "Juan" });
+    },
+    replace: function() {
+      this.list = [{ name: "Edgard" }];
+    },
+    clone: function(el) {
+      return {
+        name: el.name + " cloned"
+      };
+    },
+    log: function(evt) {
+      window.console.log(evt);
     }
   },
   created() {
@@ -126,8 +145,21 @@ export default {
 .navbar-nav {
   margin-left: 40px;
 }
-.my-container {
-  align-content: left;
+.board {
+  margin: 15px;
+  padding: 15px;
+  display: inline-block;
+  /* align-content: left; */
+  /* display: flexbox; */
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* flex-wrap: wrap; */
+}
+.column {
+  margin: 15px;
+  padding: 15px;
+  /* display: inline-block; */
+  display: flex;
 }
 .column-container {
   padding-top: 10px;
