@@ -4,7 +4,7 @@
       <div class="column">
         <div v-for="column in columns" :key="column.position">
           <h3>{{column.name}}</h3>
-          <vue-draggable @boardUpdate="boardUpdate" :column="column"></vue-draggable>
+          <vue-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></vue-draggable>
         </div>
         <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
       </div>
@@ -54,6 +54,7 @@ export default {
       console.log("sending updated board into backend...")
       UserService.updateBoard(this.board.id,this.board.columns)
         .then(response => {
+          this.getBoard();
           console.log(response);
         })
         .catch(err => {
@@ -81,6 +82,7 @@ export default {
     getBoard() {
       UserService.getBoard(this.$route.params.boardId)
         .then(response => {
+          console.log("getting board")
           this.board = response.data;
           this.columns = this.board.columns;
           this.sortColumns();
