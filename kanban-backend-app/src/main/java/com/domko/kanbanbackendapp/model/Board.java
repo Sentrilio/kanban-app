@@ -1,9 +1,12 @@
 package com.domko.kanbanbackendapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -25,20 +28,14 @@ public class Board {
     @Column(name = "wip_limit")
     private Integer wipLimit;
 
-//    @OneToMany(mappedBy = "board")
-//    private Set<Task> tasks;
-
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "board")
-    private Set<BColumn> columns;
+    private List<BColumn> columns;
 
-
-//    public void addTask(Task task) {
-//        tasks.add(task);
-//    }
 }
