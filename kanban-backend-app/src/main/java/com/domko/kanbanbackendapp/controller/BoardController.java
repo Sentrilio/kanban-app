@@ -6,12 +6,10 @@ import com.domko.kanbanbackendapp.model.User;
 import com.domko.kanbanbackendapp.model.UserTeam;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
 import com.domko.kanbanbackendapp.security.jwt.JwtUtils;
-import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.TeamServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.UserServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.UserTeamServiceImpl;
+import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +32,8 @@ public class BoardController {
     private UserServiceImpl userService;
     @Autowired
     private UserTeamServiceImpl userTeamService;
+    @Autowired
+    private PermissionService permissionService;
 
     @GetMapping(value = "/all")
     public List<Board> getAllBoards() {
@@ -44,18 +44,39 @@ public class BoardController {
     public ResponseEntity<String> createBoard(@RequestBody CreateBoardRequest createBoardRequest) {
         Optional<Team> team = teamService.findTeam(createBoardRequest.getTeamId());
         if (team.isPresent()) {
-            Board board = new Board();
-            board.setName(createBoardRequest.getBoardName());
-            board.setTeam(team.get());
-            if (createBoardRequest.getWipLimit() == null) {
-                board.setWipLimit(5);
+            if (permissionService.hasPermissionToTeam(team.get())) {
+
+                Board board = new Board();
+                board.setName(createBoardRequest.getBoardName());
+                board.setTeam(team.get());
+                if (createBoardRequest.getWipLimit() == null) {
+                    board.setWipLimit(5);
+                } else {
+                    board.setWipLimit(createBoardRequest.getWipLimit());
+                }
+                boardService.saveBoard(board);
+                return new ResponseEntity<>("Board created", HttpStatus.CREATED);
             } else {
-                board.setWipLimit(createBoardRequest.getWipLimit());
+                return new ResponseEntity<>("You do not participate in this team", HttpStatus.FORBIDDEN);
             }
-            boardService.saveBoard(board);
-            return new ResponseEntity<>("Board created", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("Team does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/update", consumes = "application/json;charset=UTF-8")
+    public ResponseEntity<String> updateBoard(@RequestBody Board requestedBoard) {
+        Optional<Board> board = boardService.findBoard(requestedBoard.getId());
+        if (board.isPresent()) {
+            if (permissionService.hasPermissionToBoard(board.get())) {
+                board.get().setColumns(requestedBoard.getColumns());
+                boardService.saveBoard(board.get());
+                return new ResponseEntity<>("Board updated", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("You do not participate in this board", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
