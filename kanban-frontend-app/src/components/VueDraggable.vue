@@ -4,7 +4,7 @@
       <div
         class="list-group-item"
         v-for="(element, index) in column.tasks"
-        :key="element.id"
+        :key="element.position"
       >{{ element.description }} index: {{ index }}</div>
     </draggable>
 
@@ -70,7 +70,7 @@ export default {
       UserService.createTask(this.column.id, this.taskDescription)
         .then(response => {
           console.log(response);
-          this.$emit("boardUpdate");
+          this.$emit("refresh");
           this.taskDescription = "";
         })
         .catch(err => {
