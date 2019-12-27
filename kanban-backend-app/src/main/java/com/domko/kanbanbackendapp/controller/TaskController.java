@@ -49,4 +49,9 @@ public class TaskController {
             return new ResponseEntity<>("Board or list does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping(value = "/update")
+    public ResponseEntity<String> updateTask(@RequestBody Long columnId, Task task) {
+        return null;
+    }
 }
