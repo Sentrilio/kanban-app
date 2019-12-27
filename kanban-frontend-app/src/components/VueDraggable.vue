@@ -70,7 +70,7 @@ export default {
       UserService.createTask(this.column.id, this.taskDescription)
         .then(response => {
           console.log(response);
-          this.$emit("board");
+          this.$emit("boardUpdate");
           this.taskDescription = "";
         })
         .catch(err => {
@@ -89,6 +89,8 @@ export default {
       };
     },
     log: function(evt) {
+      this.$emit("boardUpdate");
+
       window.console.log(evt);
       //   console.log("list1: " + this.list1);
       //   console.log("list2: " + this.list2);

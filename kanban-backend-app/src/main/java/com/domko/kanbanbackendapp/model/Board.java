@@ -26,8 +26,6 @@ public class Board {
     @Column(name = "wip_limit")
     private Integer wipLimit;
 
-//    @OneToMany(mappedBy = "board")
-//    private Set<Task> tasks;
 
     @JsonIgnore
     @ManyToOne
@@ -38,8 +36,4 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<BColumn> columns;
 
-
-//    public void addTask(Task task) {
-//        tasks.add(task);
-//    }
 }
