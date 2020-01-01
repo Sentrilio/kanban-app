@@ -51,11 +51,10 @@ export default {
       }
     },
     boardUpdate() {
-      console.log("sending updated board into backend...")
-      UserService.updateBoard(this.board.id,this.board.columns)
-        .then(response => {
+      console.log("sending updated board into backend...");
+      UserService.updateBoard(this.board.id, this.board.columns)
+        .then(() => {
           this.getBoard();
-          console.log(response);
         })
         .catch(err => {
           console.log(err);
@@ -82,7 +81,7 @@ export default {
     getBoard() {
       UserService.getBoard(this.$route.params.boardId)
         .then(response => {
-          console.log("getting board")
+          console.log("board retrieved");
           this.board = response.data;
           this.columns = this.board.columns;
           this.sortColumns();
@@ -106,20 +105,6 @@ export default {
           console.log(err);
         });
     },
-    add: function() {
-      this.list.push({ name: "Juan" });
-    },
-    replace: function() {
-      this.list = [{ name: "Edgard" }];
-    },
-    clone: function(el) {
-      return {
-        name: el.name + " cloned"
-      };
-    },
-    log: function(evt) {
-      window.console.log(evt);
-    }
   },
   created() {
     this.getData();
