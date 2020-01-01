@@ -15,10 +15,10 @@ public class PermissionService {
     private UserTeamServiceImpl userTeamService;
 
     public boolean hasPermissionToTask(Task task) {
-        return hasPermissionToBoardList(task.getColumn());
+        return hasPermissionToBColumn(task.getColumn());
     }
 
-    public boolean hasPermissionToBoardList(BColumn BColumn) {
+    public boolean hasPermissionToBColumn(BColumn BColumn) {
         return hasPermissionToBoard(BColumn.getBoard());
     }
 

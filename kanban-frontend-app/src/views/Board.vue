@@ -2,7 +2,7 @@
   <div class="board">
     <div class="row">
       <div class="column">
-        <div v-for="column in columns" :key="column.position">
+        <div v-for="column in columns" :key="column.id">
           <h3>{{column.name}}</h3>
           <vue-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></vue-draggable>
         </div>
@@ -84,10 +84,10 @@ export default {
           console.log("board retrieved");
           this.board = response.data;
           this.columns = this.board.columns;
-          this.sortColumns();
-          this.columns.forEach(column => {
-            column.tasks.sort(this.compare);
-          });
+          // this.sortColumns();
+          // this.columns.forEach(column => {
+            // column.tasks.sort(this.compare);
+          // });
         })
         .catch(error => {
           console.log(error);
