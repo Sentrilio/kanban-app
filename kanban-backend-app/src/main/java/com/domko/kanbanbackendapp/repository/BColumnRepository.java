@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ListRepository extends JpaRepository<BColumn,Long> {
+public interface BColumnRepository extends JpaRepository<BColumn,Long> {
 
 }

@@ -1,11 +1,18 @@
 <template>
   <div>
-    <draggable class="list-group" :list="column.tasks" group="people" @change="log">
+    <draggable
+      class="list-group"
+      :list="column.tasks"
+      group="people"
+      @change="change($event, column)"
+    >
+      <!-- <transition-group> -->
       <div
         class="list-group-item"
         v-for="(element, index) in column.tasks"
-        :key="element.position"
-      >{{ element.description }} index: {{ index }}</div>
+        :key="element.id"
+      >{{ element.description }} index: {{ index }} position: {{element.position}}</div>
+      <!-- </transition-group> -->
     </draggable>
 
     <div
@@ -33,6 +40,7 @@
 <script>
 import draggable from "vuedraggable";
 import UserService from "../services/user.service";
+import Operation from "../models/Operation";
 
 export default {
   name: "column",
@@ -88,12 +96,37 @@ export default {
         name: el.name + " cloned"
       };
     },
-    log: function(evt) {
-      this.$emit("boardUpdate");
-
-      window.console.log(evt);
-      //   console.log("list1: " + this.list1);
-      //   console.log("list2: " + this.list2);
+    updateTask(event, column, operation) {
+      console.log(event);
+      let updateObject = {
+        taskId: event.element.id,
+        columnId: column.id,
+        newIndex: event.newIndex,
+        oldIndex: event.oldIndex,
+        operation: operation
+      };
+      UserService.updateTask(updateObject)
+        .then(response => {
+          console.log(response);
+          this.$emit("refresh");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    change: function(evt, column) {
+      console.log(column.name);
+      if (evt.added) {
+        this.updateTask(evt.added, column, Operation.ADD);
+      } else if (evt.moved) {
+        this.updateTask(evt.moved, column, Operation.MOVE);
+      } else if (evt.removed) {
+        this.updateTask(evt.removed, column, Operation.REMOVE);
+        // console.log("removed");
+      }
+      // console.log("evt:");
+      // console.log(evt);
+      // window.console.log(evt);
     }
   }
 };
