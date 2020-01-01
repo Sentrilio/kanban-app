@@ -11,4 +11,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
 	@Override
 	Optional<Task> findById(Long id);
+
+	Optional<Task> findByPosition(Integer position);
 }

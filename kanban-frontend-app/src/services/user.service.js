@@ -13,8 +13,8 @@ class UserService {
     return axios.post(API_URL + "board/create", { boardName: boardName, teamId: teamId }, { headers: authHeader() });
   }
   updateBoard(boardId, columns) {
-    console.log("board id: " + boardId);
-    console.log("columns: " + JSON.stringify(columns));
+    // console.log("board id: " + boardId);
+    // console.log("columns: " + JSON.stringify(columns));
     return axios.post(API_URL + "board/update", { boardId: boardId, columns: columns }, { headers: authHeader() });
   }
   createColumn(columnName, boardId) {
@@ -26,6 +26,9 @@ class UserService {
     console.log(columnId);
     console.log(description);
     return axios.post(API_URL + "task/create", { columnId: columnId, description: description }, { headers: authHeader() })
+  }
+  updateTask(data) {
+    return axios.post(API_URL + "task/update", data, { headers: authHeader() })
   }
 
   getBoard(boardId) {
