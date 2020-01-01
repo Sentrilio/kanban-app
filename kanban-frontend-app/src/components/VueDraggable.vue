@@ -1,11 +1,18 @@
 <template>
   <div>
-    <draggable class="list-group" :list="column.tasks" group="people" @change="log">
+    <draggable
+      class="list-group"
+      :list="column.tasks"
+      group="people"
+      @change="change($event, column)"
+    >
+      <!-- <transition-group> -->
       <div
         class="list-group-item"
         v-for="(element, index) in column.tasks"
         :key="element.position"
       >{{ element.description }} index: {{ index }}</div>
+      <!-- </transition-group> -->
     </draggable>
 
     <div
@@ -88,12 +95,23 @@ export default {
         name: el.name + " cloned"
       };
     },
-    log: function(evt) {
-      this.$emit("boardUpdate");
-
-      window.console.log(evt);
-      //   console.log("list1: " + this.list1);
-      //   console.log("list2: " + this.list2);
+    change: function(evt, column) {
+      console.log(column.name);
+      if (evt.added) {
+        // console.log("column:")
+        // console.log(column);
+        this.$emit("boardUpdate");
+      } else if (evt.moved) {
+        // console.log("column:")
+        // console.log(column);
+        this.$emit("boardUpdate");
+      } else if (evt.removed) {
+        // console.log("removed");
+      }
+      console.log("evt:")
+      console.log(evt);
+      // window.console.log("evt: " + evt);
+      // window.console.log(evt);
     }
   }
 };
