@@ -2,6 +2,7 @@ package com.domko.kanbanbackendapp.service.implementation;
 
 import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
+import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
 import com.domko.kanbanbackendapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private TaskServiceImpl taskService;
+    @Autowired
+    private BColumnServiceImpl bColumnService;
 
     @Override
     public Optional<Task> findById(Long id) {
@@ -27,50 +32,46 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.save(task);
     }
 
-    public void updateAllTasksPositions(List<Task> tasks) {
-        for (int i = 0; i < tasks.size(); i++) {
-            Optional<Task> task = taskRepository.findById(tasks.get(i).getId());
-            if (task.isPresent()) {
-                task.get().setPosition(i);
-                taskRepository.save(task.get());
-            }
+
+    //start-inclusive, end-exclusive
+    public void incrementTasksPositions(Integer startIndex, Integer endIndex) {
+        for (int i = startIndex; i < endIndex; i++) {
+            Optional<Task> task = taskRepository.findByPosition(i);
+            task.ifPresent(value -> value.setPosition(value.getPosition() + 1));
         }
     }
 
-    public void updateAllTasksPositionsInBColumn(BColumn bColumn) {
-        List<Task> tasks = bColumn.getTasks();
-        for (int i = 0; i < tasks.size(); i++) {
-            Optional<Task> task = taskRepository.findById(tasks.get(i).getId());
-            if (task.isPresent()) {
-                task.get().setPosition(i);
-                taskRepository.save(task.get());
-            }
+    //start-inclusive, end-exclusive
+    public void decrementTasksPositions(Integer startIndex, Integer endIndex) {
+        for (int i = startIndex; i < endIndex; i++) {
+            Optional<Task> task = taskRepository.findByPosition(i);
+            task.ifPresent(value -> value.setPosition(value.getPosition() - 1));
         }
     }
 
-    public void incrementTasksPositions(BColumn bColumn, Integer startIndex) {
-        bColumn.getTasks()
-                .forEach(task -> {
-                    if (task.getPosition() >= startIndex) {
-                        task.setPosition(task.getPosition() + 1);
-                        taskRepository.save(task);
-                    }
-                });
-    }
-
-    public void decrementTasksPositions(BColumn bColumn, Integer startIndex) {
-        for (int i = 0; i < bColumn.getTasks().size(); i++) {
-            Optional<Task> task = taskRepository.findById(bColumn.getTasks().get(i).getId());
-            if (task.isPresent()) {
-                task.get().setPosition(i);
-            }
+    public boolean updateTask(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest) {
+        switch (updateTaskRequest.getOperation()) {
+            case ADD:
+                incrementTasksPositions(updateTaskRequest.getNewIndex(), bColumn.getTasks().size());
+                task.setColumn(bColumn);
+                task.setPosition(updateTaskRequest.getNewIndex());
+                taskService.saveTask(task);
+                return true;
+            case MOVE:
+                if (updateTaskRequest.getOldIndex() > updateTaskRequest.getNewIndex()) {
+                    incrementTasksPositions(updateTaskRequest.getNewIndex(), updateTaskRequest.getOldIndex());
+                    return true;
+                } else if (updateTaskRequest.getNewIndex() > updateTaskRequest.getOldIndex()) {
+                    decrementTasksPositions(updateTaskRequest.getOldIndex(), updateTaskRequest.getNewIndex());
+                    return true;
+                } else {
+                    return false;
+                }
+            case REMOVE:
+//                decrementTasksPositions(updateTaskRequest);
+                return true;
+            default:
+                return false;
         }
-        bColumn.getTasks()
-                .forEach(task -> {
-                    if (task.getPosition() > startIndex) {
-                        task.setPosition(task.getPosition() - 1);
-                        taskRepository.save(task);
-                    }
-                });
     }
 }
