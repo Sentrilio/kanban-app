@@ -27,6 +27,9 @@ class UserService {
     console.log(description);
     return axios.post(API_URL + "task/create", { columnId: columnId, description: description }, { headers: authHeader() })
   }
+  updateTask(data) {
+    return axios.post(API_URL + "task/update", data, { headers: authHeader() })
+  }
 
   getBoard(boardId) {
     return axios.get(API_URL + "board/get/" + boardId, { headers: authHeader() });

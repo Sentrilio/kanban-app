@@ -117,8 +117,8 @@ export default {
       UserService.getTeams()
         .then(response => {
           this.teams = response.data;
-          // this.sortTeams();
-          // this.sortBoards();
+          this.sortTeams();
+          this.sortBoards();
           console.log("team retrieved");
         })
         .catch(e => {

@@ -2,18 +2,13 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.model.BColumn;
-import com.domko.kanbanbackendapp.model.Task;
-import com.domko.kanbanbackendapp.payload.request.AddedTaskToBColumnRequest;
 import com.domko.kanbanbackendapp.payload.request.CreateColumnRequest;
-import com.domko.kanbanbackendapp.payload.request.MoveTaskRequest;
-import com.domko.kanbanbackendapp.payload.request.RemoveTaskRequest;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
