@@ -109,18 +109,9 @@ export default {
       this.teams.sort(this.compare);
     },
     sortBoards() {
-      console.log("Boards: ");
       this.teams.forEach(team => {
         team.boards.sort(this.compare);
-        // team.boards.forEach(board=>{
-        // console.log(board.name);
-        // board.sort(this.compare);
-        // })
       });
-      // this.teams.boards.forEach(board => {
-      // console.log(board);
-      // board.sort(this.compare);
-      // });
     },
     getTeams() {
       UserService.getTeams()
@@ -128,9 +119,6 @@ export default {
           this.teams = response.data;
           this.sortTeams();
           this.sortBoards();
-          console.log(this.teams);
-          // console.log(this.teams);
-          // this.$store.dispatch("user/setTeams", this.teams);
           console.log("team retrieved");
         })
         .catch(e => {
