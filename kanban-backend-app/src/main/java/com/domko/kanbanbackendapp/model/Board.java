@@ -35,6 +35,7 @@ public class Board {
     private Team team;
 
     @JsonManagedReference
+    @OrderColumn(name="position")
     @OneToMany(mappedBy = "board")
     private List<BColumn> columns;
 

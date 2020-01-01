@@ -10,8 +10,8 @@
       <div
         class="list-group-item"
         v-for="(element, index) in column.tasks"
-        :key="element.position"
-      >{{ element.description }} index: {{ index }}</div>
+        :key="element.id"
+      >{{ element.description }} index: {{ index }} position: {{element.position}}</div>
       <!-- </transition-group> -->
     </draggable>
 
@@ -102,17 +102,23 @@ export default {
         // console.log(column);
         this.$emit("boardUpdate");
       } else if (evt.moved) {
+        console.log(column.tasks)
         // console.log("column:")
         // console.log(column);
+        // this.$emit("taskUpdate",)
         this.$emit("boardUpdate");
       } else if (evt.removed) {
+        // this.updatePositions(fromIndex,column.id)
         // console.log("removed");
       }
-      console.log("evt:")
+      console.log("evt:");
       console.log(evt);
       // window.console.log("evt: " + evt);
       // window.console.log(evt);
-    }
+    },
+    // updatePositions(fromIndex,columnId){
+      // UserService.updatePositionsInColumn()
+    // }
   }
 };
 </script>

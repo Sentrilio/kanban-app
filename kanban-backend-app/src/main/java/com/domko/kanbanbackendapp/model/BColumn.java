@@ -28,7 +28,6 @@ public class BColumn {
     @Column(name = "name", nullable = false)
     private String name;
 
-//    @JsonIgnore
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
@@ -40,6 +39,7 @@ public class BColumn {
 
 
     @JsonManagedReference
+    @OrderColumn(name = "position")
     @OneToMany(mappedBy = "column")
     private List<Task> tasks;
 }

@@ -2,9 +2,12 @@ package com.domko.kanbanbackendapp.service;
 
 import com.domko.kanbanbackendapp.model.Task;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TaskService {
 
-	Optional<Task> findById(Long id);
+    Optional<Task> findById(Long id);
+
+    void updateAllTasksPositions(List<Task> tasks);
 }
