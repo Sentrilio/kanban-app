@@ -9,5 +9,4 @@ public interface TaskService {
 
     Optional<Task> findById(Long id);
 
-    void updateAllTasksPositions(List<Task> tasks);
 }

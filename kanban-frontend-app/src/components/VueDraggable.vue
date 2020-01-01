@@ -40,6 +40,7 @@
 <script>
 import draggable from "vuedraggable";
 import UserService from "../services/user.service";
+import Operation from "../models/Operation";
 
 export default {
   name: "column",
@@ -95,30 +96,38 @@ export default {
         name: el.name + " cloned"
       };
     },
+    updateTask(event, column, operation) {
+      console.log(event);
+      let updateObject = {
+        taskId: event.element.id,
+        columnId: column.id,
+        newIndex: event.newIndex,
+        oldIndex: event.oldIndex,
+        operation: operation
+      };
+      UserService.updateTask(updateObject)
+        .then(response => {
+          console.log(response);
+          this.$emit("refresh");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     change: function(evt, column) {
       console.log(column.name);
       if (evt.added) {
-        // console.log("column:")
-        // console.log(column);
-        this.$emit("boardUpdate");
+        this.updateTask(evt.added, column, Operation.ADD);
       } else if (evt.moved) {
-        console.log(column.tasks)
-        // console.log("column:")
-        // console.log(column);
-        // this.$emit("taskUpdate",)
-        this.$emit("boardUpdate");
+        this.updateTask(evt.moved, column, Operation.MOVE);
       } else if (evt.removed) {
-        // this.updatePositions(fromIndex,column.id)
+        this.updateTask(evt.removed, column, Operation.REMOVE);
         // console.log("removed");
       }
-      console.log("evt:");
-      console.log(evt);
-      // window.console.log("evt: " + evt);
+      // console.log("evt:");
+      // console.log(evt);
       // window.console.log(evt);
-    },
-    // updatePositions(fromIndex,columnId){
-      // UserService.updatePositionsInColumn()
-    // }
+    }
   }
 };
 </script>
