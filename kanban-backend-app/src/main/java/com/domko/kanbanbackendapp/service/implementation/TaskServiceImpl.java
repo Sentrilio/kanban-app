@@ -49,7 +49,55 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    public void updatePositions(List<Task> tasks) {
+        for (int i = 0; i < tasks.size(); i++) {
+            Optional<Task> task = taskRepository.findById(tasks.get(i).getId());
+            if (task.isPresent()) {
+                task.get().setPosition(i);
+                System.out.println("task : " + task.get().getDescription() + " task position: " + task.get().getPosition() + " column:" + task.get().getColumn().getName());
+                taskRepository.save(task.get());
+            } else {
+                System.out.println("Task does not exists");
+            }
+        }
+    }
+
+    @Transactional
     public boolean updateTask(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest) {
+        switch (updateTaskRequest.getOperation()) {
+            case ADD:
+                long oldColumnId = task.getColumn().getId();
+
+                task.setColumn(bColumn);
+
+                bColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                BColumn bColumn1 = bColumnService.save(bColumn);
+//                taskRepository.save(task);
+                updatePositions(bColumn1.getTasks());
+                Optional<BColumn> oldColumn = bColumnService.findBColumn(oldColumnId);
+                if (oldColumn.isPresent()) {
+                    oldColumn.get().getTasks().remove(task);
+                    BColumn columnWithoutTask = bColumnService.save(oldColumn.get());
+                    updatePositions(columnWithoutTask.getTasks());
+                    return true;
+                } else {
+                    return false;
+                }
+            case MOVE:
+                bColumn.getTasks().remove(task);
+                bColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                updatePositions(bColumn.getTasks());
+                return true;
+            case REMOVE:
+//                updatePositions(bColumn.getTasks());
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
+    public boolean updateTask2(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
                 incrementTasksPositions(updateTaskRequest.getNewIndex(), bColumn.getTasks().size());
