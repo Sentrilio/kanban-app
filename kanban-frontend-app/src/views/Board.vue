@@ -14,8 +14,9 @@
 
 <script>
 import CreateColumn from "../components/CreateColumn.vue";
-import UserService from "../services/user.service";
 import VueDraggable from "../components/VueDraggable.vue";
+import BoardService from "../services/BoardService";
+import TeamService from "../services/TeamService";
 
 export default {
   name: "Board",
@@ -52,7 +53,7 @@ export default {
     },
     boardUpdate() {
       console.log("sending updated board into backend...");
-      UserService.updateBoard(this.board.id, this.board.columns)
+      BoardService.updateBoard(this.board.id, this.board.columns)
         .then(() => {
           this.getBoard();
         })
@@ -64,30 +65,16 @@ export default {
       console.log("refreshing");
       this.getData();
     },
-    compare(a, b) {
-      return a.position - b.position;
-    },
-    sortColumns() {
-      this.columns.sort(this.compare);
-    },
-    sortTasks() {
-      this.column.tasks.sort(this.compare);
-    },
-
     getData() {
       this.getBoard();
       this.getTeam();
     },
     getBoard() {
-      UserService.getBoard(this.$route.params.boardId)
+      BoardService.getBoard(this.$route.params.boardId)
         .then(response => {
           console.log("board retrieved");
           this.board = response.data;
           this.columns = this.board.columns;
-          // this.sortColumns();
-          // this.columns.forEach(column => {
-            // column.tasks.sort(this.compare);
-          // });
         })
         .catch(error => {
           console.log(error);
@@ -97,7 +84,7 @@ export default {
         });
     },
     getTeam() {
-      UserService.getTeam(this.$route.params.teamId)
+      TeamService.getTeam(this.$route.params.teamId)
         .then(response => {
           this.team = response.data;
         })

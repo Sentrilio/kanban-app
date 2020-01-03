@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import UserService from "./services/user.service";
+import TeamService from "./services/TeamService";
 export default {
   data() {
     return {
@@ -122,7 +122,7 @@ export default {
       });
     },
     getTeams() {
-      UserService.getTeams()
+      TeamService.getTeams()
         .then(response => {
           this.teams = response.data;
           this.sortTeams();
@@ -157,7 +157,7 @@ export default {
       if (team) {
         console.log("team switching");
         let teamId = team.id;
-        let teamName = team.name;
+        let teamName = team.name.replace(/\s/g,'');//maybe it can be moved into seperate component
         this.$router.push({
           name: "team",
           params: { teamId, teamName }

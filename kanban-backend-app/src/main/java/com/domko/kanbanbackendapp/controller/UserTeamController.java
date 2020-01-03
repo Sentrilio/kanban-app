@@ -29,20 +29,22 @@ public class UserTeamController {
     @Autowired
     private TeamServiceImpl teamService;
 
-    @GetMapping("/get")
-    public List<Team> getUserTeams() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> user = userService.findByUsername(authentication.getName());
-        if (user.isPresent()) {
-            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getId());
-            List<Team> teams = userTeams.stream()
-                    .map(UserTeam::getTeam)
-                    .collect(Collectors.toList());
-            return teams;
-        } else {
-            return null;
-        }
-    }
+
+
+//    @GetMapping("/get")
+//    public List<Team> getUserTeams() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Optional<User> user = userService.findByUsername(authentication.getName());
+//        if (user.isPresent()) {
+//            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getId());
+//            List<Team> teams = userTeams.stream()
+//                    .map(UserTeam::getTeam)
+//                    .collect(Collectors.toList());
+//            return teams;
+//        } else {
+//            return null;
+//        }
+//    }
 
 
     @PostMapping(value = "/create")

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -24,11 +25,11 @@ public class Team {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "team")
-	private Set<UserTeam> userTeams;
+	private List<UserTeam> userTeams;
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "team")
-	private Set<Board> boards;
+	private List<Board> boards;
 
 	public Team(String name) {
 		this.name = name;
