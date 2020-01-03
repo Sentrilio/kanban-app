@@ -20,7 +20,6 @@ public class UserServiceImpl implements UserService {
 		return userRepository.save(user);
 	}
 
-
 	public Optional<User> findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
@@ -36,7 +35,6 @@ public class UserServiceImpl implements UserService {
 	public List<User> findAll(){
 		return userRepository.findAll();
 	}
-
 
 	public Optional<User> findByUsername(String username) {
 		return userRepository.findByUsername(username);

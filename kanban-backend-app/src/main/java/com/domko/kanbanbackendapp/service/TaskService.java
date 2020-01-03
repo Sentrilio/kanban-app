@@ -9,4 +9,5 @@ public interface TaskService {
 
     Optional<Task> findById(Long id);
 
+    Task save(Task task);
 }

@@ -8,6 +8,7 @@ import CreateBoard from './views/CreateBoard.vue';
 import CreateTeam from './views/CreateTeam.vue';
 import Board from './views/Board.vue';
 import store from './store/index';
+import Main from './views/Main.vue';
 
 
 Vue.use(Router);
@@ -24,8 +25,8 @@ export const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      name: 'main',
+      component: Main,
     },
     {
       path: '/t/:teamId-:teamName',
@@ -50,12 +51,12 @@ export const router = new Router({
       beforeEnter: isLoggedIn,
 
     },
-    {
-      path: '/team-info',
-      component: Team,
-      beforeEnter: isLoggedIn,
-      // meta: { hideNavigation: true },
-    },
+    // {
+    //   path: '/team-info',
+    //   component: Team,
+    //   beforeEnter: isLoggedIn,
+    //   // meta: { hideNavigation: true },
+    // },
     {
       path: '/team/create',
       component: CreateTeam,
