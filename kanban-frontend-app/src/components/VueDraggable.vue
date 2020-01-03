@@ -39,7 +39,7 @@
 </template>
 <script>
 import draggable from "vuedraggable";
-import UserService from "../services/user.service";
+import TaskService from "../services/TaskService";
 import Operation from "../models/Operation";
 
 export default {
@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     createTask() {
-      UserService.createTask(this.column.id, this.taskDescription)
+      TaskService.createTask(this.column.id, this.taskDescription)
         .then(response => {
           console.log(response);
           this.$emit("refresh");
@@ -105,7 +105,7 @@ export default {
         oldIndex: event.oldIndex,
         operation: operation
       };
-      UserService.updateTask(updateObject)
+      TaskService.updateTask(updateObject)
         .then(response => {
           console.log(response);
           this.$emit("refresh");
