@@ -6,6 +6,7 @@ import com.domko.kanbanbackendapp.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class TeamServiceImpl implements TeamService {
 
 	public Team createTeam(User user, String teamName) {
 		Team team = new Team(teamName);
-		Set<UserTeam> users = Set.of(new UserTeam(new UserTeamKey(user.getId(), team.getId()), user, team, TeamRole.LEADER));
+		List<UserTeam> users = Arrays.asList(new UserTeam(new UserTeamKey(user.getId(), team.getId()), user, team, TeamRole.LEADER));
 		team.setUserTeams(users);
 		return save(team);
 	}

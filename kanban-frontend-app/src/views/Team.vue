@@ -1,26 +1,46 @@
 <template>
-  <div class="container" v-if="team">
+  <div class="container">
+    <nav class="navbar navbar-light bg-light">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <li class="nav-item btn">
+        <a @click="membersClick">members</a>
+      </li>
+    </nav>
     <a>{{team.name}}</a>
-    <br>
-    <a>{{team.teamId}}</a>
+    <br />
+    <a>{{team.id}}</a>
+    <div>
+      <br />
+      <a>Boards:</a>
+      <div v-for="board in team.boards" :key="board.id">
+        <a>{{board.name}}</a>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import UserService from "../services/user.service";
+import TeamService from "../services/TeamService";
+import SortService from "../services/SortService";
 
 export default {
   name: "Team",
   data() {
     return {
-      team: null
+      team: {}
     };
   },
   methods: {
+    membersClick() {
+      let teamId = this.$route.params.teamId;
+      let teamName = this.$route.params.teamName;
+      this.$router.push({ name: "teamMembers", params: { teamId, teamName } });
+    },
     getData() {
-      UserService.getTeam(this.$route.params.teamId)
+      TeamService.getTeam(this.$route.params.teamId)
         .then(response => {
           this.team = response.data;
+          SortService.sortByName(this.team.boards);
         })
         .catch(error => {
           console.log(error);
