@@ -47,12 +47,4 @@ public class UserTeamServiceImpl implements UserTeamService {
         return userTeamRepository.findAllById_TeamId(teamId);
     }
 
-    public boolean hasPermission(List<UserTeam> userTeams) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userTeams
-                .stream()
-                .anyMatch(e -> e.getUser().getUsername().equals(authentication.getName()));
-    }
-
-
 }

@@ -18,8 +18,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
-    @Autowired
-    private TaskServiceImpl taskService;
+
     @Autowired
     private BColumnServiceImpl bColumnService;
 
@@ -28,57 +27,39 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findById(id);
     }
 
-    public Task saveTask(Task task) {
+    @Override
+    public Task save(Task task) {
         return taskRepository.save(task);
     }
 
 
-    //start-inclusive, end-exclusive
-    public void incrementTasksPositions(Integer startIndex, Integer endIndex) {
-        for (int i = startIndex; i < endIndex; i++) {
-            Optional<Task> task = taskRepository.findByPosition(i);
-            task.ifPresent(value -> value.setPosition(value.getPosition() + 1));
-        }
-    }
-
-    //start-inclusive, end-exclusive
-    public void decrementTasksPositions(Integer startIndex, Integer endIndex) {
-        for (int i = startIndex; i < endIndex; i++) {
-            Optional<Task> task = taskRepository.findByPosition(i);
-            task.ifPresent(value -> value.setPosition(value.getPosition() - 1));
-        }
-    }
-
     public void updatePositions(List<Task> tasks) {
         for (int i = 0; i < tasks.size(); i++) {
-            Optional<Task> task = taskRepository.findById(tasks.get(i).getId());
+            Optional<Task> task = findById(tasks.get(i).getId());
             if (task.isPresent()) {
                 task.get().setPosition(i);
-                System.out.println("task : " + task.get().getDescription() + " task position: " + task.get().getPosition() + " column:" + task.get().getColumn().getName());
-                taskRepository.save(task.get());
+//                System.out.println("task : " + task.get().getDescription() + " task position: " + task.get().getPosition() + " column:" + task.get().getColumn().getName());
+                save(task.get());
             } else {
                 System.out.println("Task does not exists");
             }
         }
     }
 
-    @Transactional
+    @Transactional//maybe not needed (to test)
     public boolean updateTask(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
                 long oldColumnId = task.getColumn().getId();
-
                 task.setColumn(bColumn);
-
                 bColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                BColumn bColumn1 = bColumnService.save(bColumn);
-//                taskRepository.save(task);
-                updatePositions(bColumn1.getTasks());
+                BColumn updatedColumn = bColumnService.save(bColumn);
+                updatePositions(updatedColumn.getTasks());
                 Optional<BColumn> oldColumn = bColumnService.findBColumn(oldColumnId);
                 if (oldColumn.isPresent()) {
                     oldColumn.get().getTasks().remove(task);
-                    BColumn columnWithoutTask = bColumnService.save(oldColumn.get());
-                    updatePositions(columnWithoutTask.getTasks());
+                    BColumn updatedOldColumn = bColumnService.save(oldColumn.get());
+                    updatePositions(updatedOldColumn.getTasks());
                     return true;
                 } else {
                     return false;
@@ -88,38 +69,10 @@ public class TaskServiceImpl implements TaskService {
                 bColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
                 updatePositions(bColumn.getTasks());
                 return true;
-            case REMOVE:
-//                updatePositions(bColumn.getTasks());
-                return true;
             default:
                 return false;
         }
     }
 
 
-    public boolean updateTask2(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest) {
-        switch (updateTaskRequest.getOperation()) {
-            case ADD:
-                incrementTasksPositions(updateTaskRequest.getNewIndex(), bColumn.getTasks().size());
-                task.setColumn(bColumn);
-                task.setPosition(updateTaskRequest.getNewIndex());
-                taskService.saveTask(task);
-                return true;
-            case MOVE:
-                if (updateTaskRequest.getOldIndex() > updateTaskRequest.getNewIndex()) {
-                    incrementTasksPositions(updateTaskRequest.getNewIndex(), updateTaskRequest.getOldIndex());
-                    return true;
-                } else if (updateTaskRequest.getNewIndex() > updateTaskRequest.getOldIndex()) {
-                    decrementTasksPositions(updateTaskRequest.getOldIndex(), updateTaskRequest.getNewIndex());
-                    return true;
-                } else {
-                    return false;
-                }
-            case REMOVE:
-//                decrementTasksPositions(updateTaskRequest);
-                return true;
-            default:
-                return false;
-        }
-    }
 }

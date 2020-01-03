@@ -3,7 +3,8 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a href="/home" class="nav-link">
+          <!-- <a @click="homeClick" href="/home" class="nav-link"> -->
+          <a @click="homeClick" class="nav-link btn">
             <font-awesome-icon icon="home" />
           </a>
         </li>
@@ -102,6 +103,13 @@ export default {
     }
   },
   methods: {
+    homeClick(){
+      if(this.currentUser){
+        this.$router.push({name:'main'})
+      }else{
+        this.$router.push({name:'home'})
+      }
+    },
     compare(a, b) {
       return a.name.localeCompare(b.name);
     },

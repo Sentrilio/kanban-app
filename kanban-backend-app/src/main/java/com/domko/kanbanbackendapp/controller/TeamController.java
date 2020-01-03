@@ -25,8 +25,6 @@ public class TeamController {
     @Autowired
     private TeamServiceImpl teamService;
     @Autowired
-    private BoardServiceImpl boardService;
-    @Autowired
     private UserTeamServiceImpl userTeamService;
     @Autowired
     private UserServiceImpl userService;
