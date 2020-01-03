@@ -41,11 +41,11 @@ public class User implements Serializable {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
-	private Set<UserTeam> userTeams;
+	private List<UserTeam> userTeams;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
-	private Set<UserTask> userTasks;
+	private List<UserTask> userTasks;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles",

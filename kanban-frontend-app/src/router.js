@@ -9,6 +9,7 @@ import CreateTeam from './views/CreateTeam.vue';
 import Board from './views/Board.vue';
 import store from './store/index';
 import Main from './views/Main.vue';
+import TeamMembers from './views/TeamMembers.vue';
 
 
 Vue.use(Router);
@@ -29,9 +30,15 @@ export const router = new Router({
       component: Main,
     },
     {
-      path: '/t/:teamId-:teamName',
+      path: '/:teamName-:teamId',
       name: 'team',
       component: Team,
+      beforeEnter: isLoggedIn,
+    },
+    {
+      path: '/:teamName-:teamId/members',
+      name: 'teamMembers',
+      component: TeamMembers,
       beforeEnter: isLoggedIn,
     },
     {
@@ -78,27 +85,27 @@ export const router = new Router({
       // lazy-loaded
       component: () => import('./views/Profile.vue')
     },
-    {
-      path: '/admin',
-      name: 'admin',
-      beforeEnter: isLoggedIn,
-      // lazy-loaded
-      component: () => import('./views/BoardAdmin.vue')
-    },
-    {
-      path: '/mod',
-      name: 'moderator',
-      beforeEnter: isLoggedIn,
-      // lazy-loaded
-      component: () => import('./views/BoardModerator.vue')
-    },
-    {
-      path: '/user',
-      name: 'user',
-      beforeEnter: isLoggedIn,
-      // lazy-loaded
-      component: () => import('./views/BoardUser.vue')
-    },
+    // {
+    //   path: '/admin',
+    //   name: 'admin',
+    //   beforeEnter: isLoggedIn,
+    //   // lazy-loaded
+    //   component: () => import('./views/BoardAdmin.vue')
+    // },
+    // {
+    //   path: '/mod',
+    //   name: 'moderator',
+    //   beforeEnter: isLoggedIn,
+    //   // lazy-loaded
+    //   component: () => import('./views/BoardModerator.vue')
+    // },
+    // {
+    //   path: '/user',
+    //   name: 'user',
+    //   beforeEnter: isLoggedIn,
+    //   // lazy-loaded
+    //   component: () => import('./views/BoardUser.vue')
+    // },
   ]
 });
 
