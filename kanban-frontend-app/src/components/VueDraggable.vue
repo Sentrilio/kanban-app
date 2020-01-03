@@ -117,12 +117,16 @@ export default {
     change: function(evt, column) {
       console.log(column.name);
       if (evt.added) {
+        console.log("adding...");
         this.updateTask(evt.added, column, Operation.ADD);
       } else if (evt.moved) {
+        console.log("moving...");
         this.updateTask(evt.moved, column, Operation.MOVE);
       } else if (evt.removed) {
-        this.updateTask(evt.removed, column, Operation.REMOVE);
-        // console.log("removed");
+        console.log("removing...");
+        // setTimeout(function() {
+          // this.updateTask(evt.removed, column, Operation.REMOVE);
+        // }, 10000);
       }
       // console.log("evt:");
       // console.log(evt);
