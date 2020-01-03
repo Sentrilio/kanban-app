@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import UserService from "../services/user.service";
+import TeamService from "../services/TeamService";
 
 export default {
   name: "CreateTeam",
@@ -27,7 +27,7 @@ export default {
   mounted() {},
   methods: {
     createTeam() {
-      UserService.createTeam(this.teamName).then(
+      TeamService.createTeam(this.teamName).then(
         response => {
           console.log(response);
           this.$router.push("/");

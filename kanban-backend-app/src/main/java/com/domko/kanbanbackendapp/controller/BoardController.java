@@ -88,13 +88,13 @@ public class BoardController {
     }
 
     @GetMapping(value = "/get")
-    public ResponseEntity<Set<Board>> getUserBoards() {
+    public ResponseEntity<List<Board>> getUserBoards() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userService.findByUsername(authentication.getName());
         if (user.isPresent()) {
             System.out.println("user present");
             List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getId());
-            Set<Board> boards = new HashSet<>();
+            List<Board> boards = new ArrayList<>();
             userTeams.forEach(e -> boards.addAll(e.getTeam().getBoards()));
             return new ResponseEntity<>(boards, HttpStatus.OK);
         }
