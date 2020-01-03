@@ -13,13 +13,19 @@
       />
       <button>Add User</button>
     </form>
-    <div v-for="member in teamMembers" :key="member.user.id">{{member.user.username}}</div>
+    <div v-for="member in teamMembers" :key="member.user.id">
+      <TeamMember :member="member"></TeamMember>
+      <!-- {{member.user.username}} -->
+      </div>
   </div>
 </template>
 <script>
 import TeamService from "../services/TeamService";
-
+import TeamMember from "../components/TeamMember";
 export default {
+  components:{
+    TeamMember
+  },
   data() {
     return {
       userEmail: "",
