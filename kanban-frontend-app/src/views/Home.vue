@@ -7,15 +7,16 @@
 </template>
 
 <script>
-import UserService from '../services/user.service';
+import UserService from "../services/user.service";
 
 export default {
-  name: 'home',
+  name: "home",
   data() {
     return {
-      content: ''
+      content: ""
     };
   },
+
   mounted() {
     UserService.getPublicContent().then(
       response => {

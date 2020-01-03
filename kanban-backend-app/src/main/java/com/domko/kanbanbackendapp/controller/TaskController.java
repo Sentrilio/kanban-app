@@ -24,8 +24,6 @@ public class TaskController {
     private BColumnServiceImpl bColumnService;
     @Autowired
     private PermissionService permissionService;
-    @Autowired
-    private BColumnServiceImpl boardListService;
 
     @GetMapping(value = "/get/{id}")
     public Optional<Task> findById(@PathVariable Long id) {
@@ -34,7 +32,7 @@ public class TaskController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        Optional<BColumn> column = boardListService.findBColumn(createTaskRequest.getColumnId());
+        Optional<BColumn> column = bColumnService.findBColumn(createTaskRequest.getColumnId());
         if (column.isPresent()) {
             if (permissionService.hasPermissionToBColumn(column.get())) {
                 Task task = new Task();
@@ -42,7 +40,7 @@ public class TaskController {
                 task.setColumn(column.get());
                 task.setPosition(column.get().getTasks().size());
                 System.out.println("task info: " + task.getColumn().getName() + "description: " + task.getDescription());
-                taskService.saveTask(task);
+                taskService.save(task);
                 return new ResponseEntity<>("Task created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Board or list does not exists", HttpStatus.FORBIDDEN);
@@ -59,7 +57,7 @@ public class TaskController {
         if (task.isPresent() && bColumn.isPresent()) {
             if (permissionService.hasPermissionToTask(task.get())) {
                 if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
-                    return new ResponseEntity<>("Task added to bColumn", HttpStatus.OK);
+                    return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
@@ -70,29 +68,4 @@ public class TaskController {
             return new ResponseEntity<>("BColumn does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-//    @PostMapping(value = "/move")
-//    public ResponseEntity<String> handleTaskMoved(@RequestBody UpdateTaskRequest updateTaskRequest) {
-//        Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());
-//        Optional<BColumn> bColumn = bColumnService.findBColumn(updateTaskRequest.getBColumnId());
-//        if (task.isPresent() && bColumn.isPresent()) {
-//            if (permissionService.hasPermissionToTask(task.get())) {
-//                if (updateTaskRequest.getNewIndex() > updateTaskRequest.getOldIndex()) {
-//                    taskService.decrementTasksPositions(bColumn.get(), updateTaskRequest.getOldIndex(), updateTaskRequest.getNewIndex());
-//                } else {
-//
-//                }
-//                List<Task> tasks = bColumn.get().getTasks();
-//                tasks.remove(task.get());
-//                tasks.add(updateTaskRequest.getNewIndex(), task.get());
-//                bColumn.get().setTasks(tasks);
-//                bColumnService.save(bColumn.get());
-//                return new ResponseEntity<>("Task added to bColumn", HttpStatus.OK);
-//            } else {
-//                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-//            }
-//        } else {
-//            return new ResponseEntity<>("BColumn does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 }
