@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import UserService from "../services/user.service";
+import BoardService from "../services/BoardService";
+import TeamService from "../services/TeamService";
 
 export default {
   name: "CreateBoard",
@@ -53,7 +54,7 @@ export default {
       this.getTeams();
     },
     getTeams() {
-      UserService.getTeams()
+      TeamService.getTeams()
         .then(response => {
           this.teams = response.data;
           console.log(this.teams);
@@ -67,7 +68,7 @@ export default {
     },
 
     createBoard() {
-      UserService.createBoard(this.boardName, this.selectedTeam.id).then(
+      BoardService.createBoard(this.boardName, this.selectedTeam.id).then(
         response => {
           console.log(response);
           this.$router.push("/"); //should be prompted info about successful creation and ok to click

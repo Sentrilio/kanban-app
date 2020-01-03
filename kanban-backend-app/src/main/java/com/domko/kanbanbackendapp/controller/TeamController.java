@@ -1,12 +1,8 @@
 package com.domko.kanbanbackendapp.controller;
 
-import com.domko.kanbanbackendapp.model.Team;
-import com.domko.kanbanbackendapp.model.User;
-import com.domko.kanbanbackendapp.model.UserTeam;
-import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.TeamServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.UserServiceImpl;
-import com.domko.kanbanbackendapp.service.implementation.UserTeamServiceImpl;
+import com.domko.kanbanbackendapp.model.*;
+import com.domko.kanbanbackendapp.payload.request.AddUserRequest;
+import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +24,8 @@ public class TeamController {
     private UserTeamServiceImpl userTeamService;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private PermissionService permissionService;
 
     @GetMapping(value = "/all")
     public List<Team> getTeams() {
@@ -48,17 +46,47 @@ public class TeamController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/members/get/{teamId}")
+    public ResponseEntity<List<UserTeam>> getTeamMembers(@PathVariable("teamId") long teamId) {
+        Optional<Team> team = teamService.findTeam(teamId);
+        if (team.isPresent()) {
+            if (permissionService.hasPermissionToTeam(team.get())) {
+                List<UserTeam> userTeams = userTeamService.findUsersOfTeam(team.get().getId());
+                return new ResponseEntity<>(userTeams, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping(value = "/get/{teamId}")
     public ResponseEntity<Team> getTeamById(@PathVariable("teamId") long teamId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userService.findByUsername(authentication.getName());
         if (user.isPresent()) {
             Optional<Team> team = teamService.findTeam(teamId);
-            if (team.isPresent()) {
-                return new ResponseEntity<>(team.get(), HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return team.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PostMapping(value = "/add/user")
+    public ResponseEntity<String> getTeamMembers(@RequestBody AddUserRequest addUserRequest) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();// maybe to do add user if TeamRole.LEADER
+//        Optional<User> user = userService.findByUsername(authentication.getName());
+        Optional<Team> team = teamService.findTeam(addUserRequest.getTeamId());
+        Optional<User> invitedUser = userService.findByEmail(addUserRequest.getEmail());
+        if (team.isPresent() && invitedUser.isPresent()) {
+            if (permissionService.hasPermissionToTeam(team.get())) {
+                userTeamService.addUserToTeam(invitedUser.get(), team.get(), TeamRole.MEMBER);
+                return new ResponseEntity<>("User added to team", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

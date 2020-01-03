@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -39,7 +40,7 @@ public class Task {
 
     @JsonIgnore
     @OneToMany(mappedBy = "task")
-    private Set<UserTask> userTasks;
+    private List<UserTask> userTasks;
 
 
 }
