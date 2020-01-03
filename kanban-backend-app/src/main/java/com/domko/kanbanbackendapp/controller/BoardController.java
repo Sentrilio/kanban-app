@@ -25,8 +25,6 @@ public class BoardController {
     @Autowired
     private TeamServiceImpl teamService;
     @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
     private UserServiceImpl userService;
     @Autowired
     private UserTeamServiceImpl userTeamService;
@@ -75,7 +73,7 @@ public class BoardController {
                         if (task1.isPresent()) {
                             task1.get().setPosition(i);
                             task1.get().setColumn(column);
-                            taskService.saveTask(task1.get());
+                            taskService.save(task1.get());
                         }
                     }
                 });
