@@ -3,11 +3,9 @@ package com.domko.kanbanbackendapp.controller;
 import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateBoardRequest;
-import com.domko.kanbanbackendapp.security.jwt.JwtUtils;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,9 +27,10 @@ public class BoardController {
     @Autowired
     private UserTeamServiceImpl userTeamService;
     @Autowired
-    private PermissionService permissionService;
-    @Autowired
     private TaskServiceImpl taskService;
+    @Autowired
+    private PermissionService permissionService;
+
 
     @GetMapping(value = "/all")
     public List<Board> getAllBoards() {
@@ -52,7 +51,7 @@ public class BoardController {
                 } else {
                     board.setWipLimit(createBoardRequest.getWipLimit());
                 }
-                boardService.saveBoard(board);
+                boardService.save(board);
                 return new ResponseEntity<>("Board created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("You do not participate in this team", HttpStatus.FORBIDDEN);
