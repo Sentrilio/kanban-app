@@ -17,10 +17,12 @@ public class BColumnServiceImpl implements BColumnService {
     @Autowired
     private BColumnRepository bColumnRepository;
 
+    @Override
     public BColumn save(BColumn BColumn) {
         return bColumnRepository.save(BColumn);
     }
 
+    @Override
     public Optional<BColumn> findBColumn(Long id) {
         return bColumnRepository.findById(id);
     }
