@@ -52,6 +52,11 @@ export default {
   components: {
     draggable
   },
+  data(){
+    return {
+      taskDescription: "",
+    }
+  },
   computed: {
     currentColumn() {
       return this.$props.column;

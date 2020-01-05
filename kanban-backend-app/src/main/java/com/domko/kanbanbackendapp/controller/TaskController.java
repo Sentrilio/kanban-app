@@ -5,8 +5,6 @@ import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
-import com.domko.kanbanbackendapp.service.BColumnService;
-import com.domko.kanbanbackendapp.service.TaskService;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

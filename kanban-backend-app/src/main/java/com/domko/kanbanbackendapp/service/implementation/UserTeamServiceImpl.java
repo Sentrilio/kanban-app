@@ -35,14 +35,17 @@ public class UserTeamServiceImpl implements UserTeamService {
         return userTeamRepository.findAll(example);
     }
 
+    @Override
     public List<UserTeam> findTeamsOfUser(Long userId) {
         return userTeamRepository.findAllTeamsOfUser(userId);
     }
 
+    @Override
     public UserTeam addUserToTeam(User user, Team team, TeamRole role) {
         return save(new UserTeam(new UserTeamKey(user.getId(), team.getId()), user, team, role));
     }
 
+    @Override
     public List<UserTeam> findUsersOfTeam(Long teamId) {
         return userTeamRepository.findAllById_TeamId(teamId);
     }
