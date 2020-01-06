@@ -15,7 +15,8 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.btn {
+.task {
   text-align: left;
+  margin-bottom: 10px;
 }
 </style>

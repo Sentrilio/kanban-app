@@ -19,7 +19,7 @@
         <font-awesome-icon icon="plus" style="padding-right:5px;" />Create Task
       </button>
       <div :id="'currentColumn'+currentColumn.id" class="collapse">
-        <input type="text" v-model="taskDescription" placeholder="task description" />
+        <input type="text" class="task-input" v-model="taskDescription" placeholder="task description" />
         <button class="button" @click="createTask" :disabled="!taskDescription">Create</button>
       </div>
     </div>
@@ -110,11 +110,14 @@ export default {
   width: 300px;
 }
 .column-name {
-  padding: 10px;
+  /* padding: 10px; */
   margin: 10px;
   align-content: center;
 }
 .create-task {
-  padding-top: 10px;
+  /* padding-top: 5px; */
+}
+.task-input{
+  margin-top: 8px;
 }
 </style>
