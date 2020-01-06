@@ -118,7 +118,8 @@ export default {
   display: inline-block;
   display: flex;
   background-color: grey;
-  height: 100%;
+  max-height: 2000px;
+  height: 2000px;
 }
 
 .column-container {
