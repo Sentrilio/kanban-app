@@ -119,7 +119,7 @@ export default {
   display: flex;
   background-color: grey;
   max-height: 2000px;
-  height: 2000px;
+  height: 92vh;
 }
 
 .column-container {
