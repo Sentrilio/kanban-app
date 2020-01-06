@@ -97,36 +97,15 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.board-name-box {
-  /* outline-style: none; */
-  border-style: none;
-}
-.board-name-box:hover {
-  /* outline-style: none; */
-  background-color: #f5f5f5;
-}
-.nav-item {
-  padding-left: 20px;
-  /* padding-right: 20px; */
-}
-.navbar-nav {
-  margin-left: 40px;
-}
+
 .board {
-  /* margin: 15px; */
-  /* padding: 15px; */
-  display: inline-block;
+  /* display: inline-block; */
   display: flex;
+  justify-content: space-between;
   background-color: grey;
   max-height: 2000px;
   height: 92vh;
 }
 
-.column-container {
-  padding-top: 10px;
-  display: grid;
-  grid-template-columns: repeat(10, 1000fr);
-  grid-gap: 10px;
-  grid-auto-rows: 100px;
-}
+
 </style>
