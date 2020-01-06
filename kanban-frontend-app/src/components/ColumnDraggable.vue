@@ -1,37 +1,25 @@
 <template>
-  <div>
+  <div class="column">
+    <div class="column-name">
+      <a>{{column.name}}</a>
+    </div>
     <draggable
       class="list-group"
       :list="column.tasks"
       group="people"
       @change="change($event, column)"
     >
-      <!-- <transition-group> -->
-      <div
-        class="list-group-item"
-        v-for="(element, index) in column.tasks"
-        :key="element.id"
-      >{{ element.description }} index: {{ index }} position: {{element.position}}</div>
-      <!-- </transition-group> -->
+      <div v-for="task in column.tasks" :key="task.id">
+        <task :task="task"></task>
+      </div>
     </draggable>
 
-    <div
-      slot="footer"
-      class="btn-group list-group-item"
-      role="group"
-      aria-label="Basic example"
-      key="footer"
-    >
+    <div slot="footer" class="create-task" role="group" aria-label="Basic example" key="footer">
       <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn.id">
         <font-awesome-icon icon="plus" style="padding-right:5px;" />Create Task
       </button>
       <div :id="'currentColumn'+currentColumn.id" class="collapse">
-        <input
-          type="text"
-          style="margin-top:5px;"
-          v-model="taskDescription"
-          placeholder="task description"
-        />
+        <input type="text" v-model="taskDescription" placeholder="task description" />
         <button class="button" @click="createTask" :disabled="!taskDescription">Create</button>
       </div>
     </div>
@@ -41,6 +29,7 @@
 import draggable from "vuedraggable";
 import TaskService from "../services/TaskService";
 import Operation from "../models/Operation";
+import Task from "../components/Task.vue";
 
 export default {
   name: "column",
@@ -50,12 +39,13 @@ export default {
     column: Object
   },
   components: {
+    Task,
     draggable
   },
-  data(){
+  data() {
     return {
-      taskDescription: "",
-    }
+      taskDescription: ""
+    };
   },
   computed: {
     currentColumn() {
@@ -74,17 +64,7 @@ export default {
           console.log(err);
         });
     },
-    add: function() {
-      this.list.push({ name: "Juan" });
-    },
-    replace: function() {
-      this.list = [{ name: "Edgard" }];
-    },
-    clone: function(el) {
-      return {
-        name: el.name + " cloned"
-      };
-    },
+
     updateTask(event, column, operation) {
       console.log(event);
       let updateObject = {
@@ -111,16 +91,29 @@ export default {
       } else if (evt.moved) {
         console.log("moving...");
         this.updateTask(evt.moved, column, Operation.MOVE);
-      } else if (evt.removed) {
-        console.log("removing...");
-        // setTimeout(function() {
-          // this.updateTask(evt.removed, column, Operation.REMOVE);
-        // }, 10000);
       }
-      // console.log("evt:");
       // console.log(evt);
       // window.console.log(evt);
     }
   }
 };
 </script>
+
+<style lang="css" scoped>
+.column {
+  outline-width: 1px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  background-color: #ebebe0;
+  width: 300px;
+}
+.column-name {
+  padding: 10px;
+  margin: 10px;
+  align-content: center;
+}
+.create-task {
+  padding-top: 10px;
+}
+</style>
