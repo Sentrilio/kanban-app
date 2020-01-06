@@ -6,7 +6,6 @@
       <br>
       <button class="button" @click="createColumn" :disabled="!columnNameInput">Create Column</button>
     </div>
-    <!-- <a>Board id : {{boardId}}</a> -->
   </div>
 </template>
 

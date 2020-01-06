@@ -1,7 +1,11 @@
 <template>
-  <div class="container">
+  <div class="members">
     <header>Team members ({{teamMembers.length}})</header>
     <br />
+    <div v-for="member in teamMembers" :key="member.user.id">
+      <TeamMember :member="member"></TeamMember>
+    </div>
+    <br>
     <form name="form" @submit.prevent="handleAddUser">
       <input
         type="email"
@@ -13,18 +17,17 @@
       />
       <button>Add User</button>
     </form>
-    <div v-for="member in teamMembers" :key="member.user.id">
-      <TeamMember :member="member"></TeamMember>
-      <!-- {{member.user.username}} -->
-      </div>
   </div>
 </template>
 <script>
 import TeamService from "../services/TeamService";
-import TeamMember from "../components/TeamMember";
+import TeamMember from "./TeamMember";
 export default {
-  components:{
+  components: {
     TeamMember
+  },
+  props: {
+    members: Array
   },
   data() {
     return {
@@ -71,4 +74,11 @@ export default {
 };
 </script>
 <style>
+.members {
+  margin-left: 20%;
+  margin-right: 20%;
+}
+header {
+  margin-top: 15px;
+}
 </style>
