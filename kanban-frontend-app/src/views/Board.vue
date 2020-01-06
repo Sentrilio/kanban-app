@@ -103,7 +103,7 @@ export default {
   display: flex;
   justify-content: space-between;
   background-color: grey;
-  max-height: 2000px;
+  /* max-height: 2000px; */
   height: 92vh;
 }
 
