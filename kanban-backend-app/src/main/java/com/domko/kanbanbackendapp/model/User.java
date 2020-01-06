@@ -36,6 +36,7 @@ public class User implements Serializable {
 
 	@NotBlank
 	@Size(max = 120)
+	@JsonIgnore
 	@Column(name = "password")
 	private String password;
 
