@@ -102,20 +102,19 @@ export default {
 
 <style lang="css" scoped>
 .column {
+  /* margin-left: 100px; */
+  margin-left: 40px;
+  margin-top: 20px;
+  /* padding-left: 100px; */
   outline-width: 1px;
   padding: 10px;
-  margin: 10px;
   border-radius: 10px;
   background-color: #ebebe0;
   width: 300px;
 }
 .column-name {
-  /* padding: 10px; */
   margin: 10px;
   align-content: center;
-}
-.create-task {
-  /* padding-top: 5px; */
 }
 .task-input{
   margin-top: 8px;
