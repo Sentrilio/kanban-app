@@ -1,20 +1,15 @@
 <template>
   <div class="board">
-    <div class="row">
-      <div class="column">
-        <div v-for="column in columns" :key="column.id">
-          <h3>{{column.name}}</h3>
-          <vue-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></vue-draggable>
-        </div>
-        <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
-      </div>
+    <div v-for="column in columns" :key="column.id">
+      <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
     </div>
+    <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
   </div>
 </template>
 
 <script>
 import CreateColumn from "../components/CreateColumn.vue";
-import VueDraggable from "../components/VueDraggable.vue";
+import ColumnDraggable from "../components/ColumnDraggable.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
 
@@ -22,7 +17,7 @@ export default {
   name: "Board",
   components: {
     CreateColumn,
-    VueDraggable
+    ColumnDraggable
   },
   data() {
     return {
@@ -91,7 +86,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    },
+    }
   },
   created() {
     this.getData();
@@ -118,21 +113,14 @@ export default {
   margin-left: 40px;
 }
 .board {
-  margin: 15px;
-  padding: 15px;
+  /* margin: 15px; */
+  /* padding: 15px; */
   display: inline-block;
-  /* align-content: left; */
-  /* display: flexbox; */
-  /* display: flex; */
-  /* flex-direction: row; */
-  /* flex-wrap: wrap; */
-}
-.column {
-  margin: 15px;
-  padding: 15px;
-  /* display: inline-block; */
   display: flex;
+  background-color: grey;
+  height: 100%;
 }
+
 .column-container {
   padding-top: 10px;
   display: grid;

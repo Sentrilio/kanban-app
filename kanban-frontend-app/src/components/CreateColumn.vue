@@ -1,13 +1,12 @@
 <template>
-  <div class="my-container">
-    <div class="myGrid">
-      <button class="btn" data-toggle="collapse" data-target="#demo">Create another Column</button>
-      <div id="demo" class="collapse">
-        <input v-model="columnNameInput" type="text" placeholder="column name" />
-        <button class="button" @click="createColumn" :disabled="!columnNameInput">Create Column</button>
-      </div>
-      <a>Board id : {{boardId}}</a>
+  <div class="create-column">
+    <button class="btn" data-toggle="collapse" data-target="#demo">Create another Column</button>
+    <div id="demo" class="collapse">
+      <input v-model="columnNameInput" type="text" placeholder="column name" />
+      <br>
+      <button class="button" @click="createColumn" :disabled="!columnNameInput">Create Column</button>
     </div>
+    <!-- <a>Board id : {{boardId}}</a> -->
   </div>
 </template>
 
@@ -20,7 +19,7 @@ export default {
     };
   },
   props: {
-    boardId: Number,
+    boardId: Number
   },
 
   methods: {
@@ -31,34 +30,25 @@ export default {
       UserService.createColumn(this.columnNameInput, this.boardId)
         .then(response => {
           console.log(response);
-          this.$emit('refresh')
+          this.$emit("refresh");
         })
         .catch(err => {
           console.log(err);
         });
-    },
+    }
   }
 };
 </script>
 <style lang="css" scoped>
-.my-container {
+.create-column {
   width: 100px;
   align-content: right;
-}
-.myinput1 {
-  border: none;
-}
-.myInput1:focus {
-  border: 1px;
-}
-
-.myGrid {
-  padding: 5px;
-  outline-style: solid;
+  padding: 10px;
   outline-width: 1px !important;
   outline-color: black !important;
-  width: 300px;
+  width: 400px;
 }
+
 .btn {
   background-color: #888888;
 }
