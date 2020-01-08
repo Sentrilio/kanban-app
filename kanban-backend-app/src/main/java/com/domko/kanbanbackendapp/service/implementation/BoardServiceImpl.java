@@ -21,8 +21,8 @@ public class BoardServiceImpl implements BoardService {
 		return boardRepository.findAll();
 	}
 
-	@Transactional
-	public Board saveBoard(Board board) {
+	@Override
+	public Board save(Board board) {
 		return boardRepository.save(board);
 	}
 
