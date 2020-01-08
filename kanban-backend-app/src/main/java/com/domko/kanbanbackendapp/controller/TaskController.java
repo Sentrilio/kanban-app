@@ -39,7 +39,6 @@ public class TaskController {
                 task.setDescription(createTaskRequest.getDescription());
                 task.setColumn(column.get());
                 task.setPosition(column.get().getTasks().size());
-                System.out.println("task info: " + task.getColumn().getName() + "description: " + task.getDescription());
                 taskService.save(task);
                 return new ResponseEntity<>("Task created", HttpStatus.CREATED);
             } else {
@@ -62,10 +61,25 @@ public class TaskController {
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
             }
         } else {
             return new ResponseEntity<>("BColumn does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<String> handleDeleteTask(@RequestBody Long taskId) {
+        Optional<Task> task = taskService.findById(taskId);
+        if (task.isPresent()) {
+            if (permissionService.hasPermissionToTask(task.get())) {
+                taskService.delete(task.get());
+                return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>("Task does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
