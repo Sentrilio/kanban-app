@@ -1,19 +1,29 @@
 <template>
-  <div class="container">
-    <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <li class="nav-item btn">
-        <a @click="membersClick">members</a>
-      </li>
-    </nav>
-    <a>{{team.name}}</a>
-    <br />
-    <a>{{team.id}}</a>
+  <div class="team">
+    <div class="team-header">
+      <h1>{{team.name}}</h1>
+    </div>
     <div>
-      <br />
-      <a>Boards:</a>
-      <div v-for="board in team.boards" :key="board.id">
-        <a>{{board.name}}</a>
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" @click="boardsClick" class="btn btn-secondary">Boards</button>
+        <button type="button" @click="membersClick" class="btn btn-secondary">Members</button>
+        <button type="button" @click="settingsClick" class="btn btn-secondary">Settings</button>
+      </div>
+      <div class="selected-content">
+        <div v-if="selectedContent==='boards'">
+          <div>
+            <a>Boards:</a>
+            <div v-for="board in team.boards" :key="board.id">
+              <a>{{board.name}}</a>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="selectedContent==='members'">
+          <TeamMembers :teamMembers="teamMembers"></TeamMembers>
+        </div>
+        <div v-else-if="selectedContent==='settings'">
+          <a>settings</a>
+        </div>
       </div>
     </div>
   </div>
@@ -22,21 +32,39 @@
 <script>
 import TeamService from "../services/TeamService";
 import SortService from "../services/SortService";
-
+import TeamMembers from "../components/TeamMembers";
 export default {
   name: "Team",
+  components: {
+    TeamMembers
+  },
   data() {
     return {
-      team: {}
+      team: {},
+      visible: true,
+      selectedContent: "boards",
+      teamMembers: []
     };
   },
   methods: {
+    settingsClick() {
+      this.selectedContent = "settings";
+    },
+    boardsClick() {
+      this.selectedContent = "boards";
+      this.getData();
+    },
     membersClick() {
-      let teamId = this.$route.params.teamId;
-      let teamName = this.$route.params.teamName;
-      this.$router.push({ name: "teamMembers", params: { teamId, teamName } });
+      this.selectedContent = "members";
+      // let teamId = this.$route.params.teamId;
+      // let teamName = this.$route.params.teamName;
+      // this.$router.push({ name: "teamMembers", params: { teamId, teamName } });
     },
     getData() {
+      this.getTeam();
+      this.getTeamMembers();
+    },
+    getTeam() {
       TeamService.getTeam(this.$route.params.teamId)
         .then(response => {
           this.team = response.data;
@@ -44,6 +72,15 @@ export default {
         })
         .catch(error => {
           console.log(error);
+        });
+    },
+    getTeamMembers() {
+      TeamService.getTeamMembers(this.$route.params.teamId)
+        .then(response => {
+          this.teamMembers = response.data;
+        })
+        .catch(err => {
+          console.log(err);
         });
     }
   },
@@ -58,4 +95,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.navbar .navbar-collapse {
+  text-align: center;
+  align-items: center;
+  align-content: center;
+  display: flexbox;
+  // width: 50vh !important;
+}
+.team {
+  text-align: center;
+  align-items: center;
+  align-content: center;
+  // width: 50vh;
+}
 </style>

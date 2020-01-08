@@ -198,7 +198,6 @@ export default {
   background-color: #f5f5f5;
   color: black;
 }
-
 .btn {
   margin-right: 10px !important;
 }

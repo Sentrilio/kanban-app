@@ -9,7 +9,6 @@ import CreateTeam from './views/CreateTeam.vue';
 import Board from './views/Board.vue';
 import store from './store/index';
 import Main from './views/Main.vue';
-import TeamMembers from './views/TeamMembers.vue';
 
 
 Vue.use(Router);
@@ -35,12 +34,12 @@ export const router = new Router({
       component: Team,
       beforeEnter: isLoggedIn,
     },
-    {
-      path: '/:teamName-:teamId/members',
-      name: 'teamMembers',
-      component: TeamMembers,
-      beforeEnter: isLoggedIn,
-    },
+    // {
+    //   path: '/:teamName-:teamId/members',
+    //   name: 'teamMembers',
+    //   component: TeamMembers,
+    //   beforeEnter: isLoggedIn,
+    // },
     {
       path: '/t/:teamId/b/:boardId-:boardName',
       name: 'board',

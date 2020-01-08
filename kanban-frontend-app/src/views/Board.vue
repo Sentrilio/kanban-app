@@ -1,20 +1,15 @@
 <template>
   <div class="board">
-    <div class="row">
-      <div class="column">
-        <div v-for="column in columns" :key="column.id">
-          <h3>{{column.name}}</h3>
-          <vue-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></vue-draggable>
-        </div>
-        <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
-      </div>
+    <div v-for="column in columns" :key="column.id">
+      <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
     </div>
+    <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
   </div>
 </template>
 
 <script>
 import CreateColumn from "../components/CreateColumn.vue";
-import VueDraggable from "../components/VueDraggable.vue";
+import ColumnDraggable from "../components/ColumnDraggable.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
 
@@ -22,7 +17,7 @@ export default {
   name: "Board",
   components: {
     CreateColumn,
-    VueDraggable
+    ColumnDraggable
   },
   data() {
     return {
@@ -91,7 +86,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    },
+    }
   },
   created() {
     this.getData();
@@ -102,42 +97,15 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.board-name-box {
-  /* outline-style: none; */
-  border-style: none;
-}
-.board-name-box:hover {
-  /* outline-style: none; */
-  background-color: #f5f5f5;
-}
-.nav-item {
-  padding-left: 20px;
-  /* padding-right: 20px; */
-}
-.navbar-nav {
-  margin-left: 40px;
-}
+
 .board {
-  margin: 15px;
-  padding: 15px;
-  display: inline-block;
-  /* align-content: left; */
-  /* display: flexbox; */
-  /* display: flex; */
-  /* flex-direction: row; */
-  /* flex-wrap: wrap; */
-}
-.column {
-  margin: 15px;
-  padding: 15px;
   /* display: inline-block; */
   display: flex;
+  justify-content: space-between;
+  background-color: grey;
+  /* max-height: 2000px; */
+  height: 92vh;
 }
-.column-container {
-  padding-top: 10px;
-  display: grid;
-  grid-template-columns: repeat(10, 1000fr);
-  grid-gap: 10px;
-  grid-auto-rows: 100px;
-}
+
+
 </style>
