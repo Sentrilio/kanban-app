@@ -91,22 +91,11 @@ export default {
           console.log(err);
         });
     },
-    // setConnected(connected) {
-    //   $("#connect").prop("disabled", connected);
-    //   $("#disconnect").prop("disabled", !connected);
-    //   if (connected) {
-    //     $("#conversation").show();
-    //   } else {
-    //     $("#conversation").hide();
-    //   }
-    //   $("#greetings").html("");
-    // },
 
     connect() {
       var socket = new SockJS("http://localhost:8000/gs-guide-websocket");
       this.stompClient = Stomp.over(socket);
       this.stompClient.connect({}, function(frame) {
-        this.setConnected(true);
         console.log("Connected: " + frame);
         this.stompClient.subscribe("/topic/greetings", function(greeting) {
           this.showGreeting(JSON.parse(greeting.body).content);
@@ -120,25 +109,16 @@ export default {
       if (this.stompClient !== null) {
         this.stompClient.disconnect();
       }
-      this.setConnected(false);
       console.log("Disconnected");
     },
 
     showGreeting(message) {
       console.log(message);
-      // $("#greetings").append("<tr><td>" + message + "</td></tr>");
     },
 
-    // lol(function () {
-    //     $("form").on('submit', function (e) {
-    //         e.preventDefault();
-    //     });
-    //     $( "#connect" ).click(function() { connect(); });
-    //     $( "#disconnect" ).click(function() { disconnect(); });
-    //     $( "#send" ).click(function() { sendName(); });
-    // });
     setSockJS() {
       this.connect();
+      this.sendName();
       // this.sendName();
     }
   },
@@ -154,11 +134,9 @@ export default {
 </script>
 <style lang="css" scoped>
 .board {
-  /* display: inline-block; */
   display: flex;
   justify-content: space-between;
   background-color: grey;
-  /* max-height: 2000px; */
   height: 92vh;
 }
 </style>
