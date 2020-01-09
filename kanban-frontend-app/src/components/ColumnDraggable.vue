@@ -19,7 +19,12 @@
         <font-awesome-icon icon="plus" style="padding-right:5px;" />Create Task
       </button>
       <div :id="'currentColumn'+currentColumn.id" class="collapse">
-        <input type="text" class="task-input" v-model="taskDescription" placeholder="task description" />
+        <input
+          type="text"
+          class="task-input"
+          v-model="taskDescription"
+          placeholder="task description"
+        />
         <button class="button" @click="createTask" :disabled="!taskDescription">Create</button>
       </div>
     </div>
@@ -53,7 +58,6 @@ export default {
     }
   },
   methods: {
-  
     createTask() {
       TaskService.createTask(this.column.id, this.taskDescription)
         .then(response => {
@@ -75,14 +79,15 @@ export default {
         oldIndex: event.oldIndex,
         operation: operation
       };
-      TaskService.updateTask(updateObject)
-        .then(response => {
-          console.log(response);
-          this.$emit("refresh");
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.$emit("updateTask", updateObject);
+      // TaskService.updateTask(updateObject)
+      // .then(response => {
+      // console.log(response);
+      // this.$emit("refresh");
+      // })
+      // .catch(err => {
+      // console.log(err);
+      // });
     },
     change: function(evt, column) {
       console.log(column.name);
@@ -116,7 +121,7 @@ export default {
   margin: 10px;
   align-content: center;
 }
-.task-input{
+.task-input {
   margin-top: 8px;
 }
 </style>
