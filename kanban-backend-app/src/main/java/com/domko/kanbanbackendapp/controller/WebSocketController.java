@@ -32,7 +32,8 @@ public class WebSocketController {
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public Greeting greeting(HelloMessage message) throws Exception {
-        Thread.sleep(1000); // simulated delay
+        System.out.println("something came up");
+//        Thread.sleep(1000); // simulated delay
         return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
     }
 

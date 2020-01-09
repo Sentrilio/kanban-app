@@ -4,6 +4,9 @@
       <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
     </div>
     <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
+    <button @click="sendName">send name</button>
+    <button @click="subscribe">Subscribe</button>
+
   </div>
 </template>
 
@@ -14,6 +17,7 @@ import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import WebSockerService from "../services/WebSocketService.js";
 // import authHeader from '../services/AuthHeader';
 
 export default {
@@ -27,7 +31,7 @@ export default {
       columns: [],
       board: {},
       team: {},
-      stompClient: null
+      stompClient: {}
     };
   },
   computed: {
@@ -95,15 +99,17 @@ export default {
     connect() {
       var socket = new SockJS("http://localhost:8000/gs-guide-websocket");
       this.stompClient = Stomp.over(socket);
-      this.stompClient.connect({}, function(frame) {
-        console.log("Connected: " + frame);
-        this.stompClient.subscribe("/topic/greetings", function(greeting) {
-          this.showGreeting(JSON.parse(greeting.body).content);
-        });
-      });
+
+      this.stompClient.connect();
     },
     sendName() {
-      this.stompClient.send("/app/hello", {}, JSON.stringify({ name: "name" }));
+      WebSockerService.sendName();
+      // this.stompClient.send("app/hello", {}, JSON.stringify({ name: "name" }));
+    },
+    subscribe() {
+      this.stompClient.subscribe("/topic/greetings", function(greeting) {
+        console.log(JSON.parse(greeting.body).content);
+      });
     },
     disconnect() {
       if (this.stompClient !== null) {
@@ -115,10 +121,9 @@ export default {
     showGreeting(message) {
       console.log(message);
     },
-
     setSockJS() {
-      this.connect();
-      this.sendName();
+      WebSockerService.connect();
+      // this.connect();
       // this.sendName();
     }
   },
