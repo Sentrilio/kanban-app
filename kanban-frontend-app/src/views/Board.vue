@@ -103,7 +103,9 @@ export default {
       this.stompClient.connect();
     },
     sendName() {
-      WebSockerService.sendName();
+      // WebSockerService.sendName("Chris");
+      WebSockerService.sendTask("Toby");
+
       // this.stompClient.send("app/hello", {}, JSON.stringify({ name: "name" }));
     },
     subscribe() {
