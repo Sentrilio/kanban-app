@@ -8,8 +8,11 @@ import com.domko.kanbanbackendapp.service.implementation.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.util.HtmlUtils;
@@ -28,6 +31,8 @@ public class WebSocketController {
 
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private MessageSendingOperations<String> messagingTemplate;
 
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
@@ -37,24 +42,28 @@ public class WebSocketController {
         return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
     }
 
-    @MessageMapping("/task/update/{taskId}")
-    @SendTo("/topic/board")
-    public Board updateTask(@RequestBody UpdateTaskRequest updateTaskRequest) {
-        Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());
-        Optional<BColumn> bColumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
-        if (task.isPresent() && bColumn.isPresent()) {
-            if (permissionService.hasPermissionToTask(task.get())) {
-                if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
-                    return task.get().getColumn().getBoard();
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+
+    @MessageMapping("/task/update")
+//    @SendTo("/board/{boardId}")
+    public void updateTask(HelloMessage message) {
+        System.out.println("something came up in task controller: " + message.getName());
+        messagingTemplate.convertAndSend("/topic/greetings", message);
     }
+//        return new Greeting("Hello, "+ HtmlUtils.htmlEscape("elo"+ boardId));
+//        Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());
+//        Optional<BColumn> bColumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
+//        if (task.isPresent() && bColumn.isPresent()) {
+//            if (permissionService.hasPermissionToTask(task.get())) {
+//                if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
+//                    return task.get().getColumn().getBoard();
+//                } else {
+//                    return null;
+//                }
+//            } else {
+//                return null;
+//            }
+//        } else {
+//            return null;
+//        }
 
 }
