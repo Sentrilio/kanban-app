@@ -39,22 +39,33 @@ public class WebSocketController {
     @SendTo("/topic/greetings")
     public Greeting greeting(HelloMessage message) throws Exception {
         System.out.println("something came up");
-//        Thread.sleep(1000); // simulated delay
         return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
     }
 
 
     @MessageMapping("/task/update")
-//    @SendTo("/board/{boardId}")
     public void updateTask(UpdateTaskRequest updateTaskRequest) {
-        System.out.println("something came up in task controller: " + updateTaskRequest);
-        Optional<BColumn> bcolumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
-        if (bcolumn.isPresent()) {
-            long boardId = bcolumn.get().getBoard().getId();
-            System.out.println("board id: "+boardId);
-            messagingTemplate.convertAndSend("/topic/greetings/"+boardId, new MessageResponse("board updated!"));
+        Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());
+        Optional<BColumn> bColumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
+        if (task.isPresent() && bColumn.isPresent()) {
+            long boardId = bColumn.get().getBoard().getId();
+            if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
+                messagingTemplate.convertAndSend("/topic/greetings/" + boardId, new MessageResponse("board updated!"));
+            } else {
+                System.out.println("Task could not be updated");
+            }
+        } else {
+            System.out.println("task or bcolumn not exists");
         }
     }
+    ///
+//        System.out.println("something came up in task controller: " + updateTaskRequest);
+//        Optional<BColumn> bcolumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
+
+//        if (bcolumn.isPresent()) {
+
+//            System.out.println("board id: "+boardId);
+//        }
 //        return new Greeting("Hello, "+ HtmlUtils.htmlEscape("elo"+ boardId));
 //        Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());
 //        Optional<BColumn> bColumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
