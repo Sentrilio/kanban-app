@@ -2,6 +2,7 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
+import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.service.implementation.BColumnServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.PermissionService;
 import com.domko.kanbanbackendapp.service.implementation.TaskServiceImpl;
@@ -45,9 +46,14 @@ public class WebSocketController {
 
     @MessageMapping("/task/update")
 //    @SendTo("/board/{boardId}")
-    public void updateTask(HelloMessage message) {
-        System.out.println("something came up in task controller: " + message.getName());
-        messagingTemplate.convertAndSend("/topic/greetings", message);
+    public void updateTask(UpdateTaskRequest updateTaskRequest) {
+        System.out.println("something came up in task controller: " + updateTaskRequest);
+        Optional<BColumn> bcolumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
+        if (bcolumn.isPresent()) {
+            long boardId = bcolumn.get().getBoard().getId();
+            System.out.println("board id: "+boardId);
+            messagingTemplate.convertAndSend("/topic/greetings/"+boardId, new MessageResponse("board updated!"));
+        }
     }
 //        return new Greeting("Hello, "+ HtmlUtils.htmlEscape("elo"+ boardId));
 //        Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());

@@ -1,12 +1,16 @@
 <template>
   <div class="board">
     <div v-for="column in columns" :key="column.id">
-      <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
+      <column-draggable
+        @updateTask="updateTask"
+        @refresh="refresh"
+        @boardUpdate="boardUpdate"
+        :column="column"
+      ></column-draggable>
     </div>
     <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
-    <button @click="sendName">send name</button>
-    <button @click="subscribe">Subscribe</button>
-
+    <!-- <button @click="sendName">send name</button> -->
+    <!-- <button @click="subscribe">Subscribe</button> -->
   </div>
 </template>
 
@@ -15,9 +19,9 @@ import CreateColumn from "../components/CreateColumn.vue";
 import ColumnDraggable from "../components/ColumnDraggable.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
-import WebSockerService from "../services/WebSocketService.js";
+// import SockJS from "sockjs-client";
+// import Stomp from "stompjs";
+import WebSocketService from "../services/WebSocketService.js";
 // import authHeader from '../services/AuthHeader';
 
 export default {
@@ -96,37 +100,17 @@ export default {
         });
     },
 
-    connect() {
-      var socket = new SockJS("http://localhost:8000/gs-guide-websocket");
-      this.stompClient = Stomp.over(socket);
-
-      this.stompClient.connect();
-    },
     sendName() {
       // WebSockerService.sendName("Chris");
-      WebSockerService.sendTask("Toby");
-
+      WebSocketService.sendTask("Toby");
       // this.stompClient.send("app/hello", {}, JSON.stringify({ name: "name" }));
     },
-    subscribe() {
-      this.stompClient.subscribe("/topic/greetings", function(greeting) {
-        console.log(JSON.parse(greeting.body).content);
-      });
-    },
-    disconnect() {
-      if (this.stompClient !== null) {
-        this.stompClient.disconnect();
-      }
-      console.log("Disconnected");
+    updateTask(data) {
+      WebSocketService.updateTask(data);
     },
 
-    showGreeting(message) {
-      console.log(message);
-    },
     setSockJS() {
-      WebSockerService.connect();
-      // this.connect();
-      // this.sendName();
+      WebSocketService.connect(this.$route.params.boardId);
     }
   },
 
