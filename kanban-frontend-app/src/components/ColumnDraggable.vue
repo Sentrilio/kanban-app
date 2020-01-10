@@ -25,6 +25,7 @@
           v-model="taskDescription"
           placeholder="task description"
         />
+
         <button class="button" @click="createTask" :disabled="!taskDescription">Create</button>
       </div>
     </div>
@@ -58,6 +59,7 @@ export default {
     }
   },
   methods: {
+
     createTask() {
       TaskService.createTask(this.column.id, this.taskDescription)
         .then(response => {
@@ -79,7 +81,6 @@ export default {
         oldIndex: event.oldIndex,
         operation: operation
       };
-      this.$emit("updateTask", updateObject);
       TaskService.updateTask(updateObject)
       .then(response => {
       console.log(response);
@@ -88,6 +89,7 @@ export default {
       .catch(err => {
       console.log(err);
       });
+
     },
     change: function(evt, column) {
       console.log(column.name);
@@ -122,6 +124,7 @@ export default {
   align-content: center;
 }
 .task-input {
+
   margin-top: 8px;
 }
 </style>

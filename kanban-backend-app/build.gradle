@@ -25,10 +25,12 @@ ext {
 }
 
 dependencies {
+
 	//websocket
 	compile group: 'org.springframework', name: 'spring-messaging', version: '5.2.2.RELEASE'
 	compile group: 'org.springframework.security', name: 'spring-security-messaging', version: '5.2.1.RELEASE'
 	//
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-security'

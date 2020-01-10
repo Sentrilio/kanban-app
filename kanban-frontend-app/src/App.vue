@@ -160,6 +160,7 @@ export default {
         console.log("team switching");
         let teamId = team.id;
         let teamName = team.name.replace(/\s/g, ""); //maybe it can be moved into seperate component
+
         this.$router.push({
           name: "team",
           params: { teamId, teamName }
@@ -170,6 +171,7 @@ export default {
       if (team) {
         console.log("board switching");
         WebSocketService.disconnect();
+
         let boardId = board.id;
         let boardName = board.name;
         let teamId = team.id;
@@ -178,6 +180,7 @@ export default {
           params: { teamId, boardId, boardName }
         });
         // this.$route.params.pathMatch;
+
       } else {
         console.log("team does not exists");
       }
