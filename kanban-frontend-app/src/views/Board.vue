@@ -2,7 +2,6 @@
   <div class="board">
     <div v-for="column in columns" :key="column.id">
       <column-draggable
-        @updateTask="updateTask"
         @refresh="refresh"
         @boardUpdate="boardUpdate"
         :column="column"
@@ -77,7 +76,7 @@ export default {
       this.getTeam();
     },
     getBoard() {
-      console.log("getting board from board")
+      console.log("getting board from board.vue")
       BoardService.getBoard(this.$route.params.boardId)
         .then(response => {
           this.board = response.data;
@@ -91,7 +90,7 @@ export default {
         });
     },
     getTeam() {
-      console.log("getting team from board");
+      console.log("getting team from board.vue");
       TeamService.getTeam(this.$route.params.teamId)
         .then(response => {
           this.team = response.data;
@@ -101,18 +100,16 @@ export default {
         });
     },
 
-    sendName() {
-      // WebSockerService.sendName("Chris");
-      WebSocketService.sendTask("Toby");
-      // this.stompClient.send("app/hello", {}, JSON.stringify({ name: "name" }));
-    },
-    updateTask(data) {
-      console.log(data);
-      // WebSocketService.updateTask(data);
-    },
-
     setSockJS() {
-      WebSocketService.connect(this.$route.params.boardId);
+      WebSocketService.connect(this.$route.params.boardId, this.messageHandle);
+    },
+    messageHandle(data){
+                console.log("DATA in board view:");
+                console.log(JSON.parse(data.body).message);
+                if(JSON.parse(data.body).message==="Board updated!"){
+                  this.getData();
+                }
+                console.log("DATA END in board view");
     },
     setBoard() {
       this.getData();
