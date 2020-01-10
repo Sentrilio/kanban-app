@@ -104,12 +104,11 @@ export default {
       WebSocketService.connect(this.$route.params.boardId, this.messageHandle);
     },
     messageHandle(data){
-                console.log("DATA in board view:");
-                console.log(JSON.parse(data.body).message);
-                if(JSON.parse(data.body).message==="Board updated!"){
+                console.log("Message came up:");
+                JSON.parse(data.body).message
+                if(JSON.parse(data.body).message==="board updated"){
                   this.getData();
                 }
-                console.log("DATA END in board view");
     },
     setBoard() {
       this.getData();

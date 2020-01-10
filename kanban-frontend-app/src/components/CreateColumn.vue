@@ -29,7 +29,7 @@ export default {
       ColumnService.createColumn(this.columnNameInput, this.boardId)
         .then(response => {
           console.log(response);
-          // this.$emit("refresh");
+          this.$emit("refresh");
         })
         .catch(err => {
           console.log(err);

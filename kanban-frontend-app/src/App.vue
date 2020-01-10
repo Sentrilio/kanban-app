@@ -79,6 +79,8 @@
 
 <script>
 import TeamService from "./services/TeamService";
+import WebSocketService from "./services/WebSocketService";
+
 export default {
   data() {
     return {
@@ -167,6 +169,7 @@ export default {
     switchToBoard(team, board) {
       if (team) {
         console.log("board switching");
+        WebSocketService.disconnect();
         let boardId = board.id;
         let boardName = board.name;
         let teamId = team.id;

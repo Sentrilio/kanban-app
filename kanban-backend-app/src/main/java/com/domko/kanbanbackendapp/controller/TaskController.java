@@ -44,6 +44,7 @@ public class TaskController {
                 task.setColumn(column.get());
                 task.setPosition(column.get().getTasks().size());
                 taskService.save(task);
+                template.convertAndSend("/topic/greetings/"+task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Board or list does not exists", HttpStatus.FORBIDDEN);
@@ -60,7 +61,7 @@ public class TaskController {
         if (task.isPresent() && bColumn.isPresent()) {
             if (permissionService.hasPermissionToTask(task.get())) {
                 if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
-                    template.convertAndSend("/topic/greetings/"+bColumn.get().getBoard().getId(), new MessageResponse("Board updated!"));
+                    template.convertAndSend("/topic/greetings/"+bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -79,6 +80,7 @@ public class TaskController {
         if (task.isPresent()) {
             if (permissionService.hasPermissionToTask(task.get())) {
                 taskService.delete(task.get());
+                template.convertAndSend("/topic/greetings/"+task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
