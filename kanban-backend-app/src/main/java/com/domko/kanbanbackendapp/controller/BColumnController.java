@@ -3,10 +3,12 @@ package com.domko.kanbanbackendapp.controller;
 import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.payload.request.CreateColumnRequest;
+import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -22,6 +24,8 @@ public class BColumnController {
     private BColumnServiceImpl bColumnService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createColumn(@RequestBody CreateColumnRequest createColumnRequest) {
@@ -34,6 +38,7 @@ public class BColumnController {
                 column.setPosition(board.get().getColumns().size());
                 System.out.println("column name: " + column.getName());
                 bColumnService.save(column);
+                template.convertAndSend("/topic/greetings/" + column.getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Column created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
