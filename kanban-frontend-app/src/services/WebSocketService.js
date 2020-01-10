@@ -11,7 +11,6 @@ class WebSocketService {
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/greetings/' + boardId, function (greeting) {
-                // stompClient.subscribe('/board/' + 26, function (greeting) {
                 console.log(JSON.parse(greeting.body).content);
             });
         });

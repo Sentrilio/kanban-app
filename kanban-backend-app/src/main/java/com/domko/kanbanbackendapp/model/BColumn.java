@@ -39,6 +39,6 @@ public class BColumn {
 
     @JsonManagedReference
     @OrderColumn(name = "position")// jesli nie ma rekordu to tworzony jest null
-    @OneToMany(mappedBy = "column",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "column")
     private List<Task> tasks;
 }

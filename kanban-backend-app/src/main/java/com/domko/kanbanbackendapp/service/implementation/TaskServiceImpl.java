@@ -34,10 +34,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void delete(Task task){
+    public void delete(Task task) {
         taskRepository.delete(task);
     }
 
+    @Transactional//maybe not needed (to test)
     public void updatePositions(List<Task> tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             Optional<Task> task = findById(tasks.get(i).getId());
@@ -51,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-//    @Transactional//maybe not needed (to test)
+    @Transactional//maybe not needed (to test)
     public boolean updateTask(Task task, BColumn column, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
