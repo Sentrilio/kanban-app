@@ -44,7 +44,6 @@ public class TaskServiceImpl implements TaskService {
             Optional<Task> task = findById(tasks.get(i).getId());
             if (task.isPresent()) {
                 task.get().setPosition(i);
-//                System.out.println("task : " + task.get().getDescription() + " task position: " + task.get().getPosition() + " column:" + task.get().getColumn().getName());
                 save(task.get());
             } else {
                 System.out.println("Task does not exists");
@@ -52,7 +51,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    @Transactional//maybe not needed (to test)
+    @Transactional//necessary
     public boolean updateTask(Task task, BColumn column, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
