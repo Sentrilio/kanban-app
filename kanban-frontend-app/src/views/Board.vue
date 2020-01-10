@@ -77,9 +77,9 @@ export default {
       this.getTeam();
     },
     getBoard() {
+      console.log("getting board from board")
       BoardService.getBoard(this.$route.params.boardId)
         .then(response => {
-          console.log("board retrieved");
           this.board = response.data;
           this.columns = this.board.columns;
         })
@@ -91,6 +91,7 @@ export default {
         });
     },
     getTeam() {
+      console.log("getting team from board");
       TeamService.getTeam(this.$route.params.teamId)
         .then(response => {
           this.team = response.data;
@@ -112,15 +113,35 @@ export default {
 
     setSockJS() {
       WebSocketService.connect(this.$route.params.boardId);
+    },
+    setBoard() {
+      this.getData();
+      this.setSockJS();
     }
   },
 
   created() {
-    this.getData();
-    this.setSockJS();
+    this.setBoard();
+    // this.getData();
+    // this.setSockJS();
+  },
+  mounted() {
+    // this.setBoard();
+  },
+  updated() {
+    // this.setBoard();
+  },
+  destroyed() {
+    WebSocketService.disconnect();
   },
   watch: {
-    $route: "getData"
+    $route(to, from) {
+      console.log(to);
+      console.log(from);
+      this.setBoard();
+      // this.show = false;
+    }
+    // $route: "setBoard"
   }
 };
 </script>

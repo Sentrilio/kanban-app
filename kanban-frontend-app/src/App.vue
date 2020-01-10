@@ -82,7 +82,7 @@ import TeamService from "./services/TeamService";
 export default {
   data() {
     return {
-      teams: [],
+      teams: []
     };
   },
   computed: {
@@ -103,11 +103,11 @@ export default {
     }
   },
   methods: {
-    homeClick(){
-      if(this.currentUser){
-        this.$router.push({name:'main'})
-      }else{
-        this.$router.push({name:'home'})
+    homeClick() {
+      if (this.currentUser) {
+        this.$router.push({ name: "main" });
+      } else {
+        this.$router.push({ name: "home" });
       }
     },
     compare(a, b) {
@@ -157,7 +157,7 @@ export default {
       if (team) {
         console.log("team switching");
         let teamId = team.id;
-        let teamName = team.name.replace(/\s/g,'');//maybe it can be moved into seperate component
+        let teamName = team.name.replace(/\s/g, ""); //maybe it can be moved into seperate component
         this.$router.push({
           name: "team",
           params: { teamId, teamName }
@@ -174,7 +174,7 @@ export default {
           name: "board",
           params: { teamId, boardId, boardName }
         });
-        this.$route.params.pathMatch;
+        // this.$route.params.pathMatch;
       } else {
         console.log("team does not exists");
       }
