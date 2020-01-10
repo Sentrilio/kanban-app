@@ -34,16 +34,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void delete(Task task){
+    public void delete(Task task) {
         taskRepository.delete(task);
     }
 
+    @Transactional//maybe not needed (to test)
     public void updatePositions(List<Task> tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             Optional<Task> task = findById(tasks.get(i).getId());
             if (task.isPresent()) {
                 task.get().setPosition(i);
-//                System.out.println("task : " + task.get().getDescription() + " task position: " + task.get().getPosition() + " column:" + task.get().getColumn().getName());
                 save(task.get());
             } else {
                 System.out.println("Task does not exists");
@@ -51,14 +51,15 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    @Transactional//maybe not needed (to test)
-    public boolean updateTask(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest) {
+    @Transactional//necessary
+    public boolean updateTask(Task task, BColumn column, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
                 long oldColumnId = task.getColumn().getId();
-                task.setColumn(bColumn);
-                bColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                BColumn updatedColumn = bColumnService.save(bColumn);
+                task.setColumn(column);
+                column.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                BColumn updatedColumn = bColumnService.save(column);
+
                 updatePositions(updatedColumn.getTasks());
                 Optional<BColumn> oldColumn = bColumnService.findBColumn(oldColumnId);
                 if (oldColumn.isPresent()) {
@@ -70,9 +71,9 @@ public class TaskServiceImpl implements TaskService {
                     return false;
                 }
             case MOVE:
-                bColumn.getTasks().remove(task);
-                bColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                updatePositions(bColumn.getTasks());
+                column.getTasks().remove(task);
+                column.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                updatePositions(column.getTasks());
                 return true;
             default:
                 return false;

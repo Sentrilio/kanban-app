@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import UserService from "../services/user.service";
+import ColumnService from "../services/ColumnService";
 export default {
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
       console.log(
         "Creating column" + this.columnNameInput + " id: " + this.boardId
       );
-      UserService.createColumn(this.columnNameInput, this.boardId)
+      ColumnService.createColumn(this.columnNameInput, this.boardId)
         .then(response => {
           console.log(response);
           this.$emit("refresh");

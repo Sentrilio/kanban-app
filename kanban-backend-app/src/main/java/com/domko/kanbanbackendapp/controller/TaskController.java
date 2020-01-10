@@ -5,10 +5,12 @@ import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
+import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -24,6 +26,8 @@ public class TaskController {
     private BColumnServiceImpl bColumnService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @GetMapping(value = "/get/{id}")
     public Optional<Task> findById(@PathVariable Long id) {
@@ -40,6 +44,7 @@ public class TaskController {
                 task.setColumn(column.get());
                 task.setPosition(column.get().getTasks().size());
                 taskService.save(task);
+                template.convertAndSend("/topic/greetings/"+task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Board or list does not exists", HttpStatus.FORBIDDEN);
@@ -56,6 +61,7 @@ public class TaskController {
         if (task.isPresent() && bColumn.isPresent()) {
             if (permissionService.hasPermissionToTask(task.get())) {
                 if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
+                    template.convertAndSend("/topic/greetings/"+bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,6 +80,7 @@ public class TaskController {
         if (task.isPresent()) {
             if (permissionService.hasPermissionToTask(task.get())) {
                 taskService.delete(task.get());
+                template.convertAndSend("/topic/greetings/"+task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
