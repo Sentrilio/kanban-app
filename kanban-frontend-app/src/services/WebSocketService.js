@@ -5,14 +5,12 @@ var stompClient = null;
 
 class WebSocketService {
 
-    connect(boardId) {
+    connect(boardId, func) {
         var socket = new SockJS('http://localhost:8000/gs-guide-websocket');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/greetings/' + boardId, function (greeting) {
-                console.log(JSON.parse(greeting.body).content);
-            });
+            stompClient.subscribe('/topic/greetings/' + boardId, func)
         });
     }
 
@@ -21,13 +19,6 @@ class WebSocketService {
             stompClient.disconnect();
         }
         console.log("Disconnected");
-    }
-
-    sendName(name) {
-        stompClient.send("/app/hello", {}, JSON.stringify({ 'name': name }));
-    }
-    updateTask(data) {
-        stompClient.send("/app/task/update", {}, JSON.stringify(data));
     }
 
 }

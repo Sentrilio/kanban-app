@@ -60,7 +60,7 @@ public class TaskController {
         if (task.isPresent() && bColumn.isPresent()) {
             if (permissionService.hasPermissionToTask(task.get())) {
                 if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
-                    template.convertAndSend("/topic/greetings/26", new MessageResponse("Board updated!"));
+                    template.convertAndSend("/topic/greetings/"+bColumn.get().getBoard().getId(), new MessageResponse("Board updated!"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
