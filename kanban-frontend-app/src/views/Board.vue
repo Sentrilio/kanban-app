@@ -1,9 +1,15 @@
 <template>
   <div class="board">
     <div v-for="column in columns" :key="column.id">
-      <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
+      <column-draggable
+        @refresh="refresh"
+        @boardUpdate="boardUpdate"
+        :column="column"
+      ></column-draggable>
     </div>
     <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
+    <!-- <button @click="sendName">send name</button> -->
+    <!-- <button @click="subscribe">Subscribe</button> -->
   </div>
 </template>
 
@@ -12,6 +18,10 @@ import CreateColumn from "../components/CreateColumn.vue";
 import ColumnDraggable from "../components/ColumnDraggable.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
+// import SockJS from "sockjs-client";
+// import Stomp from "stompjs";
+import WebSocketService from "../services/WebSocketService.js";
+// import authHeader from '../services/AuthHeader';
 
 export default {
   name: "Board",
@@ -23,7 +33,8 @@ export default {
     return {
       columns: [],
       board: {},
-      team: {}
+      team: {},
+      stompClient: {}
     };
   },
   computed: {
@@ -65,9 +76,9 @@ export default {
       this.getTeam();
     },
     getBoard() {
+      console.log("getting board from board.vue")
       BoardService.getBoard(this.$route.params.boardId)
         .then(response => {
-          console.log("board retrieved");
           this.board = response.data;
           this.columns = this.board.columns;
         })
@@ -79,6 +90,7 @@ export default {
         });
     },
     getTeam() {
+      console.log("getting team from board.vue");
       TeamService.getTeam(this.$route.params.teamId)
         .then(response => {
           this.team = response.data;
@@ -86,26 +98,54 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+
+    setSockJS() {
+      WebSocketService.connect(this.$route.params.boardId, this.messageHandle);
+    },
+    messageHandle(data){
+                console.log("Message came up:");
+                JSON.parse(data.body).message
+                if(JSON.parse(data.body).message==="board updated"){
+                  this.getData();
+                }
+    },
+    setBoard() {
+      this.getData();
+      this.setSockJS();
     }
   },
+
   created() {
-    this.getData();
+    this.setBoard();
+    // this.getData();
+    // this.setSockJS();
+  },
+  mounted() {
+    // this.setBoard();
+  },
+  updated() {
+    // this.setBoard();
+  },
+  destroyed() {
+    WebSocketService.disconnect();
   },
   watch: {
-    $route: "getData"
+    $route(to, from) {
+      console.log(to);
+      console.log(from);
+      this.setBoard();
+      // this.show = false;
+    }
+    // $route: "setBoard"
   }
 };
 </script>
 <style lang="css" scoped>
-
 .board {
-  /* display: inline-block; */
   display: flex;
   justify-content: space-between;
   background-color: grey;
-  /* max-height: 2000px; */
   height: 92vh;
 }
-
-
 </style>

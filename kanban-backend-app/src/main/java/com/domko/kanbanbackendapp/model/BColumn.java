@@ -37,7 +37,6 @@ public class BColumn {
     @Column(name = "position", unique = true, nullable = false)
     private Integer position;
 
-
     @JsonManagedReference
     @OrderColumn(name = "position")// jesli nie ma rekordu to tworzony jest null
     @OneToMany(mappedBy = "column")
