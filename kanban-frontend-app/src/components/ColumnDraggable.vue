@@ -80,14 +80,14 @@ export default {
         operation: operation
       };
       this.$emit("updateTask", updateObject);
-      // TaskService.updateTask(updateObject)
-      // .then(response => {
-      // console.log(response);
-      // this.$emit("refresh");
-      // })
-      // .catch(err => {
-      // console.log(err);
-      // });
+      TaskService.updateTask(updateObject)
+      .then(response => {
+      console.log(response);
+      this.$emit("refresh");
+      })
+      .catch(err => {
+      console.log(err);
+      });
     },
     change: function(evt, column) {
       console.log(column.name);

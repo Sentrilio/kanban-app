@@ -106,7 +106,8 @@ export default {
       // this.stompClient.send("app/hello", {}, JSON.stringify({ name: "name" }));
     },
     updateTask(data) {
-      WebSocketService.updateTask(data);
+      console.log(data);
+      // WebSocketService.updateTask(data);
     },
 
     setSockJS() {
