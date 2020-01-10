@@ -59,6 +59,7 @@ public class TaskServiceImpl implements TaskService {
                 task.setColumn(column);
                 column.getTasks().add(updateTaskRequest.getNewIndex(), task);
                 BColumn updatedColumn = bColumnService.save(column);
+
                 updatePositions(updatedColumn.getTasks());
                 Optional<BColumn> oldColumn = bColumnService.findBColumn(oldColumnId);
                 if (oldColumn.isPresent()) {
