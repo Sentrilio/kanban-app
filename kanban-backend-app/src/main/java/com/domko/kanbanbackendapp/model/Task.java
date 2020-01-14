@@ -31,10 +31,11 @@ public class Task {
     @Column(name = "position")
     private Integer position;
 
+    @Column(name = "importance")
+    private Integer importance;
+
     @JsonBackReference
     @ManyToOne
-//    @JsonManagedReference
-//    @JsonIgnore
     @JoinColumn(name = "column_id", nullable = false)
     private BColumn column;
 
