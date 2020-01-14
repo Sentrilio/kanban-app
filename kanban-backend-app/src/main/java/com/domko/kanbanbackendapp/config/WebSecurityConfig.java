@@ -78,19 +78,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/**").authenticated()
                 .antMatchers("/api/test/**").permitAll()
+                .antMatchers("/api/**").authenticated()
                 .antMatchers("/gs-guide-websocket/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-
-//    @Override
-//    public void configure(WebSecurity registry) {
-//        registry.corsConf
-//        registry.ignoring().antMatchers("/gs-guide-websocket/**");
-//    }
-
 
 }

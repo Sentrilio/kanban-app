@@ -1,4 +1,5 @@
 <template>
+
   <div class="column">
     <div class="column-name">
       <a>{{column.name}}</a>
@@ -6,7 +7,7 @@
     <draggable
       class="list-group"
       :list="column.tasks"
-      group="people"
+      group="task"
       @change="change($event, column)"
     >
       <div v-for="task in column.tasks" :key="task.id">
