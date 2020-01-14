@@ -1,6 +1,11 @@
 <template>
   <div>
-    <draggable class="board" group="column" :list="board.columns" @change="columnChange($event, board)">
+    <draggable
+      class="board"
+      group="column"
+      :list="board.columns"
+      @change="columnChange($event)"
+    >
       <div v-for="column in columns" :key="column.id">
         <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
       </div>
@@ -17,11 +22,10 @@ import CreateColumn from "../components/CreateColumn.vue";
 import ColumnDraggable from "../components/ColumnDraggable.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
+import ColumnService from "../services/ColumnService";
 import draggable from "vuedraggable";
-// import SockJS from "sockjs-client";
-// import Stomp from "stompjs";
+import Operation from "../models/Operation";
 import WebSocketService from "../services/WebSocketService.js";
-// import authHeader from '../services/AuthHeader';
 
 export default {
   name: "Board",
@@ -116,10 +120,29 @@ export default {
       this.getData();
       this.setSockJS();
     },
-    columnChange: function(event, column){
-      console.log("column change")
+    columnChange: function(event) {
+      if (event.moved) {
+        console.log("moving...");
+        this.updateColumn(event.moved, Operation.MOVE);
+      }
       console.log(event);
-      console.log(column);
+    },
+    updateColumn(event, operation) {
+      console.log(event);
+      let updateObject = {
+        columnId: event.element.id,
+        newIndex: event.newIndex,
+        oldIndex: event.oldIndex,
+        operation: operation
+      };
+      console.log(updateObject);
+      ColumnService.changeColumnPosition(updateObject)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
 

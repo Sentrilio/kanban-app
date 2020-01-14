@@ -4,12 +4,10 @@ import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
-import com.domko.kanbanbackendapp.service.BColumnService;
 import com.domko.kanbanbackendapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +59,7 @@ public class TaskServiceImpl implements TaskService {
                 BColumn updatedColumn = bColumnService.save(column);
 
                 updatePositions(updatedColumn.getTasks());
-                Optional<BColumn> oldColumn = bColumnService.findBColumn(oldColumnId);
+                Optional<BColumn> oldColumn = bColumnService.findById(oldColumnId);
                 if (oldColumn.isPresent()) {
                     oldColumn.get().getTasks().remove(task);
                     BColumn updatedOldColumn = bColumnService.save(oldColumn.get());

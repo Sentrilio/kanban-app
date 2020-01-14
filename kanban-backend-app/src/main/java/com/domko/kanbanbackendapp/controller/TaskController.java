@@ -36,7 +36,7 @@ public class TaskController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        Optional<BColumn> column = bColumnService.findBColumn(createTaskRequest.getColumnId());
+        Optional<BColumn> column = bColumnService.findById(createTaskRequest.getColumnId());
         if (column.isPresent()) {
             if (permissionService.hasPermissionToBColumn(column.get())) {
                 Task task = new Task();
@@ -57,11 +57,11 @@ public class TaskController {
     @PostMapping(value = "/update")
     public ResponseEntity<String> handleTaskAdded(@RequestBody UpdateTaskRequest updateTaskRequest) {
         Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());
-        Optional<BColumn> bColumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
+        Optional<BColumn> bColumn = bColumnService.findById(updateTaskRequest.getColumnId());
         if (task.isPresent() && bColumn.isPresent()) {
             if (permissionService.hasPermissionToTask(task.get())) {
                 if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
-                    template.convertAndSend("/topic/greetings/"+bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+                    template.convertAndSend("/topic/board/"+bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -6,11 +6,11 @@ var stompClient = null;
 class WebSocketService {
 
     connect(boardId, func) {
-        var socket = new SockJS('http://localhost:8000/gs-guide-websocket');
+        var socket = new SockJS('http://localhost:8000/websocket');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/greetings/' + boardId, func)
+            stompClient.subscribe('/topic/board/' + boardId, func)
         });
     }
 
