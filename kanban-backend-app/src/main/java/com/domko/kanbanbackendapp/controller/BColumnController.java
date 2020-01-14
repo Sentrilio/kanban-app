@@ -32,7 +32,7 @@ public class BColumnController {
     public ResponseEntity<String> createColumn(@RequestBody CreateColumnRequest createColumnRequest) {
         Optional<Board> board = boardService.findBoard(createColumnRequest.getBoardId());
         if (board.isPresent()) {
-            if (permissionService.hasPermissionToBoard(board.get())) {
+            if (permissionService.hasPermissionTo(board.get())) {
                 BColumn column = new BColumn();
                 column.setName(createColumnRequest.getColumnName());
                 column.setBoard(board.get());
@@ -53,7 +53,7 @@ public class BColumnController {
     public ResponseEntity<String> handleBColumnMove(@RequestBody UpdateColumnRequest updateColumnRequest) {
         Optional<BColumn> bColumn = bColumnService.findById(updateColumnRequest.getColumnId());
         if (bColumn.isPresent()) {
-            if (permissionService.hasPermissionToBColumn(bColumn.get())) {
+            if (permissionService.hasPermissionTo(bColumn.get())) {
                 if (bColumnService.updateBColumn(bColumn.get(), updateColumnRequest)) {
                     template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateColumnRequest.getOperation() + " on column successful", HttpStatus.OK);
@@ -65,6 +65,22 @@ public class BColumnController {
             }
         } else {
             return new ResponseEntity<>("BColumn does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<String> handleDeleteBColumn(@RequestBody Long column) {
+        Optional<BColumn> bColumn = bColumnService.findById(column);
+        if (bColumn.isPresent()) {
+            if (permissionService.hasPermissionTo(bColumn.get())) {
+                bColumnService.delete(bColumn.get());
+                template.convertAndSend("/topic/board/"+bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+                return new ResponseEntity<>("Column Deleted", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>("Column does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

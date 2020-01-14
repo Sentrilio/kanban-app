@@ -41,7 +41,7 @@ public class BoardController {
     public ResponseEntity<String> createBoard(@RequestBody CreateBoardRequest createBoardRequest) {
         Optional<Team> team = teamService.findTeam(createBoardRequest.getTeamId());
         if (team.isPresent()) {
-            if (permissionService.hasPermissionToTeam(team.get())) {
+            if (permissionService.hasPermissionTo(team.get())) {
 
                 Board board = new Board();
                 board.setName(createBoardRequest.getBoardName());
@@ -65,7 +65,7 @@ public class BoardController {
     public ResponseEntity<String> updateBoard(@RequestBody UpdateBoardRequest updateBoardRequest) {
         Optional<Board> board = boardService.findBoard(updateBoardRequest.getBoardId());
         if (board.isPresent()) {
-            if (permissionService.hasPermissionToBoard(board.get())) {
+            if (permissionService.hasPermissionTo(board.get())) {
                 updateBoardRequest.getColumns().forEach(column -> {
                     for (int i = 0; i < column.getTasks().size(); i++) {
                         Optional<Task> task1 = taskService.findById(column.getTasks().get(i).getId());

@@ -12,4 +12,5 @@ public interface BColumnService {
 
     boolean updateBColumn(BColumn bColumn, UpdateColumnRequest updateColumnRequest);
 
+    void delete(BColumn bColumn);
 }

@@ -44,6 +44,11 @@ public class BColumnServiceImpl implements BColumnService {
         }
     }
 
+    @Override
+    public void delete(BColumn bColumn) {
+        bColumnRepository.delete(bColumn);
+    }
+
     @Transactional//maybe not needed (to test)
     public void updatePositions(List<BColumn> columns) {
         for (int i = 0; i < columns.size(); i++) {
