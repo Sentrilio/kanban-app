@@ -1,12 +1,11 @@
 <template>
-  <div class="board">
-    <div v-for="column in columns" :key="column.id">
-      <column-draggable
-        @refresh="refresh"
-        @boardUpdate="boardUpdate"
-        :column="column"
-      ></column-draggable>
-    </div>
+  <div>
+    <draggable class="board" group="column" :list="board.columns" @change="columnChange($event, board)">
+      <div v-for="column in columns" :key="column.id">
+        <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
+      </div>
+    </draggable>
+
     <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
     <!-- <button @click="sendName">send name</button> -->
     <!-- <button @click="subscribe">Subscribe</button> -->
@@ -18,6 +17,7 @@ import CreateColumn from "../components/CreateColumn.vue";
 import ColumnDraggable from "../components/ColumnDraggable.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
+import draggable from "vuedraggable";
 // import SockJS from "sockjs-client";
 // import Stomp from "stompjs";
 import WebSocketService from "../services/WebSocketService.js";
@@ -27,7 +27,8 @@ export default {
   name: "Board",
   components: {
     CreateColumn,
-    ColumnDraggable
+    ColumnDraggable,
+    draggable
   },
   data() {
     return {
@@ -75,8 +76,9 @@ export default {
       this.getBoard();
       this.getTeam();
     },
+
     getBoard() {
-      console.log("getting board from board.vue")
+      console.log("getting board from board.vue");
       BoardService.getBoard(this.$route.params.boardId)
         .then(response => {
           this.board = response.data;
@@ -103,16 +105,21 @@ export default {
     setSockJS() {
       WebSocketService.connect(this.$route.params.boardId, this.messageHandle);
     },
-    messageHandle(data){
-                console.log("Message came up:");
-                JSON.parse(data.body).message
-                if(JSON.parse(data.body).message==="board updated"){
-                  this.getData();
-                }
+    messageHandle(data) {
+      console.log("Message came up:");
+      JSON.parse(data.body).message;
+      if (JSON.parse(data.body).message === "board updated") {
+        this.getData();
+      }
     },
     setBoard() {
       this.getData();
       this.setSockJS();
+    },
+    columnChange: function(event, column){
+      console.log("column change")
+      console.log(event);
+      console.log(column);
     }
   },
 
