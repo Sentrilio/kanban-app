@@ -6,5 +6,4 @@ import lombok.Data;
 public class CreateBoardRequest {
     private String boardName;
     private long teamId;
-    private Integer wipLimit;
 }

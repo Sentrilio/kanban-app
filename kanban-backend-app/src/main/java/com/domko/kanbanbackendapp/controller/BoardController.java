@@ -41,48 +41,14 @@ public class BoardController {
     public ResponseEntity<String> createBoard(@RequestBody CreateBoardRequest createBoardRequest) {
         Optional<Team> team = teamService.findTeam(createBoardRequest.getTeamId());
         if (team.isPresent()) {
-            if (permissionService.hasPermissionToTeam(team.get())) {
-
-                Board board = new Board();
-                board.setName(createBoardRequest.getBoardName());
-                board.setTeam(team.get());
-                if (createBoardRequest.getWipLimit() == null) {
-                    board.setWipLimit(5);
-                } else {
-                    board.setWipLimit(createBoardRequest.getWipLimit());
-                }
-                boardService.save(board);
+            if (permissionService.hasPermissionTo(team.get())) {
+                boardService.createBoard(createBoardRequest,team.get());
                 return new ResponseEntity<>("Board created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("You do not participate in this team", HttpStatus.FORBIDDEN);
             }
         } else {
             return new ResponseEntity<>("Team does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping(value = "/update", consumes = "application/json;charset=UTF-8")
-    public ResponseEntity<String> updateBoard(@RequestBody UpdateBoardRequest updateBoardRequest) {
-        Optional<Board> board = boardService.findBoard(updateBoardRequest.getBoardId());
-        if (board.isPresent()) {
-            if (permissionService.hasPermissionToBoard(board.get())) {
-                updateBoardRequest.getColumns().forEach(column -> {
-                    for (int i = 0; i < column.getTasks().size(); i++) {
-                        Optional<Task> task1 = taskService.findById(column.getTasks().get(i).getId());
-                        if (task1.isPresent()) {
-                            task1.get().setPosition(i);
-                            task1.get().setColumn(column);
-                            taskService.save(task1.get());
-                        }
-                    }
-                });
-                return new ResponseEntity<>("Board updated", HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>("You do not participate in this board", HttpStatus.FORBIDDEN);
-            }
-        } else {
-            System.out.println("board does not exists");
-            return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -114,5 +80,28 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-
+//    @PostMapping(value = "/update", consumes = "application/json;charset=UTF-8")
+//    public ResponseEntity<String> updateBoard(@RequestBody UpdateBoardRequest updateBoardRequest) {
+//        Optional<Board> board = boardService.findBoard(updateBoardRequest.getBoardId());
+//        if (board.isPresent()) {
+//            if (permissionService.hasPermissionTo(board.get())) {
+//                updateBoardRequest.getColumns().forEach(column -> {
+//                    for (int i = 0; i < column.getTasks().size(); i++) {
+//                        Optional<Task> task1 = taskService.findById(column.getTasks().get(i).getId());
+//                        if (task1.isPresent()) {
+//                            task1.get().setPosition(i);
+//                            task1.get().setColumn(column);
+//                            taskService.save(task1.get());
+//                        }
+//                    }
+//                });
+//                return new ResponseEntity<>("Board updated", HttpStatus.CREATED);
+//            } else {
+//                return new ResponseEntity<>("You do not participate in this board", HttpStatus.FORBIDDEN);
+//            }
+//        } else {
+//            System.out.println("board does not exists");
+//            return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

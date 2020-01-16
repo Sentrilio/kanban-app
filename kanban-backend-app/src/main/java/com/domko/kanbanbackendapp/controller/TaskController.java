@@ -3,6 +3,8 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
+import com.domko.kanbanbackendapp.model.Trend;
+import com.domko.kanbanbackendapp.model.TrendId;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.payload.response.MessageResponse;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RestController
@@ -27,6 +30,8 @@ public class TaskController {
     @Autowired
     private PermissionService permissionService;
     @Autowired
+    private TrendServiceImpl trendService;
+    @Autowired
     private SimpMessagingTemplate template;
 
     @GetMapping(value = "/get/{id}")
@@ -36,15 +41,12 @@ public class TaskController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        Optional<BColumn> column = bColumnService.findBColumn(createTaskRequest.getColumnId());
+        Optional<BColumn> column = bColumnService.findById(createTaskRequest.getColumnId());
         if (column.isPresent()) {
-            if (permissionService.hasPermissionToBColumn(column.get())) {
-                Task task = new Task();
-                task.setDescription(createTaskRequest.getDescription());
-                task.setColumn(column.get());
-                task.setPosition(column.get().getTasks().size());
-                taskService.save(task);
-                template.convertAndSend("/topic/greetings/"+task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
+            if (permissionService.hasPermissionTo(column.get())) {
+                Task task = taskService.createTask(column.get(), createTaskRequest);
+                trendService.addTrend(task);
+                template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Board or list does not exists", HttpStatus.FORBIDDEN);
@@ -57,11 +59,12 @@ public class TaskController {
     @PostMapping(value = "/update")
     public ResponseEntity<String> handleTaskAdded(@RequestBody UpdateTaskRequest updateTaskRequest) {
         Optional<Task> task = taskService.findById(updateTaskRequest.getTaskId());
-        Optional<BColumn> bColumn = bColumnService.findBColumn(updateTaskRequest.getColumnId());
-        if (task.isPresent() && bColumn.isPresent()) {
-            if (permissionService.hasPermissionToTask(task.get())) {
-                if (taskService.updateTask(task.get(), bColumn.get(), updateTaskRequest)) {
-                    template.convertAndSend("/topic/greetings/"+bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+        Optional<BColumn> destColumn = bColumnService.findById(updateTaskRequest.getColumnId());
+        if (task.isPresent() && destColumn.isPresent()) {
+            if (permissionService.hasPermissionTo(task.get())) {
+                if (taskService.updateTask(task.get(), destColumn.get(), updateTaskRequest)) {
+                    trendService.addTrend(task.get());
+                    template.convertAndSend("/topic/board/" + destColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -78,9 +81,9 @@ public class TaskController {
     public ResponseEntity<String> handleDeleteTask(@RequestBody Long taskId) {
         Optional<Task> task = taskService.findById(taskId);
         if (task.isPresent()) {
-            if (permissionService.hasPermissionToTask(task.get())) {
+            if (permissionService.hasPermissionTo(task.get())) {
                 taskService.delete(task.get());
-                template.convertAndSend("/topic/greetings/"+task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
+                template.convertAndSend("/topic/board/" + task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);

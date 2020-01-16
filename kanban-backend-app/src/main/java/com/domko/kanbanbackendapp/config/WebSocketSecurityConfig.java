@@ -9,7 +9,7 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
 
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
-       messages.simpDestMatchers("/gs-guide-websocket").permitAll()
+       messages.simpDestMatchers("/websocket").permitAll()
                .anyMessage().permitAll();
     }
 

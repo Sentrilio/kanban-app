@@ -14,19 +14,19 @@ public class PermissionService {
     @Autowired
     private UserTeamServiceImpl userTeamService;
 
-    public boolean hasPermissionToTask(Task task) {
-        return hasPermissionToBColumn(task.getColumn());
+    public boolean hasPermissionTo(Task task) {
+        return hasPermissionTo(task.getColumn());
     }
 
-    public boolean hasPermissionToBColumn(BColumn BColumn) {
-        return hasPermissionToBoard(BColumn.getBoard());
+    public boolean hasPermissionTo(BColumn BColumn) {
+        return hasPermissionTo(BColumn.getBoard());
     }
 
-    public boolean hasPermissionToBoard(Board board) {
-        return hasPermissionToTeam(board.getTeam());
+    public boolean hasPermissionTo(Board board) {
+        return hasPermissionTo(board.getTeam());
     }
 
-    public boolean hasPermissionToTeam(Team team) {
+    public boolean hasPermissionTo(Team team) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<UserTeam> userTeams = userTeamService.findUsersOfTeam(team.getId());
         return userTeams

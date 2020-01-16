@@ -50,7 +50,7 @@ public class TeamController {
     public ResponseEntity<List<UserTeam>> getTeamMembers(@PathVariable("teamId") long teamId) {
         Optional<Team> team = teamService.findTeam(teamId);
         if (team.isPresent()) {
-            if (permissionService.hasPermissionToTeam(team.get())) {
+            if (permissionService.hasPermissionTo(team.get())) {
                 List<UserTeam> userTeams = userTeamService.findUsersOfTeam(team.get().getId());
                 return new ResponseEntity<>(userTeams, HttpStatus.OK);
             } else {
@@ -79,7 +79,7 @@ public class TeamController {
         Optional<Team> team = teamService.findTeam(addUserRequest.getTeamId());
         Optional<User> invitedUser = userService.findByEmail(addUserRequest.getEmail());
         if (team.isPresent() && invitedUser.isPresent()) {
-            if (permissionService.hasPermissionToTeam(team.get())) {
+            if (permissionService.hasPermissionTo(team.get())) {
                 userTeamService.addUserToTeam(invitedUser.get(), team.get(), TeamRole.MEMBER);
                 return new ResponseEntity<>("User added to team", HttpStatus.OK);
             } else {
