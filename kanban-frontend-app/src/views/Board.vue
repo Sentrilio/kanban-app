@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="wrapper">
     <draggable
+      :group="{ name: 'column'}"
       class="board"
-      group="column"
       :list="board.columns"
       @change="columnChange($event)"
     >
@@ -174,8 +174,17 @@ export default {
 <style lang="css" scoped>
 .board {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
+}
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  /* overflow-y: auto; */
   background-color: grey;
+}
+div.wrapper {
   height: 92vh;
 }
 </style>

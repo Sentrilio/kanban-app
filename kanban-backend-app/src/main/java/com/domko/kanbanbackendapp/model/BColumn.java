@@ -42,7 +42,7 @@ public class BColumn {
     @OneToMany(mappedBy = "column")
     private List<Task> tasks;
 
-    @Column(name = "wip_limit")
+    @Column(name = "wip_limit", nullable = false)
     private Integer wipLimit;
 
     @JsonManagedReference

@@ -62,11 +62,13 @@ public class BColumnServiceImpl implements BColumnService {
     }
 
     public BColumn createColumn(Board board, CreateColumnRequest createColumnRequest) {
+        System.out.println("requested limit: "+ createColumnRequest.getWipLimit());
         BColumn column = new BColumn();
         column.setName(createColumnRequest.getColumnName());
+        column.setWipLimit(createColumnRequest.getWipLimit());
         column.setBoard(board);
         column.setPosition(board.getColumns().size());
-        System.out.println("column name: " + column.getName());
+        System.out.println("column name: " + column.getName() + "wip limit: " + column.getWipLimit());
         return save(column);
     }
 }

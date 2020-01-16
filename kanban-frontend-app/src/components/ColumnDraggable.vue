@@ -1,19 +1,32 @@
 <template>
-
   <div class="column">
     <div class="column-name">
-      <a>{{column.name}}</a>
+      <a>{{column.name}} limit: {{column.wipLimit}}</a>
     </div>
-    <draggable
-      class="list-group"
-      :list="column.tasks"
-      group="task"
-      @change="change($event, column)"
-    >
-      <div v-for="task in column.tasks" :key="task.id">
-        <task :task="task"></task>
-      </div>
-    </draggable>
+    <div v-if="limitReached">
+      <draggable
+        class="list-group"
+        :list="column.tasks"
+        :group="{name: 'task',put: false}"
+        @change="change($event, column)"
+      >
+        <div v-for="task in column.tasks" :key="task.id">
+          <task :task="task"></task>
+        </div>
+      </draggable>
+    </div>
+    <div v-else>
+      <draggable
+        class="list-group"
+        :list="column.tasks"
+        :group="{name:'task'}"
+        @change="change($event, column)"
+      >
+        <div v-for="task in column.tasks" :key="task.id">
+          <task :task="task"></task>
+        </div>
+      </draggable>
+    </div>
 
     <div slot="footer" class="create-task" role="group" aria-label="Basic example" key="footer">
       <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn.id">
@@ -55,12 +68,20 @@ export default {
     };
   },
   computed: {
+    limitReached() {
+      if (this.column.tasks.length >= this.column.wipLimit) {
+        console.log("limit reached");
+        return true;
+      } else {
+        console.log("limit not reached");
+        return false;
+      }
+    },
     currentColumn() {
       return this.$props.column;
     }
   },
   methods: {
-
     createTask() {
       TaskService.createTask(this.column.id, this.taskDescription)
         .then(response => {
@@ -83,19 +104,20 @@ export default {
         operation: operation
       };
       TaskService.updateTask(updateObject)
-      .then(response => {
-      console.log(response);
-      // this.$emit("refresh");
-      })
-      .catch(err => {
-      console.log(err);
-      });
-
+        .then(response => {
+          console.log(response);
+          // this.$emit("refresh");
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     change: function(evt, column) {
       console.log(column.name);
       if (evt.added) {
         console.log("adding...");
+        console.log(column.name);
+        console.log(evt);
         this.updateTask(evt.added, column, Operation.ADD);
       } else if (evt.moved) {
         console.log("moving...");
@@ -125,7 +147,6 @@ export default {
   align-content: center;
 }
 .task-input {
-
   margin-top: 8px;
 }
 </style>
