@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
@@ -39,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.delete(task);
     }
 
-    @Transactional//maybe not needed (to test)
+//    @Transactional//maybe not needed (to test)
     public void updatePositions(List<Task> tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             Optional<Task> task = findById(tasks.get(i).getId());
@@ -52,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    @Transactional//necessary
+//    @Transactional//necessary
     public boolean updateTask(Task task, BColumn destColumn, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
@@ -98,6 +99,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = new Task();
         task.setDescription(createTaskRequest.getDescription());
         task.setColumn(column);
+        task.setImportance(0);
         task.setPosition(column.getTasks().size());
         return save(task);
     }

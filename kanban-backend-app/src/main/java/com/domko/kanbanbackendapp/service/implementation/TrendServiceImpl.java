@@ -7,13 +7,11 @@ import com.domko.kanbanbackendapp.service.TrendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class TrendServiceImpl implements TrendService {
 
     @Autowired
@@ -35,15 +33,15 @@ public class TrendServiceImpl implements TrendService {
 
     public void addTrend(Task task) {
         Optional<Trend> trend = findByColumnIdAndDate(task.getColumn().getId(), new Date());
-//        Optional<Trend> trend = (new TrendId(task.getColumn().getId(), new Date(), task.getImportance()));
         if (trend.isPresent()) {
+            System.out.println("column trend found");
             trend.get().setElements(trend.get().getElements() + 1);
             save(trend.get());
         } else {
+            System.out.println("column trend not found");
             Trend trendToSave = new Trend();
             trendToSave.setColumn(task.getColumn());
             trendToSave.setDate(new Date());
-//            trendToSave.setImportance(task.getImportance());
             trendToSave.setElements(1);
             save(trendToSave);
         }

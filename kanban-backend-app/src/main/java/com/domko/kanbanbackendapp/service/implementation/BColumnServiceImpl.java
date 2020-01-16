@@ -1,10 +1,10 @@
 package com.domko.kanbanbackendapp.service.implementation;
 
 import com.domko.kanbanbackendapp.model.BColumn;
-import com.domko.kanbanbackendapp.model.Task;
+import com.domko.kanbanbackendapp.model.Board;
+import com.domko.kanbanbackendapp.payload.request.CreateColumnRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateColumnRequest;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
-import com.domko.kanbanbackendapp.repository.TaskRepository;
 import com.domko.kanbanbackendapp.service.BColumnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.domko.kanbanbackendapp.payload.request.Operation.MOVE;
-
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class BColumnServiceImpl implements BColumnService {
 
     @Autowired
@@ -60,6 +59,15 @@ public class BColumnServiceImpl implements BColumnService {
                 System.out.println("column does not exists");
             }
         }
+    }
+
+    public BColumn createColumn(Board board, CreateColumnRequest createColumnRequest) {
+        BColumn column = new BColumn();
+        column.setName(createColumnRequest.getColumnName());
+        column.setBoard(board);
+        column.setPosition(board.getColumns().size());
+        System.out.println("column name: " + column.getName());
+        return save(column);
     }
 }
 

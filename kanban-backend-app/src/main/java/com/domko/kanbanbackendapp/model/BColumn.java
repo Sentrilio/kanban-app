@@ -42,6 +42,8 @@ public class BColumn {
     @OneToMany(mappedBy = "column")
     private List<Task> tasks;
 
+    @Column(name = "wip_limit")
+    private Integer wipLimit;
 
     @JsonManagedReference
 //    @OrderColumn(name="date")//this generates errors. probably only integers can be compared

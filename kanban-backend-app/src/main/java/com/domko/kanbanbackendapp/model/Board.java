@@ -25,9 +25,6 @@ public class Board {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "wip_limit")
-    private Integer wipLimit;
-
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)

@@ -33,12 +33,7 @@ public class BColumnController {
         Optional<Board> board = boardService.findBoard(createColumnRequest.getBoardId());
         if (board.isPresent()) {
             if (permissionService.hasPermissionTo(board.get())) {
-                BColumn column = new BColumn();
-                column.setName(createColumnRequest.getColumnName());
-                column.setBoard(board.get());
-                column.setPosition(board.get().getColumns().size());
-                System.out.println("column name: " + column.getName());
-                bColumnService.save(column);
+                BColumn column = bColumnService.createColumn(board.get(), createColumnRequest);
                 template.convertAndSend("/topic/greetings/" + column.getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Column created", HttpStatus.CREATED);
             } else {
@@ -74,7 +69,7 @@ public class BColumnController {
         if (bColumn.isPresent()) {
             if (permissionService.hasPermissionTo(bColumn.get())) {
                 bColumnService.delete(bColumn.get());
-                template.convertAndSend("/topic/board/"+bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+                template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Column Deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
