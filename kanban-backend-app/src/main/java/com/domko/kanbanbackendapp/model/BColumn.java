@@ -41,4 +41,10 @@ public class BColumn {
     @OrderColumn(name = "position")// jesli nie ma rekordu to tworzony jest null
     @OneToMany(mappedBy = "column")
     private List<Task> tasks;
+
+
+    @JsonManagedReference
+//    @OrderColumn(name="date")//this generates errors. probably only integers can be compared
+    @OneToMany(mappedBy = "column")
+    private List<Trend> trends;
 }

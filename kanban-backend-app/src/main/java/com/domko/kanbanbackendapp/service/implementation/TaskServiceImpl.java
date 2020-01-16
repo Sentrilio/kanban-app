@@ -2,6 +2,7 @@ package com.domko.kanbanbackendapp.service.implementation;
 
 import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
+import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
 import com.domko.kanbanbackendapp.service.TaskService;
@@ -20,6 +21,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private BColumnServiceImpl bColumnService;
+    @Autowired
+    private TrendServiceImpl trendService;
 
     @Override
     public Optional<Task> findById(Long id) {
@@ -50,14 +53,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional//necessary
-    public boolean updateTask(Task task, BColumn column, UpdateTaskRequest updateTaskRequest) {
+    public boolean updateTask(Task task, BColumn destColumn, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
+                updateImportance(task, destColumn);
                 long oldColumnId = task.getColumn().getId();
-                task.setColumn(column);
-                column.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                BColumn updatedColumn = bColumnService.save(column);
-
+                task.setColumn(destColumn);
+                destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                BColumn updatedColumn = bColumnService.save(destColumn);
                 updatePositions(updatedColumn.getTasks());
                 Optional<BColumn> oldColumn = bColumnService.findById(oldColumnId);
                 if (oldColumn.isPresent()) {
@@ -69,14 +72,33 @@ public class TaskServiceImpl implements TaskService {
                     return false;
                 }
             case MOVE:
-                column.getTasks().remove(task);
-                column.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                updatePositions(column.getTasks());
+                destColumn.getTasks().remove(task);
+                destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                updatePositions(destColumn.getTasks());
                 return true;
             default:
                 return false;
         }
     }
 
+    public void updateImportance(Task task, BColumn destColumn) {
+        if (destColumn.getPosition() < task.getColumn().getPosition()) {
+            incrementImportance(task);
+        }
 
+    }
+
+    public void incrementImportance(Task task) {
+        if (task.getImportance() < 3) {
+            task.setImportance(task.getImportance() + 1);
+        }
+    }
+
+    public Task createTask(BColumn column, CreateTaskRequest createTaskRequest) {
+        Task task = new Task();
+        task.setDescription(createTaskRequest.getDescription());
+        task.setColumn(column);
+        task.setPosition(column.getTasks().size());
+        return save(task);
+    }
 }

@@ -28,7 +28,6 @@ public class Board {
     @Column(name = "wip_limit")
     private Integer wipLimit;
 
-//    @JsonIgnore
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
@@ -38,5 +37,6 @@ public class Board {
     @OrderColumn(name="position")
     @OneToMany(mappedBy = "board")
     private List<BColumn> columns;
+
 
 }

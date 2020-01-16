@@ -1,5 +1,5 @@
 <template>
-  <div class="list-group-item btn task" @click="logTask(task)">{{task.description}}</div>
+  <div class="list-group-item btn task" @click="logTask(task)">{{task.description}} imp:{{task.importance}}</div>
 </template>
 <script>
 export default {
