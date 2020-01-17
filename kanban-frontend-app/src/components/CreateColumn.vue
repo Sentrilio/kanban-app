@@ -37,7 +37,8 @@ export default {
   props: {
     boardId: Number
   },
-
+  computed:{
+  },
   methods: {
     setSelectedLimit(limit) {
       this.selectedLimit = limit;

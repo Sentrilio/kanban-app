@@ -11,5 +11,12 @@ class ColumnService {
     changeColumnPosition(data) {
         return axios.post(API_URL + "column/change-position", data, { headers: authHeader() })
     }
+    isLimitReached(column) {
+        if (column.tasks.length >= column.wipLimit) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 export default new ColumnService();

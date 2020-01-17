@@ -59,9 +59,13 @@ public class TaskServiceImpl implements TaskService {
         if (column.isPresent()) {
             if (permissionService.hasPermissionTo(column.get())) {
                 Task task = createTask(column.get(), createTaskRequest);
-                trendService.addTrend(task);
-                template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
-                return new ResponseEntity<>("Task created", HttpStatus.CREATED);
+                if (task != null) {
+                    trendService.addTrend(task);
+                    template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
+                    return new ResponseEntity<>("Task created", HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>("Task could not be created", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             } else {
                 return new ResponseEntity<>("Board or list does not exists", HttpStatus.FORBIDDEN);
             }
@@ -69,6 +73,7 @@ public class TaskServiceImpl implements TaskService {
             return new ResponseEntity<>("Board or list does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public ResponseEntity<String> deleteTask(Long taskId) {
         Optional<Task> task = taskRepository.findById(taskId);
@@ -131,12 +136,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public Task createTask(BColumn column, CreateTaskRequest createTaskRequest) {
-        Task task = new Task();
-        task.setDescription(createTaskRequest.getDescription());
-        task.setColumn(column);
-        task.setImportance(0);
-        task.setPosition(column.getTasks().size());
-        return taskRepository.save(task);
+        if (column.getTasks().size() < column.getWipLimit()) {
+            Task task = new Task();
+            task.setDescription(createTaskRequest.getDescription());
+            task.setColumn(column);
+            task.setImportance(0);
+            task.setPosition(column.getTasks().size());
+            return taskRepository.save(task);
+        } else {
+            return null;
+        }
     }
 
     public void updateImportance(Task task, BColumn destColumn) {
