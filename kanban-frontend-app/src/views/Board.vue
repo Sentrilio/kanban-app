@@ -2,21 +2,15 @@
   <div class="board">
     <nav class="navbar navbar-expand navbar-dark white" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
-        <!-- <li class="nav-item"> -->
         <li class="btn">
-
-          <a>
-            <!-- <a class="nav-link btn"> -->
-            {{board.name}}
-          </a>
+          <a>{{board.name}}</a>
         </li>
-        <li class="btn">
+        <li class="btn" @click="handleChartClick">
           <font-awesome-icon icon="chart-line" />
-          <!-- <i class="fas fa-chart-line"></i> -->
         </li>
-         <li class="btn">
-          <!-- <font-awesome-icon icon="ellipsis-v" /> -->
-        </li>
+        <!-- <li class="btn">
+          <font-awesome-icon icon="chart-area" />
+        </li>-->
       </div>
     </nav>
     <div class="wrapper">
@@ -137,6 +131,14 @@ export default {
       this.getData();
       this.setSockJS();
     },
+    handleChartClick() {
+      let boardId = this.board.id;
+      let boardName = this.board.name;
+      this.$router.push({
+        name: "chart",
+        params: { boardId, boardName }
+      });
+    },
     columnChange: function(event) {
       if (event.moved) {
         console.log("moving...");
@@ -195,7 +197,6 @@ export default {
   overflow-x: auto;
   /* overflow-y: auto; */
   height: 92vh;
-
 }
 .navbar {
   background-color: #ebebe0;
