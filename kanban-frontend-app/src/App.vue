@@ -3,7 +3,6 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <!-- <a @click="homeClick" href="/home" class="nav-link"> -->
           <a @click="homeClick" class="nav-link btn">
             <font-awesome-icon icon="home" />
           </a>

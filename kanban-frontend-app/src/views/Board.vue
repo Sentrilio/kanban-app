@@ -1,19 +1,29 @@
 <template>
-  <div class="wrapper">
-    <draggable
-      :group="{ name: 'column'}"
-      class="draggable-column"
-      :list="board.columns"
-      @change="columnChange($event)"
-    >
-      <div v-for="column in columns" :key="column.id">
-        <column @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column>
+  <div class="board">
+    <nav class="navbar navbar-expand navbar-dark" v-if="!$route.meta.hideNavigation">
+      <div class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a>
+          <!-- <a class="nav-link btn"> -->
+            {{board.name}}
+          </a>
+        </li>
       </div>
-    </draggable>
+    </nav>
+    <div class="wrapper">
+      <draggable
+        :group="{ name: 'column'}"
+        class="draggable-columns"
+        :list="board.columns"
+        @change="columnChange($event)"
+      >
+        <div v-for="column in columns" :key="column.id">
+          <column @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column>
+        </div>
+      </draggable>
 
-    <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
-    <!-- <button @click="sendName">send name</button> -->
-    <!-- <button @click="subscribe">Subscribe</button> -->
+      <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
+    </div>
   </div>
 </template>
 
@@ -23,7 +33,7 @@ import Column from "../components/Column.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
 import ColumnService from "../services/ColumnService";
-import draggable from "vuedraggable";
+import Draggable from "vuedraggable";
 import Operation from "../models/Operation";
 import WebSocketService from "../services/WebSocketService.js";
 
@@ -32,7 +42,7 @@ export default {
   components: {
     CreateColumn,
     Column,
-    draggable
+    Draggable
   },
   data() {
     return {
@@ -162,7 +172,10 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.draggable-column {
+.board{
+  background-color: grey;
+}
+.draggable-columns {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -172,10 +185,11 @@ export default {
   flex-direction: row;
   overflow-x: auto;
   /* overflow-y: auto; */
-  background-color: grey;
   height: 92vh;
-
 }
-/* div.wrapper {
-} */
+.navbar{
+  background-color: grey;
+  height: 40px;
+  /* margin-top: 20px; */
+}
 </style>
