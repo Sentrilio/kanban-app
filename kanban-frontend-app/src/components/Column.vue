@@ -28,8 +28,16 @@
       </draggable>
     </div>
 
-    <div v-if="!limitReached" slot="footer" class="create-task" role="group" aria-label="Basic example" key="footer">
-      <button class="btn" data-toggle="collapse"  :data-target="'#currentColumn'+currentColumn.id">
+    <div
+      v-if="!limitReached"
+      slot="footer"
+      class="create-task"
+      role="group"
+      aria-label="Basic example"
+      key="footer"
+    >
+      <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn.id">
+        <!-- <button class="btn" :disabled=limitReached data-toggle="collapse"  :data-target="'#currentColumn'+currentColumn.id"> -->
         <font-awesome-icon icon="plus" style="padding-right:5px;" />Create Task
       </button>
       <div :id="'currentColumn'+currentColumn.id" class="collapse">
@@ -50,7 +58,7 @@ import draggable from "vuedraggable";
 import TaskService from "../services/TaskService";
 import Operation from "../models/Operation";
 import Task from "../components/Task.vue";
-import ColumnService from '../services/ColumnService';
+import ColumnService from "../services/ColumnService";
 
 export default {
   name: "column",
@@ -69,7 +77,7 @@ export default {
     };
   },
   computed: {
-    limitReached: function() {
+    limitReached() {
       return ColumnService.isLimitReached(this.column);
     },
     currentColumn() {
