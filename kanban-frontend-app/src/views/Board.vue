@@ -2,12 +2,12 @@
   <div class="wrapper">
     <draggable
       :group="{ name: 'column'}"
-      class="board"
+      class="draggable-column"
       :list="board.columns"
       @change="columnChange($event)"
     >
       <div v-for="column in columns" :key="column.id">
-        <column-draggable @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column-draggable>
+        <column @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column>
       </div>
     </draggable>
 
@@ -19,7 +19,7 @@
 
 <script>
 import CreateColumn from "../components/CreateColumn.vue";
-import ColumnDraggable from "../components/ColumnDraggable.vue";
+import Column from "../components/Column.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
 import ColumnService from "../services/ColumnService";
@@ -31,7 +31,7 @@ export default {
   name: "Board",
   components: {
     CreateColumn,
-    ColumnDraggable,
+    Column,
     draggable
   },
   data() {
@@ -162,7 +162,7 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.board {
+.draggable-column {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -173,8 +173,9 @@ export default {
   overflow-x: auto;
   /* overflow-y: auto; */
   background-color: grey;
-}
-div.wrapper {
   height: 92vh;
+
 }
+/* div.wrapper {
+} */
 </style>

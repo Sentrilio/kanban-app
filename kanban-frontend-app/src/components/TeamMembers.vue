@@ -5,7 +5,7 @@
     <div v-for="member in teamMembers" :key="member.user.id">
       <TeamMember :member="member"></TeamMember>
     </div>
-    <br>
+    <br />
     <form name="form" @submit.prevent="handleAddUser">
       <input
         type="email"
@@ -51,10 +51,9 @@ export default {
     handleAddUser() {
       this.$validator.validate().then(valid => {
         if (valid) {
-          console.log("valid");
           this.addUserToTeam();
         } else {
-          console.log("invalid");
+          console.log("invalid email");
         }
       });
     },
@@ -64,6 +63,9 @@ export default {
           this.teamMembers = response.data;
         })
         .catch(err => {
+          if (err.response.status === 404) {
+            console.log("User not found");
+          }
           console.log(err);
         });
     }
