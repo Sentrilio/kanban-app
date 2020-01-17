@@ -110,8 +110,6 @@ export default {
       WebSocketService.connect(this.$route.params.boardId, this.messageHandle);
     },
     messageHandle(data) {
-      console.log("Message came up:");
-      JSON.parse(data.body).message;
       if (JSON.parse(data.body).message === "board updated") {
         this.getData();
       }
@@ -148,14 +146,6 @@ export default {
 
   created() {
     this.setBoard();
-    // this.getData();
-    // this.setSockJS();
-  },
-  mounted() {
-    // this.setBoard();
-  },
-  updated() {
-    // this.setBoard();
   },
   destroyed() {
     WebSocketService.disconnect();
