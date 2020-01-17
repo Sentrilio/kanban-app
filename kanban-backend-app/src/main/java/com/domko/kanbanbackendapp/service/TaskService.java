@@ -9,11 +9,5 @@ import java.util.Optional;
 
 public interface TaskService {
 
-    Optional<Task> findById(Long id);
-
-    Task save(Task task);
-
-    void delete(Task task);
-
-    boolean updateTask(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest);
+    boolean handleTaskUpdate(Task task, BColumn bColumn, UpdateTaskRequest updateTaskRequest);
 }

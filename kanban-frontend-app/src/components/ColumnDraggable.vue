@@ -70,10 +70,8 @@ export default {
   computed: {
     limitReached() {
       if (this.column.tasks.length >= this.column.wipLimit) {
-        console.log("limit reached");
         return true;
       } else {
-        console.log("limit not reached");
         return false;
       }
     },
@@ -106,25 +104,17 @@ export default {
       TaskService.updateTask(updateObject)
         .then(response => {
           console.log(response);
-          // this.$emit("refresh");
         })
         .catch(err => {
           console.log(err);
         });
     },
     change: function(evt, column) {
-      console.log(column.name);
       if (evt.added) {
-        console.log("adding...");
-        console.log(column.name);
-        console.log(evt);
         this.updateTask(evt.added, column, Operation.ADD);
       } else if (evt.moved) {
-        console.log("moving...");
         this.updateTask(evt.moved, column, Operation.MOVE);
       }
-      // console.log(evt);
-      // window.console.log(evt);
     }
   }
 };
