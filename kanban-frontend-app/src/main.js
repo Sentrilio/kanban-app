@@ -15,9 +15,11 @@ import {
   faSignOutAlt,
   faMinus,
   faPlus,
+  faEllipsisV,
+  faChartLine
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faMinus, faPlus);
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faMinus, faPlus, faEllipsisV, faChartLine);
 
 Vue.config.productionTip = false;
 

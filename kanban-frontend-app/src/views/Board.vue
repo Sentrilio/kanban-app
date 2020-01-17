@@ -1,12 +1,21 @@
 <template>
   <div class="board">
-    <nav class="navbar navbar-expand navbar-dark" v-if="!$route.meta.hideNavigation">
+    <nav class="navbar navbar-expand navbar-dark white" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
-        <li class="nav-item">
+        <!-- <li class="nav-item"> -->
+        <li class="btn">
+
           <a>
-          <!-- <a class="nav-link btn"> -->
+            <!-- <a class="nav-link btn"> -->
             {{board.name}}
           </a>
+        </li>
+        <li class="btn">
+          <font-awesome-icon icon="chart-line" />
+          <!-- <i class="fas fa-chart-line"></i> -->
+        </li>
+         <li class="btn">
+          <!-- <font-awesome-icon icon="ellipsis-v" /> -->
         </li>
       </div>
     </nav>
@@ -172,7 +181,7 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.board{
+.board {
   background-color: grey;
 }
 .draggable-columns {
@@ -186,9 +195,10 @@ export default {
   overflow-x: auto;
   /* overflow-y: auto; */
   height: 92vh;
+
 }
-.navbar{
-  background-color: grey;
+.navbar {
+  background-color: #ebebe0;
   height: 40px;
   /* margin-top: 20px; */
 }
