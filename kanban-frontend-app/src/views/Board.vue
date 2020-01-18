@@ -1,19 +1,32 @@
 <template>
-  <div class="wrapper">
-    <draggable
-      :group="{ name: 'column'}"
-      class="draggable-column"
-      :list="board.columns"
-      @change="columnChange($event)"
-    >
-      <div v-for="column in columns" :key="column.id">
-        <column @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column>
+  <div class="board">
+    <nav class="navbar navbar-expand navbar-dark white" v-if="!$route.meta.hideNavigation">
+      <div class="navbar-nav mr-auto">
+        <li class="btn">
+          <a>{{board.name}}</a>
+        </li>
+        <li class="btn" @click="handleChartClick">
+          <font-awesome-icon icon="chart-line" />
+        </li>
+        <!-- <li class="btn">
+          <font-awesome-icon icon="chart-area" />
+        </li>-->
       </div>
-    </draggable>
+    </nav>
+    <div class="wrapper">
+      <draggable
+        :group="{ name: 'column'}"
+        class="draggable-columns"
+        :list="board.columns"
+        @change="columnChange($event)"
+      >
+        <div v-for="column in columns" :key="column.id">
+          <column @refresh="refresh" @boardUpdate="boardUpdate" :column="column"></column>
+        </div>
+      </draggable>
 
-    <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
-    <!-- <button @click="sendName">send name</button> -->
-    <!-- <button @click="subscribe">Subscribe</button> -->
+      <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
+    </div>
   </div>
 </template>
 
@@ -23,7 +36,7 @@ import Column from "../components/Column.vue";
 import BoardService from "../services/BoardService";
 import TeamService from "../services/TeamService";
 import ColumnService from "../services/ColumnService";
-import draggable from "vuedraggable";
+import Draggable from "vuedraggable";
 import Operation from "../models/Operation";
 import WebSocketService from "../services/WebSocketService.js";
 
@@ -32,7 +45,7 @@ export default {
   components: {
     CreateColumn,
     Column,
-    draggable
+    Draggable
   },
   data() {
     return {
@@ -118,6 +131,14 @@ export default {
       this.getData();
       this.setSockJS();
     },
+    handleChartClick() {
+      let boardId = this.board.id;
+      let boardName = this.board.name;
+      this.$router.push({
+        name: "chart",
+        params: { boardId, boardName }
+      });
+    },
     columnChange: function(event) {
       if (event.moved) {
         console.log("moving...");
@@ -162,7 +183,10 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.draggable-column {
+.board {
+  background-color: grey;
+}
+.draggable-columns {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -172,10 +196,15 @@ export default {
   flex-direction: row;
   overflow-x: auto;
   /* overflow-y: auto; */
-  background-color: grey;
   height: 92vh;
-
 }
-/* div.wrapper {
-} */
+.navbar {
+  background-color: grey;
+  
+  /* height: 40px; */
+  /* margin-top: 20px; */
+}
+.btn {
+  background-color: #ebebe0;
+}
 </style>

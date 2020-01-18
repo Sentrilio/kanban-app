@@ -9,6 +9,7 @@ import CreateTeam from './views/CreateTeam.vue';
 import Board from './views/Board.vue';
 import store from './store/index';
 import Main from './views/Main.vue';
+import Chart from './views/Chart.vue';
 
 
 Vue.use(Router);
@@ -16,7 +17,7 @@ Vue.use(Router);
 function isLoggedIn(to, from, next) {
   if (store.state.auth.user) {
     next();
-  }else{
+  } else {
     next('/login');
   }
 }
@@ -34,16 +35,16 @@ export const router = new Router({
       component: Team,
       beforeEnter: isLoggedIn,
     },
-    // {
-    //   path: '/:teamName-:teamId/members',
-    //   name: 'teamMembers',
-    //   component: TeamMembers,
-    //   beforeEnter: isLoggedIn,
-    // },
     {
       path: '/t/:teamId/b/:boardId-:boardName',
       name: 'board',
       component: Board,
+      beforeEnter: isLoggedIn,
+    },
+    {
+      path: '/chart/:boardName/:boardId',
+      name: 'chart',
+      component: Chart,
       beforeEnter: isLoggedIn,
     },
     {

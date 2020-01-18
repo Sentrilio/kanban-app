@@ -2,7 +2,6 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
-import com.domko.kanbanbackendapp.payload.request.UpdateBoardRequest;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +29,8 @@ public class BoardController {
     private TaskServiceImpl taskService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private TrendServiceImpl trendService;
 
 
     @GetMapping(value = "/all")
@@ -42,7 +43,7 @@ public class BoardController {
         Optional<Team> team = teamService.findTeam(createBoardRequest.getTeamId());
         if (team.isPresent()) {
             if (permissionService.hasPermissionTo(team.get())) {
-                boardService.createBoard(createBoardRequest,team.get());
+                boardService.createBoard(createBoardRequest, team.get());
                 return new ResponseEntity<>("Board created", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("You do not participate in this team", HttpStatus.FORBIDDEN);
