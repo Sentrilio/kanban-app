@@ -199,8 +199,12 @@ export default {
   height: 92vh;
 }
 .navbar {
-  background-color: #ebebe0;
-  height: 40px;
+  background-color: grey;
+  
+  /* height: 40px; */
   /* margin-top: 20px; */
+}
+.btn {
+  background-color: #ebebe0;
 }
 </style>

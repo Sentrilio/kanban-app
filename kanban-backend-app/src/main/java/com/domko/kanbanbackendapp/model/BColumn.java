@@ -46,7 +46,6 @@ public class BColumn {
     private Integer wipLimit;
 
     @JsonManagedReference
-//    @OrderColumn(name="date")//this generates errors. probably only integers can be compared
     @OneToMany(mappedBy = "column")
     private List<Trend> trends;
 }

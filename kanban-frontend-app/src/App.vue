@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    
     <nav class="navbar navbar-expand navbar-dark bg-dark" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
         <li class="nav-item">

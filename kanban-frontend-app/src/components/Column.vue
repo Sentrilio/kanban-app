@@ -1,7 +1,7 @@
 <template>
   <div class="column">
     <div class="column-name">
-      <a>{{column.name}} limit: {{column.wipLimit}}</a>
+      <a>{{column.name}} limit: {{column.wipLimit}} id: {{column.id}}</a>
     </div>
     <div v-if="limitReached">
       <draggable
@@ -128,14 +128,14 @@ export default {
 <style lang="css" scoped>
 .column {
   /* margin-left: 100px; */
-  margin-left: 40px;
-  margin-top: 20px;
+  margin-left: 10px;
+  /* margin-top: 20px; */
   /* padding-left: 100px; */
   outline-width: 1px;
   padding: 10px;
   border-radius: 10px;
   background-color: #ebebe0;
-  width: 300px;
+  width: 250px;
 }
 .column-name {
   margin: 10px;

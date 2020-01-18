@@ -19,8 +19,12 @@ import {
   faChartLine,
   faChartArea
 } from '@fortawesome/free-solid-svg-icons';
+import VueApexCharts from 'vue-apexcharts'
 
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faMinus, faPlus, faEllipsisV, faChartLine,faChartArea);
+
+Vue.use(VueApexCharts)
+Vue.component('apexchart', VueApexCharts)
 
 Vue.config.productionTip = false;
 
