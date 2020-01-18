@@ -58,8 +58,9 @@ public class TrendServiceImpl implements TrendService {
         Date date = new Date();
         LocalDateTime dateTime = new LocalDateTime(date);
         dateTime = dateTime.minusDays(days);
+        dateTime = dateTime.withTime(0, 0, 0, 0);
         for (int i = 1; i <= days; i++) {
-            dates.add(dateTime.plusDays(i).toString());
+            dates.add(dateTime.plusDays(i).toString()+"Z");
         }
         seriesSet.setDates(dates);
         Optional<Board> board = boardRepository.findById(boardId);
@@ -76,7 +77,7 @@ public class TrendServiceImpl implements TrendService {
                 if (j == trends.size()) {
                     break;
                 }
-                System.out.println("comparison: " + dates.get(i).substring(0,10) + " vs " +
+                System.out.println("comparison: " + dates.get(i) + " vs " +
                         trends.get(j).getDate());
                 if (dates.get(i).substring(0,10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
                     series.add(i, trends.get(j).getElements());

@@ -28,8 +28,8 @@ export default {
           type: "area"
         },
         dataLabels: {
-          enabled: true
-          // enabled: false
+          // enabled: true
+          enabled: false
 
         },
         stroke: {
@@ -37,15 +37,15 @@ export default {
         },
         xaxis: {
           type: "datetime",
-          categories: [
-            "2018-09-19T00:00:00.000Z",
-            "2018-09-19T01:30:00.000Z",
-            "2018-09-19T02:30:00.000Z",
-            "2018-09-19T03:30:00.000Z",
-            "2018-09-19T04:30:00.000Z",
-            "2018-09-19T05:30:00.000Z",
-            "2018-09-19T06:30:00.000Z"
-          ],
+          // categories: [
+          //   "2018-09-19T00:00:00.000Z",
+          //   "2018-09-19T01:30:00.000Z",
+          //   "2018-09-19T02:30:00.000Z",
+          //   "2018-09-19T03:30:00.000Z",
+          //   "2018-09-19T04:30:00.000Z",
+          //   "2018-09-19T05:30:00.000Z",
+          //   "2018-09-19T06:30:00.000Z"
+          // ],
           labels: {
             datetimeFormatter: {
               year: "yyyy",
@@ -76,6 +76,7 @@ export default {
           this.trends = response.data;
           this.series = this.trends.seriesList;
           this.chartOptions.xaxis.categories = this.trends.dates;
+
           // this.series = response.data.seriesList;
           // this.chartOptions.xaxis.categories = response.data.dates;
           // this.trends = response.data;
