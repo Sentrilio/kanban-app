@@ -1,6 +1,7 @@
 <template>
   <div class="list-group-item btn task" @click="logTask(task)">
-    {{task.description}} imp:{{task.importance}}
+    {{task.description}} 
+    <!-- imp:{{task.importance}} -->
     <!-- <font-awesome-icon icon="minus" /> -->
   </div>
 </template>

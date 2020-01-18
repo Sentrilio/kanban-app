@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="this.render">
-      <apexchart type="area" height="350" :options="chartOptions" :series="series"></apexchart>
+      <apexchart type="area" height="550" :options="chartOptions" :series="series"></apexchart>
     </div>
   </div>
 </template>
@@ -13,14 +13,14 @@ export default {
       render: false,
       trends: {},
       series: [
-        {
-          name: "series1",
-          data: [31, 40, 28, 51, 42, 109, 100]
-        },
-        {
-          name: "series2",
-          data: [11, 32, 45, 32, 34, 52, 41]
-        }
+        // {
+        //   name: "series1",
+        //   data: [31, 40, 28, 51, 42, 109, 100]
+        // },
+        // {
+        //   name: "series2",
+        //   data: [11, 32, 45, 32, 34, 52, 41]
+        // }
       ],
       chartOptions: {
         chart: {
@@ -28,58 +28,48 @@ export default {
           type: "area"
         },
         dataLabels: {
-          // enabled: true
           enabled: false
-
         },
         stroke: {
           curve: "smooth"
         },
         xaxis: {
           type: "datetime",
-          // categories: [
+          categories: [],
+          tickPlacement: "between",
           //   "2018-09-19T00:00:00.000Z",
-          //   "2018-09-19T01:30:00.000Z",
-          //   "2018-09-19T02:30:00.000Z",
-          //   "2018-09-19T03:30:00.000Z",
-          //   "2018-09-19T04:30:00.000Z",
-          //   "2018-09-19T05:30:00.000Z",
-          //   "2018-09-19T06:30:00.000Z"
-          // ],
           labels: {
-            datetimeFormatter: {
-              year: "yyyy",
-              month: "MMM 'yy",
-              day: "dd MMM",
-              hour: "HH:mm"
-            }
+            // datetimeFormatter: {
+            // year: "yyyy",
+            // month: "MMM 'yy",
+            // day: "dd MMM",
+            // hour: "HH:mm"
+            // }
           }
-        },
+        }
         // tooltip: {
-        //   x: {
-        //     format: "yyyy/MM/dd HH:mm"
-        //     // format: "dd/MM/yy HH:mm"
-        //   }
+        // x: {
+        // format: "yyyy/MM/dd HH:mm"
+        // format: "dd/MM/yy HH:mm"
+        // }
         // }
       }
     };
   },
-  components: {
-    // GChart
-    // apexchart: VueApexCharts,
-  },
+
 
   methods: {
     getTrends() {
-      TrendService.getTrends(this.$route.params.boardId)
+      let boardId = this.$route.params.boardId;
+      let data={
+        boardId:boardId,
+        days: 4
+      }
+      TrendService.getTrends(data)
         .then(response => {
           this.trends = response.data;
           this.series = this.trends.seriesList;
           this.chartOptions.xaxis.categories = this.trends.dates;
-
-          // this.series = response.data.seriesList;
-          // this.chartOptions.xaxis.categories = response.data.dates;
-          // this.trends = response.data;
           this.render = true;
         })
         .catch(error => {

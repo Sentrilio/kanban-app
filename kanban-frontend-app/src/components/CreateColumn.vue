@@ -1,6 +1,6 @@
 <template>
   <div class="create-column">
-    <button class="btn" data-toggle="collapse" data-target="#demo">Create another Column</button>
+    <button class="btn" data-toggle="collapse" data-target="#demo">Create Column</button>
     <div id="demo" class="collapse">
       <input v-model="columnNameInput" type="text" placeholder="column name" />
       <div class="dropdown">
@@ -65,7 +65,7 @@ export default {
 .create-column {
   width: 100px;
   align-content: right;
-  padding: 10px;
+  padding-left: 10px;
   outline-width: 1px !important;
   outline-color: black !important;
   width: 400px;

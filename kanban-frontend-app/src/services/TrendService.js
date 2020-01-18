@@ -5,8 +5,8 @@ const API_URL = 'http://localhost:8000/api/';
 
 class TeamService {
 
-    getTrends(boardId) {
-        return axios.get(API_URL + "trend/get/" + boardId, { headers: authHeader() });
+    getTrends(data) {
+        return axios.post(API_URL + "trend/get", data, { headers: authHeader() });
     }
 
 }

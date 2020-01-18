@@ -1,7 +1,11 @@
 <template>
   <div class="column">
     <div class="column-name">
-      <a>{{column.name}} limit: {{column.wipLimit}} id: {{column.id}}</a>
+      <a>
+        {{column.name}}
+        limit: {{column.wipLimit}}
+         <!-- id: {{column.id}} -->
+      </a>
     </div>
     <div v-if="limitReached">
       <draggable

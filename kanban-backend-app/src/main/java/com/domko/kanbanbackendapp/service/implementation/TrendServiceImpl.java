@@ -59,12 +59,11 @@ public class TrendServiceImpl implements TrendService {
         LocalDateTime dateTime = new LocalDateTime(date);
         dateTime = dateTime.minusDays(days);
         dateTime = dateTime.withTime(0, 0, 0, 0);
-        for (int i = 1; i <= days; i++) {
-            dates.add(dateTime.plusDays(i).toString()+"Z");
+        for (int i = 1; i <= days + 1; i++) {
+            dates.add(dateTime.plusDays(i).toString() + "Z");
         }
         seriesSet.setDates(dates);
         Optional<Board> board = boardRepository.findById(boardId);
-
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         board.ifPresent(value -> value.getColumns().forEach(column -> {
@@ -72,22 +71,17 @@ public class TrendServiceImpl implements TrendService {
             int j = 0;
             Series series = new Series(days);
             series.setName(column.getName());
-            System.out.println("for column: " + column.getName());
             for (int i = 0; i < days; i++) {
                 if (j == trends.size()) {
                     break;
                 }
-                System.out.println("comparison: " + dates.get(i) + " vs " +
-                        trends.get(j).getDate());
-                if (dates.get(i).substring(0,10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
+                if (dates.get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
                     series.add(i, trends.get(j).getElements());
                     j++;
-                    System.out.println("the same!");
                 }
             }
             seriesSet.add(series);
         }));
-        System.out.println(seriesSet);
         return new ResponseEntity<>(seriesSet, HttpStatus.OK);
     }
 
