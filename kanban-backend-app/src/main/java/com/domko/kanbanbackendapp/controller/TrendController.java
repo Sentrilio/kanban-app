@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class TrendController {
 
+    private final TrendServiceImpl trendService;
+
     @Autowired
-    private TrendServiceImpl trendService;
+    public TrendController(TrendServiceImpl trendService) {
+        this.trendService = trendService;
+    }
 
     @PostMapping(value = "/get")
     public ResponseEntity<SeriesSet> getTrends(@RequestBody TrendRequest trendRequest) {

@@ -33,7 +33,6 @@ public class TestController {
     @PostMapping("/test-post")
     @PreAuthorize("hasRole('USER')")
     public String testPost(@RequestBody String name) {
-        System.out.println(name);
         return name;
     }
 }

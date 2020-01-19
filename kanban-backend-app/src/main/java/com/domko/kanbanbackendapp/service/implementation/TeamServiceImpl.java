@@ -31,14 +31,6 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private PermissionService permissionService;
 
-	public Team save(Team team) {
-		return teamRepository.save(team);
-	}
-
-	public Optional<Team> findTeam(Long id) {
-		return teamRepository.findById(id);
-	}
-
 	public ResponseEntity<List<Team>> getUserTeams() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Optional<User> user = userRepository.findByUsername(authentication.getName());

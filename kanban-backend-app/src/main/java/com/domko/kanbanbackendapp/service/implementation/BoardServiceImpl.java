@@ -6,6 +6,7 @@ import com.domko.kanbanbackendapp.model.User;
 import com.domko.kanbanbackendapp.model.UserTeam;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
+import com.domko.kanbanbackendapp.repository.TeamRepository;
 import com.domko.kanbanbackendapp.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,18 +24,19 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final UserServiceImpl userService;
-    private final TeamServiceImpl teamService;
     private final UserTeamServiceImpl userTeamService;
     private final PermissionService permissionService;
+    private final TeamRepository teamRepository;
 
     @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository, UserServiceImpl userService, TeamServiceImpl teamService,
-							UserTeamServiceImpl userTeamService, PermissionService permissionService) {
+    public BoardServiceImpl(BoardRepository boardRepository, UserServiceImpl userService,
+                            UserTeamServiceImpl userTeamService, PermissionService permissionService,
+                            TeamRepository teamRepository) {
         this.boardRepository = boardRepository;
         this.userService = userService;
-        this.teamService = teamService;
         this.userTeamService = userTeamService;
         this.permissionService = permissionService;
+        this.teamRepository = teamRepository;
     }
 
     @Override
@@ -59,7 +61,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public ResponseEntity<String> createBoard(CreateBoardRequest createBoardRequest) {
-        Optional<Team> team = teamService.findTeam(createBoardRequest.getTeamId());
+        Optional<Team> team = teamRepository.findById(createBoardRequest.getTeamId());
         if (team.isPresent()) {
             if (permissionService.hasPermissionTo(team.get())) {
                 createBoard(createBoardRequest, team.get());

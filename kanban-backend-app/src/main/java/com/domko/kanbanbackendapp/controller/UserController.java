@@ -13,8 +13,12 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 public class UserController {
 
+	private final UserServiceImpl userService;
+
 	@Autowired
-	private UserServiceImpl userService;
+	public UserController(UserServiceImpl userService) {
+		this.userService = userService;
+	}
 
 	@GetMapping(value = "/all")
 	public List<User> getUsers(){
