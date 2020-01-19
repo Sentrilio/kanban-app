@@ -8,8 +8,8 @@ import CreateBoard from './views/CreateBoard.vue';
 import CreateTeam from './views/CreateTeam.vue';
 import Board from './views/Board.vue';
 import store from './store/index';
-import Main from './views/Main.vue';
 import Chart from './views/Chart.vue';
+import Main from './views/Main.vue';
 
 
 Vue.use(Router);

@@ -26,7 +26,7 @@ public class Board {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "create_date")
+    @Column(name = "create_date", nullable = false)
     private Date createDate;
 
     @JsonBackReference

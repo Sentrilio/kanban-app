@@ -5,7 +5,7 @@
         {{column.name}}
         limit: {{column.wipLimit}}
       </div>
-      <div class="minus-icon" @click="deleteColumn">
+      <div class="btn minus-icon" @click="deleteColumn(column)">
         <div>
           <font-awesome-icon icon="minus" />
         </div>
@@ -91,9 +91,10 @@ export default {
     }
   },
   methods: {
-    deleteColumn() {
-      ColumnService.deleteColumn(this.currentColumn.id)
+    deleteColumn(column) {
+      ColumnService.deleteColumn(column.id)
         .then(response => {
+          this.$emit("refresh");
           console.log(response);
         })
         .catch(err => {
@@ -157,7 +158,8 @@ div.column-name{
   width: 250px;
 }
 div.minus-icon{
-  padding-right: 10px;
+  padding-right: 0px;
+  /* padding-right: 10px; */
   /* align-content: center; */
 }
 div.column-header {

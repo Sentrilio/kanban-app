@@ -39,13 +39,13 @@ public class BColumn {
 
     @JsonManagedReference
     @OrderColumn(name = "position")// jesli nie ma rekordu to tworzony jest null
-    @OneToMany(mappedBy = "column")
+    @OneToMany(mappedBy = "column", orphanRemoval = true)
     private List<Task> tasks;
 
     @Column(name = "wip_limit", nullable = false)
     private Integer wipLimit;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "column")
+    @OneToMany(mappedBy = "column", orphanRemoval = true)
     private List<Trend> trends;
 }

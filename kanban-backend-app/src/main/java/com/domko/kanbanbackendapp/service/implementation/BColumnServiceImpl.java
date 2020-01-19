@@ -7,6 +7,8 @@ import com.domko.kanbanbackendapp.payload.request.UpdateColumnRequest;
 import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
+import com.domko.kanbanbackendapp.repository.TaskRepository;
+import com.domko.kanbanbackendapp.repository.TrendRepository;
 import com.domko.kanbanbackendapp.service.BColumnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,14 +25,18 @@ public class BColumnServiceImpl implements BColumnService {
 
     private final BColumnRepository bColumnRepository;
     private final BoardRepository boardRepository;
+    private final TrendRepository trendRepository;
+    private final TaskRepository taskRepository;
     private final PermissionService permissionService;
     private final SimpMessagingTemplate template;
 
     @Autowired
     public BColumnServiceImpl(BColumnRepository bColumnRepository, BoardRepository boardRepository,
-                              PermissionService permissionService, SimpMessagingTemplate template) {
+                              TrendRepository trendRepository, TaskRepository taskRepository, PermissionService permissionService, SimpMessagingTemplate template) {
         this.bColumnRepository = bColumnRepository;
         this.boardRepository = boardRepository;
+        this.trendRepository = trendRepository;
+        this.taskRepository = taskRepository;
         this.permissionService = permissionService;
         this.template = template;
     }
@@ -66,7 +72,7 @@ public class BColumnServiceImpl implements BColumnService {
         column.setWipLimit(createColumnRequest.getWipLimit());
         column.setBoard(board);
         column.setPosition(board.getColumns().size());
-        System.out.println("column name: " + column.getName() + "wip limit: " + column.getWipLimit());
+        System.out.println("column name: " + column.getName() + " wip limit: " + column.getWipLimit());
         return bColumnRepository.save(column);
     }
 
@@ -107,7 +113,9 @@ public class BColumnServiceImpl implements BColumnService {
         Optional<BColumn> bColumn = bColumnRepository.findById(column);
         if (bColumn.isPresent()) {
             if (permissionService.hasPermissionTo(bColumn.get())) {
+//                trendRepository.deleteAll(bColumn.get().getTrends());
                 bColumn.get().getBoard().getColumns().remove(bColumn.get());
+                bColumn.get().getTasks().removeAll(bColumn.get().getTasks());
                 boardRepository.save(bColumn.get().getBoard());
                 bColumnRepository.delete(bColumn.get());
                 template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));

@@ -29,8 +29,8 @@ public class BColumnController {
         return bColumnService.updateBColumn(updateColumnRequest);
     }
 
-    @DeleteMapping(value = "/delete")
-    public ResponseEntity<String> handleDeleteBColumn(@RequestBody Long column) {
+    @DeleteMapping(value = "/delete/{columnId}")
+    public ResponseEntity<String> handleDeleteBColumn(@PathVariable("columnId") Long column) {
         return bColumnService.delete(column);
     }
 

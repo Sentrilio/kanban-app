@@ -9,7 +9,10 @@ class ColumnService {
         return axios.post(API_URL + "column/create", data, { headers: authHeader() })
     }
     changeColumnPosition(data) {
-        return axios.post(API_URL + "column/change-position", data, { headers: authHeader() })
+        return axios.post(API_URL + "column/change-position", data, { headers: authHeader() });
+    }
+    deleteColumn(columnId) {
+        return axios.delete(API_URL + "column/delete/" + columnId, { headers: authHeader() });
     }
     isLimitReached(column) {
         if (column.tasks.length >= column.wipLimit) {
@@ -18,5 +21,6 @@ class ColumnService {
             return false;
         }
     }
+
 }
 export default new ColumnService();
