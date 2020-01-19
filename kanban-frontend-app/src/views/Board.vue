@@ -34,7 +34,6 @@
 import CreateColumn from "../components/CreateColumn.vue";
 import Column from "../components/Column.vue";
 import BoardService from "../services/BoardService";
-import TeamService from "../services/TeamService";
 import ColumnService from "../services/ColumnService";
 import Draggable from "vuedraggable";
 import Operation from "../models/Operation";
@@ -51,7 +50,6 @@ export default {
     return {
       columns: [],
       board: {},
-      team: {},
       stompClient: {}
     };
   },
@@ -64,17 +62,6 @@ export default {
     }
   },
   methods: {
-    switchToTeam(team) {
-      if (team) {
-        console.log("team switching");
-        let teamId = team.id;
-        let teamName = team.name;
-        this.$router.push({
-          name: "team",
-          params: { teamId, teamName }
-        });
-      }
-    },
     boardUpdate() {
       console.log("sending updated board into backend...");
       BoardService.updateBoard(this.board.id, this.board.columns)
@@ -91,7 +78,6 @@ export default {
     },
     getData() {
       this.getBoard();
-      this.getTeam();
     },
 
     getBoard() {
@@ -106,16 +92,6 @@ export default {
           if (error.response.status === 401) {
             this.$router.push("/home"); // to do component with info about not having perrmision redirection
           }
-        });
-    },
-    getTeam() {
-      console.log("getting team from board.vue");
-      TeamService.getTeam(this.$route.params.teamId)
-        .then(response => {
-          this.team = response.data;
-        })
-        .catch(err => {
-          console.log(err);
         });
     },
 
