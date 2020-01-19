@@ -30,7 +30,7 @@ export const router = new Router({
       component: Main,
     },
     {
-      path: '/:teamName-:teamId',
+      path: '/team/:teamId/:teamName',
       name: 'team',
       component: Team,
       beforeEnter: isLoggedIn,
