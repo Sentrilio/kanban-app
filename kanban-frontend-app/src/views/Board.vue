@@ -6,11 +6,9 @@
           <a>{{board.name}}</a>
         </li>
         <li class="btn" @click="handleChartClick">
-          <font-awesome-icon icon="chart-line" />
-        </li>
-        <!-- <li class="btn">
+          <!-- <font-awesome-icon icon="chart-line" /> -->
           <font-awesome-icon icon="chart-area" />
-        </li>-->
+        </li>
       </div>
     </nav>
     <div class="wrapper">
@@ -25,7 +23,9 @@
         </div>
       </draggable>
 
-      <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
+      <div>
+        <create-column @refresh="refresh" v-bind:boardId="board.id"></create-column>
+      </div>
     </div>
   </div>
 </template>
@@ -195,14 +195,10 @@ export default {
   display: flex;
   flex-direction: row;
   overflow-x: auto;
-  /* overflow-y: auto; */
-  height: 92vh;
+  height: 610px; /* conrete value */
 }
 .navbar {
   background-color: grey;
-  
-  /* height: 40px; */
-  /* margin-top: 20px; */
 }
 .btn {
   background-color: #ebebe0;

@@ -1,6 +1,7 @@
 package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.SeriesSet;
+import com.domko.kanbanbackendapp.payload.request.TrendRequest;
 import com.domko.kanbanbackendapp.service.implementation.TrendServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,8 @@ public class TrendController {
     @Autowired
     private TrendServiceImpl trendService;
 
-    @GetMapping(value = "/get/{boardId}")
-    public ResponseEntity<SeriesSet> getTrends(@PathVariable("boardId") long boardId) {
-        return trendService.getTrendsFromLastDays(boardId, 7);
+    @PostMapping(value = "/get")
+    public ResponseEntity<SeriesSet> getTrends(@RequestBody TrendRequest trendRequest) {
+        return trendService.getTrendsFromLastDays(trendRequest.getBoardId());
     }
 }

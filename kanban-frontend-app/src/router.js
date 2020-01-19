@@ -36,13 +36,14 @@ export const router = new Router({
       beforeEnter: isLoggedIn,
     },
     {
-      path: '/t/:teamId/b/:boardId-:boardName',
+      // path: '/t/:teamId/b/:boardId-:boardName',
+      path: '/board/:boardId/:boardName',
       name: 'board',
       component: Board,
       beforeEnter: isLoggedIn,
     },
     {
-      path: '/chart/:boardName/:boardId',
+      path: '/chart/:boardId/:boardName',
       name: 'chart',
       component: Chart,
       beforeEnter: isLoggedIn,
