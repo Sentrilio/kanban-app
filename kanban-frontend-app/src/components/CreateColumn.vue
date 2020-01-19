@@ -79,7 +79,7 @@ div.dropdown {
   padding-right: 10px;
   outline-color: black;
   width: 200px;
-  height: 100px;
+  /* height: 100px; */
   outline-width: 1px;
   padding: 10px;
   border-radius: 10px;

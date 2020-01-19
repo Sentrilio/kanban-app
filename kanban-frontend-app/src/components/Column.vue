@@ -4,7 +4,6 @@
       <a>
         {{column.name}}
         limit: {{column.wipLimit}}
-         <!-- id: {{column.id}} -->
       </a>
     </div>
     <div v-if="limitReached">
@@ -31,17 +30,15 @@
         </div>
       </draggable>
     </div>
-
-    <div
-      v-if="!limitReached"
-      slot="footer"
-      class="create-task"
-      role="group"
-      aria-label="Basic example"
-      key="footer"
-    >
-      <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn.id">
-        <!-- <button class="btn" :disabled=limitReached data-toggle="collapse"  :data-target="'#currentColumn'+currentColumn.id"> -->
+    <!-- v-if="!limitReached" -->
+    <div slot="footer" class="create-task" role="group" aria-label="Basic example" key="footer">
+      <!-- <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn.id"> -->
+      <button
+        class="btn"
+        :disabled="limitReached"
+        data-toggle="collapse"
+        :data-target="'#currentColumn'+currentColumn.id"
+      >
         <font-awesome-icon icon="plus" style="padding-right:5px;" />Create Task
       </button>
       <div :id="'currentColumn'+currentColumn.id" class="collapse">
@@ -136,6 +133,8 @@ export default {
   padding: 10px;
   border-radius: 10px;
   background-color: #ebebe0;
+  /* background-color: red; */
+
   width: 250px;
 }
 .column-name {

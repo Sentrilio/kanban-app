@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @org.springframework.transaction.annotation.Transactional
@@ -52,36 +53,48 @@ public class TrendServiceImpl implements TrendService {
         }
     }
 
-    public ResponseEntity<SeriesSet> getTrendsFromLastDays(Long boardId, int days) {
-        SeriesSet seriesSet = new SeriesSet();
-        List<String> dates = new ArrayList<>();
-        Date date = new Date();
-        LocalDateTime dateTime = new LocalDateTime(date);
-        dateTime = dateTime.minusDays(days);
-        dateTime = dateTime.withTime(0, 0, 0, 0);
-        for (int i = 1; i <= days + 1; i++) {
-            dates.add(dateTime.plusDays(i).toString() + "Z");
-        }
-        seriesSet.setDates(dates);
+    public ResponseEntity<SeriesSet> getTrendsFromLastDays(Long boardId) {
         Optional<Board> board = boardRepository.findById(boardId);
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        board.ifPresent(value -> value.getColumns().forEach(column -> {
-            List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(column.getId());
-            int j = 0;
-            Series series = new Series(days);
-            series.setName(column.getName());
-            for (int i = 0; i < days; i++) {
-                if (j == trends.size()) {
-                    break;
-                }
-                if (dates.get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
-                    series.add(i, trends.get(j).getElements());
-                    j++;
-                }
+        SeriesSet seriesSet = new SeriesSet();
+        if (board.isPresent()) {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            Date startDate = board.get().getCreateDate();
+            List<String> dates = new ArrayList<>();
+            Date today = new Date();
+            LocalDateTime dateTimeStart = new LocalDateTime(startDate);
+            LocalDateTime dateTimeToday = new LocalDateTime(today);
+//            dateTimeStart = dateTimeStart.minusDays(days);
+            dateTimeStart = dateTimeStart.withTime(0, 0, 0, 0);
+            dateTimeToday = dateTimeToday.withTime(0, 0, 0, 0);
+
+            int counter = 0;
+            while (!dateTimeStart.plusDays(counter).equals(dateTimeToday.plusDays(1))) {
+                System.out.println(dateTimeStart.plusDays(counter).toString());
+                dates.add(dateTimeStart.plusDays(counter).toString() + "Z");
+                counter++;
             }
-            seriesSet.add(series);
-        }));
+//            days=dates.size();
+            seriesSet.setDates(dates);
+            AtomicReference<Integer> days = new AtomicReference<>();
+            days.set(dates.size());
+            board.get().getColumns().forEach((column) -> {
+                List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(column.getId());
+                int j = 0;
+                Series series = new Series(days.get());
+                series.setName(column.getName());
+                for (int i = 0; i < days.get(); i++) {
+                    if (j == trends.size()) {
+                        break;
+                    }
+                    if (dates.get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
+                        series.add(i, trends.get(j).getElements());
+                        j++;
+                    }
+                }
+                seriesSet.add(series);
+            });
+        }
         return new ResponseEntity<>(seriesSet, HttpStatus.OK);
     }
 

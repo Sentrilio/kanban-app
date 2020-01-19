@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,9 @@ public class Board {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "create_date")
+    private Date createDate;
 
     @JsonBackReference
     @ManyToOne
