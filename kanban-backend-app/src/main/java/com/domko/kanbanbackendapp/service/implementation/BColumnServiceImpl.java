@@ -107,6 +107,8 @@ public class BColumnServiceImpl implements BColumnService {
         Optional<BColumn> bColumn = bColumnRepository.findById(column);
         if (bColumn.isPresent()) {
             if (permissionService.hasPermissionTo(bColumn.get())) {
+                bColumn.get().getBoard().getColumns().remove(bColumn.get());
+                boardRepository.save(bColumn.get().getBoard());
                 bColumnRepository.delete(bColumn.get());
                 template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Column Deleted", HttpStatus.OK);
