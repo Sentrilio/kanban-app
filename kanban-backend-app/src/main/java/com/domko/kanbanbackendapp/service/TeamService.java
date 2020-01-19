@@ -8,8 +8,4 @@ import java.util.Optional;
 
 public interface TeamService {
 
-	Team save(Team team);
-	Optional<Team> findTeam(Long id);
-	List<Team> findAll();
-
 }

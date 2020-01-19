@@ -13,16 +13,15 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 public class UserController {
 
+	private final UserServiceImpl userService;
+
 	@Autowired
-	private UserServiceImpl userService;
-
-	@GetMapping(value = "/all")
-	public List<User> getUsers(){
-		return userService.findAll();
+	public UserController(UserServiceImpl userService) {
+		this.userService = userService;
 	}
 
-	@GetMapping(value = "/get/{email}")
-	public Optional<User> findByEmail(@PathVariable String email) {
-		return userService.findByEmail(email);
-	}
+//	@GetMapping(value = "/get/{email}")
+//	public Optional<User> findByEmail(@PathVariable String email) {
+//		return userService.findByEmail(email);
+//	}
 }

@@ -8,9 +8,4 @@ import java.util.Set;
 
 public interface BoardService {
 
-	List<Board> findAllBoards();
-
-	Optional<Board> findBoard(Long id);
-
-	public Board save(Board board);
 }

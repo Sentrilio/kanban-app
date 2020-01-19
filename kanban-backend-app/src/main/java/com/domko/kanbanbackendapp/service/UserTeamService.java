@@ -9,11 +9,5 @@ import java.util.List;
 
 public interface UserTeamService {
 
-	UserTeam save(UserTeam userTeam);
-
-	List<UserTeam> findTeamsOfUser(Long userId);
-
-	UserTeam addUserToTeam(User user, Team team, TeamRole role);
-
-	List<UserTeam> findUsersOfTeam(Long teamId);
+    UserTeam addUserToTeam(User user, Team team, TeamRole role);
 }
