@@ -1,14 +1,17 @@
 <template>
-  <div class="list-group-item btn task" @click="logTask(task)">
+  <div @click="logTask(task)" class="list-group-item btn task">
     <div class="task-description">{{task.description}}</div>
-    <div v-if="task.importance>0" class="task-icon">
+    <div class="task-icon">
       <font-awesome-icon class="icon" v-bind:class="taskClass" icon="circle" />
     </div>
     <!-- imp:{{task.importance}} -->
-    <!-- <font-awesome-icon icon="minus" /> -->
+    <div @click="deleteTask(task)">
+      <font-awesome-icon icon="minus" />
+    </div>
   </div>
 </template>
 <script>
+import TaskService from "../services/TaskService";
 export default {
   computed: {
     taskClass: function() {
@@ -26,6 +29,15 @@ export default {
     task: Object
   },
   methods: {
+    deleteTask(task) {
+      TaskService.deleteTask(task.id)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err.response.body);
+        });
+    },
     logTask(task) {
       console.log("clicked" + task.id);
       //to do - add window prompt with task settings
@@ -45,12 +57,13 @@ export default {
   /* align-content: center; */
 }
 div.task-icon {
+  flex: 0 0 40px;
   vertical-align: middle;
   line-height: normal;
   /* align-content: center; */
 }
 div.task-description {
-  flex: 0 0 170px;
+  flex: 0 0 130px;
   /* margin-bottom: 10px; */
   text-align: left;
 }
@@ -66,5 +79,8 @@ div.task-description {
 }
 .orange {
   color: orange;
+}
+.white {
+  color: white;
 }
 </style>

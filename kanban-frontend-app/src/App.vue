@@ -190,7 +190,7 @@ export default {
     this.getData();
   },
   watch: {
-    $route: "getData"
+    // $route: "getData"
   }
 };
 </script>
