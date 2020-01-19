@@ -12,7 +12,6 @@ public class Series {
     private List<Integer> data;
 
     public void add(int index, Integer value) {
-//        values.add(index, value);
         data.set(index, value);
     }
 

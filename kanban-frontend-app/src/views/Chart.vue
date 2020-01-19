@@ -1,6 +1,10 @@
 <template>
-  <div>
-    <div v-if="this.render">
+  <div class="chart">
+    <button class="btn" @click="handleBoardClick">
+      <font-awesome-icon icon="arrow-left" />
+      {{boardName}}
+    </button>
+    <div class="chart-area" v-if="this.render">
       <apexchart type="area" height="550" :options="chartOptions" :series="series"></apexchart>
     </div>
   </div>
@@ -10,6 +14,8 @@ import TrendService from "../services/TrendService";
 export default {
   data() {
     return {
+      boardName: "",
+      boardId: "",
       render: false,
       trends: {},
       series: [
@@ -24,21 +30,45 @@ export default {
       ],
       chartOptions: {
         chart: {
+          toolbar: {
+            show: true,
+            tools: {
+              download: true,
+              selection: true,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: false,
+              reset: true | '<img src="/static/icons/reset.png" width="20">',
+              // customIcons: []
+            },
+            autoSelected: "zoom"
+          },
           height: 350,
           type: "area"
+          // type: "line"
         },
         dataLabels: {
           enabled: false
         },
         stroke: {
           curve: "smooth"
+          // curve: "straight"
+        },
+        legend: {
+          fontSize: "15px"
         },
         xaxis: {
           type: "datetime",
           categories: [],
-          tickPlacement: "between",
+          // tickPlacement: "between",
           //   "2018-09-19T00:00:00.000Z",
+
           labels: {
+            style: {
+              fontSize: "15px"
+              // margin: "15px",
+            }
             // datetimeFormatter: {
             // year: "yyyy",
             // month: "MMM 'yy",
@@ -46,6 +76,7 @@ export default {
             // hour: "HH:mm"
             // }
           }
+          // tickAmount: 2,
         }
         // tooltip: {
         // x: {
@@ -57,14 +88,22 @@ export default {
     };
   },
 
-
   methods: {
+    handleBoardClick() {
+      let boardId = this.boardId;
+      let boardName = this.boardName;
+      this.$router.push({
+        name: "board",
+        params: { boardId, boardName }
+      });
+    },
     getTrends() {
-      let boardId = this.$route.params.boardId;
-      let data={
-        boardId:boardId,
+      let boardId = this.boardId;
+      this.boardName = this.boardName;
+      let data = {
+        boardId: boardId,
         days: 4
-      }
+      };
       TrendService.getTrends(data)
         .then(response => {
           this.trends = response.data;
@@ -78,9 +117,19 @@ export default {
     }
   },
   created() {
+    this.boardId = this.$route.params.boardId;
+    this.boardName = this.$route.params.boardName;
     this.getTrends();
   }
 };
 </script>
 <style lang="css" scoped>
+button {
+  margin-left: 10px;
+  background-color: #ebebe0;
+  margin-top: 10px;
+}
+.chart{
+  width: 1500px;
+}
 </style>

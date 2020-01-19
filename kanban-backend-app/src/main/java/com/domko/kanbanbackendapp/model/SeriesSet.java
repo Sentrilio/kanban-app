@@ -13,7 +13,7 @@ public class SeriesSet {
     private List<Series> seriesList = new ArrayList<>();
     private List<String> dates;
 
-    public void add(Series series){
+    public void add(Series series) {
         seriesList.add(series);
     }
 
@@ -22,13 +22,13 @@ public class SeriesSet {
         Date startDate = board.getCreateDate();
         Date today = new Date();
         LocalDateTime dateTimeStart = new LocalDateTime(startDate);
-        LocalDateTime dateTimeToday = new LocalDateTime(today);
+        LocalDateTime dateTimeEnd = new LocalDateTime(today);
         dateTimeStart = dateTimeStart.withTime(0, 0, 0, 0);
-        dateTimeToday = dateTimeToday.withTime(0, 0, 0, 0);
-
+        dateTimeEnd = dateTimeEnd.withTime(0, 0, 0, 0);
+        dateTimeEnd = dateTimeEnd.plusDays(1);
         int counter = 0;
-        while (!dateTimeStart.plusDays(counter).equals(dateTimeToday.plusDays(1))) {
-            System.out.println(dateTimeStart.plusDays(counter).toString());
+        while (!dateTimeStart.plusDays(counter).equals(dateTimeEnd)) {
+//            System.out.println(dateTimeStart.plusDays(counter).toString());
             dates.add(dateTimeStart.plusDays(counter).toString() + "Z");
             counter++;
         }
@@ -38,7 +38,7 @@ public class SeriesSet {
     @Override
     public String toString() {
         return "SeriesSet{" +
-                "seriesList=\n" + seriesList +"\n"+
+                "seriesList=\n" + seriesList + "\n" +
                 ", dates=" + dates +
                 '}';
     }
