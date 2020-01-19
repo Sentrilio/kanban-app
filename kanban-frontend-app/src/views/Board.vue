@@ -195,14 +195,10 @@ export default {
   display: flex;
   flex-direction: row;
   overflow-x: auto;
-  /* overflow-y: auto; */
-  height: 84vh;
+  height: 610px; /* conrete value */
 }
 .navbar {
   background-color: grey;
-
-  /* height: 40px; */
-  /* margin-top: 20px; */
 }
 .btn {
   background-color: #ebebe0;

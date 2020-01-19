@@ -57,37 +57,18 @@ public class TrendServiceImpl implements TrendService {
         Optional<Board> board = boardRepository.findById(boardId);
         SeriesSet seriesSet = new SeriesSet();
         if (board.isPresent()) {
-            String pattern = "yyyy-MM-dd";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            Date startDate = board.get().getCreateDate();
-            List<String> dates = new ArrayList<>();
-            Date today = new Date();
-            LocalDateTime dateTimeStart = new LocalDateTime(startDate);
-            LocalDateTime dateTimeToday = new LocalDateTime(today);
-//            dateTimeStart = dateTimeStart.minusDays(days);
-            dateTimeStart = dateTimeStart.withTime(0, 0, 0, 0);
-            dateTimeToday = dateTimeToday.withTime(0, 0, 0, 0);
-
-            int counter = 0;
-            while (!dateTimeStart.plusDays(counter).equals(dateTimeToday.plusDays(1))) {
-                System.out.println(dateTimeStart.plusDays(counter).toString());
-                dates.add(dateTimeStart.plusDays(counter).toString() + "Z");
-                counter++;
-            }
-//            days=dates.size();
-            seriesSet.setDates(dates);
-            AtomicReference<Integer> days = new AtomicReference<>();
-            days.set(dates.size());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            seriesSet.prepareDates(board.get());
             board.get().getColumns().forEach((column) -> {
                 List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(column.getId());
                 int j = 0;
-                Series series = new Series(days.get());
+                Series series = new Series(seriesSet.getDates().size());
                 series.setName(column.getName());
-                for (int i = 0; i < days.get(); i++) {
+                for (int i = 0; i < seriesSet.getDates().size(); i++) {
                     if (j == trends.size()) {
                         break;
                     }
-                    if (dates.get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
+                    if (seriesSet.getDates().get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
                         series.add(i, trends.get(j).getElements());
                         j++;
                     }

@@ -16,7 +16,7 @@
             :v-model="selectedLimit"
           >{{selectedLimit}}</button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <div v-for="index in 20" :key="index">
+            <div v-for="index in 15" :key="index">
               <a class="dropdown-item" @click="setSelectedLimit(index)">{{index}}</a>
             </div>
           </div>
@@ -69,7 +69,7 @@ input {
 }
 div.dropdown {
   padding-top: 10px;
-  padding-left: 10px;
+  padding-left: 5px;
 }
 .create-column {
   width: 100px;

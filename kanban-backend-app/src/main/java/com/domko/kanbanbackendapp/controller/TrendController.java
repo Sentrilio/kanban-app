@@ -17,7 +17,6 @@ public class TrendController {
 
     @PostMapping(value = "/get")
     public ResponseEntity<SeriesSet> getTrends(@RequestBody TrendRequest trendRequest) {
-//        return trendService.getTrendsFromLastDays(trendRequest.getBoardId(), trendRequest.getDays());
         return trendService.getTrendsFromLastDays(trendRequest.getBoardId());
     }
 }
