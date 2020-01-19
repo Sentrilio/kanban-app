@@ -7,12 +7,4 @@ import java.util.Optional;
 
 public interface UserService {
 
-	User save(User user);
-	Optional<User> findByEmail(String email);
-	List<User> findUsers(List<Long> idList);
-	Optional<User> findUser(Long id);
-
-	List<User> findAll();
-
-	Optional<User> findByUsername(String username);
 }

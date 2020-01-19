@@ -21,11 +21,6 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @GetMapping(value = "/all")
-    public List<Board> getAllBoards() {
-        return boardService.findAllBoards();
-    }
-
     @PostMapping(value = "/create")
     public ResponseEntity<String> createBoard(@RequestBody CreateBoardRequest createBoardRequest) {
         return boardService.createBoard(createBoardRequest);

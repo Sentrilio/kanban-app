@@ -7,6 +7,8 @@ import com.domko.kanbanbackendapp.model.UserTeam;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
 import com.domko.kanbanbackendapp.repository.TeamRepository;
+import com.domko.kanbanbackendapp.repository.UserRepository;
+import com.domko.kanbanbackendapp.repository.UserTeamRepository;
 import com.domko.kanbanbackendapp.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,41 +25,27 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
-    private final UserServiceImpl userService;
-    private final UserTeamServiceImpl userTeamService;
-    private final PermissionService permissionService;
+    private final UserTeamRepository userTeamRepository;
     private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
+    private final PermissionService permissionService;
 
     @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository, UserServiceImpl userService,
-                            UserTeamServiceImpl userTeamService, PermissionService permissionService,
-                            TeamRepository teamRepository) {
+    public BoardServiceImpl(BoardRepository boardRepository, UserTeamRepository userTeamRepository,
+                            TeamRepository teamRepository, UserRepository userRepository,
+                            PermissionService permissionService) {
         this.boardRepository = boardRepository;
-        this.userService = userService;
-        this.userTeamService = userTeamService;
-        this.permissionService = permissionService;
+        this.userTeamRepository = userTeamRepository;
         this.teamRepository = teamRepository;
-    }
-
-    @Override
-    public List<Board> findAllBoards() {
-        return boardRepository.findAll();
-    }
-
-    @Override
-    public Board save(Board board) {
-        return boardRepository.save(board);
-    }
-
-    public Optional<Board> findBoard(Long id) {
-        return boardRepository.findById(id);
+        this.userRepository = userRepository;
+        this.permissionService = permissionService;
     }
 
     private void createBoard(CreateBoardRequest createBoardRequest, Team team) {
         Board board = new Board();
         board.setName(createBoardRequest.getBoardName());
         board.setTeam(team);
-        save(board);
+        boardRepository.save(board);
     }
 
     public ResponseEntity<String> createBoard(CreateBoardRequest createBoardRequest) {
@@ -76,10 +64,10 @@ public class BoardServiceImpl implements BoardService {
 
     public ResponseEntity<List<Board>> getUserBoards() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> user = userService.findByUsername(authentication.getName());
+        Optional<User> user = userRepository.findByUsername(authentication.getName());
         if (user.isPresent()) {
             System.out.println("user present");
-            List<UserTeam> userTeams = userTeamService.findTeamsOfUser(user.get().getId());
+            List<UserTeam> userTeams = userTeamRepository.findAllTeamsOfUser(user.get().getId());
             List<Board> boards = new ArrayList<>();
             userTeams.forEach(e -> boards.addAll(e.getTeam().getBoards()));
             return new ResponseEntity<>(boards, HttpStatus.OK);
@@ -90,7 +78,7 @@ public class BoardServiceImpl implements BoardService {
 
     public ResponseEntity<Board> getBoardById(long boardId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> user = userService.findByUsername(authentication.getName());
+        Optional<User> user = userRepository.findByUsername(authentication.getName());
         if (user.isPresent()) {
             Optional<Board> board = boardRepository.findById(boardId);
             return board.map(value -> new ResponseEntity<>(value, HttpStatus.OK))

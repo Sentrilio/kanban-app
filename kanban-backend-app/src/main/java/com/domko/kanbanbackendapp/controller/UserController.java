@@ -20,13 +20,8 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping(value = "/all")
-	public List<User> getUsers(){
-		return userService.findAll();
-	}
-
-	@GetMapping(value = "/get/{email}")
-	public Optional<User> findByEmail(@PathVariable String email) {
-		return userService.findByEmail(email);
-	}
+//	@GetMapping(value = "/get/{email}")
+//	public Optional<User> findByEmail(@PathVariable String email) {
+//		return userService.findByEmail(email);
+//	}
 }

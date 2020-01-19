@@ -100,7 +100,7 @@ export default {
     },
     messageHandle(data) {
       if (JSON.parse(data.body).message === "board updated") {
-        this.getData();
+        this.refresh();
       }
     },
     setBoard() {

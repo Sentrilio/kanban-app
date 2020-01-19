@@ -21,18 +21,21 @@ import java.util.Optional;
 @org.springframework.transaction.annotation.Transactional
 public class TaskServiceImpl implements TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final BColumnRepository bColumnRepository;
+    private final TrendServiceImpl trendService;
+    private final PermissionService permissionService;
+    private final SimpMessagingTemplate template;
 
     @Autowired
-    private BColumnRepository bColumnRepository;
-    @Autowired
-    private TrendServiceImpl trendService;
-    @Autowired
-    private PermissionService permissionService;
-    @Autowired
-    private SimpMessagingTemplate template;
-
+    public TaskServiceImpl(TaskRepository taskRepository, BColumnRepository bColumnRepository, TrendServiceImpl trendService,
+                           PermissionService permissionService, SimpMessagingTemplate template) {
+        this.taskRepository = taskRepository;
+        this.bColumnRepository = bColumnRepository;
+        this.trendService = trendService;
+        this.permissionService = permissionService;
+        this.template = template;
+    }
 
     public ResponseEntity<String> updateTask(UpdateTaskRequest updateTaskRequest) {
         Optional<Task> task = taskRepository.findById(updateTaskRequest.getTaskId());
@@ -53,7 +56,6 @@ public class TaskServiceImpl implements TaskService {
             return new ResponseEntity<>("BColumn does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     public ResponseEntity<String> createTask(CreateTaskRequest createTaskRequest) {
         Optional<BColumn> column = bColumnRepository.findById(createTaskRequest.getColumnId());

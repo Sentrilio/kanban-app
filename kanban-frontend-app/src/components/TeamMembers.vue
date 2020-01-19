@@ -43,6 +43,7 @@ export default {
       TeamService.addUserToTeam(this.$route.params.teamId, this.userEmail)
         .then(response => {
           console.log(response);
+          this.getData();
         })
         .catch(err => {
           console.log(err);
