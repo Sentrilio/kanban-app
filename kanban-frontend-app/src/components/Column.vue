@@ -131,10 +131,7 @@ export default {
 
 <style lang="css" scoped>
 .column {
-  /* margin-left: 100px; */
   margin-left: 10px;
-  /* margin-top: 20px; */
-  /* padding-left: 100px; */
   outline-width: 1px;
   padding: 10px;
   border-radius: 10px;

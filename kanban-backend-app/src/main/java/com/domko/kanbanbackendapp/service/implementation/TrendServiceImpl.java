@@ -39,11 +39,11 @@ public class TrendServiceImpl implements TrendService {
     public void addTrend(Task task) {
         Optional<Trend> trend = findByColumnIdAndDate(task.getColumn().getId(), new Date());
         if (trend.isPresent()) {
-            System.out.println("column trend found");
+//            System.out.println("column trend found");
             trend.get().setElements(trend.get().getElements() + 1);
             save(trend.get());
         } else {
-            System.out.println("column trend not found");
+//            System.out.println("column trend not found");
             Trend trendToSave = new Trend();
             trendToSave.setColumn(task.getColumn());
             trendToSave.setDate(new Date());

@@ -196,11 +196,11 @@ export default {
   flex-direction: row;
   overflow-x: auto;
   /* overflow-y: auto; */
-  height: 92vh;
+  height: 84vh;
 }
 .navbar {
   background-color: grey;
-  
+
   /* height: 40px; */
   /* margin-top: 20px; */
 }

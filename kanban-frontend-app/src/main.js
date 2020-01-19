@@ -8,6 +8,8 @@ import VeeValidate from 'vee-validate';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
+  faCircle,
+  faDotCircle,
   faHome,
   faUser,
   faUserPlus,
@@ -21,7 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import VueApexCharts from 'vue-apexcharts'
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faMinus, faPlus, faEllipsisV, faChartLine,faChartArea);
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faMinus, faPlus, faEllipsisV, faChartLine,faChartArea,faDotCircle,faCircle);
 
 Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)

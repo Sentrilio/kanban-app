@@ -1,26 +1,29 @@
 <template>
   <div class="create-column">
-    <button class="btn" data-toggle="collapse" data-target="#demo">Create Column</button>
-    <div id="demo" class="collapse">
-      <input v-model="columnNameInput" type="text" placeholder="column name" />
-      <div class="dropdown">
-        <button
-          class="btn btn-secondary dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          :v-model="selectedLimit"
-        >{{selectedLimit}}</button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <div v-for="index in 20" :key="index">
-            <a class="dropdown-item" @click="setSelectedLimit(index)">{{index}}</a>
+    <div>
+      <button class="btn" data-toggle="collapse" data-target="#demo">Create Column</button>
+      <div id="demo" class="collapse">
+        <input v-model="columnNameInput" type="text" placeholder="column name" />
+        <div class="dropdown">
+          limit
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            :v-model="selectedLimit"
+          >{{selectedLimit}}</button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div v-for="index in 20" :key="index">
+              <a class="dropdown-item" @click="setSelectedLimit(index)">{{index}}</a>
+            </div>
           </div>
         </div>
+        <br />
+        <button class="button" @click="createColumn" :disabled="!columnNameInput">Create Column</button>
       </div>
-      <br />
-      <button class="button" @click="createColumn" :disabled="!columnNameInput">Create Column</button>
     </div>
   </div>
 </template>
@@ -37,8 +40,7 @@ export default {
   props: {
     boardId: Number
   },
-  computed:{
-  },
+  computed: {},
   methods: {
     setSelectedLimit(limit) {
       this.selectedLimit = limit;
@@ -62,13 +64,26 @@ export default {
 };
 </script>
 <style lang="css" scoped>
+input {
+  margin-top: 10px;
+}
+div.dropdown {
+  padding-top: 10px;
+  padding-left: 10px;
+}
 .create-column {
   width: 100px;
   align-content: right;
-  padding-left: 10px;
-  outline-width: 1px !important;
-  outline-color: black !important;
-  width: 400px;
+  padding-left: 20px;
+  margin-left: 10px;
+  padding-right: 10px;
+  outline-color: black;
+  width: 200px;
+  height: 100px;
+  outline-width: 1px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #ebebe0;
 }
 
 .btn {
