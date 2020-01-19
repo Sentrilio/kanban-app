@@ -35,16 +35,6 @@ public class BColumnServiceImpl implements BColumnService {
         this.template = template;
     }
 
-    @Override
-    public BColumn save(BColumn BColumn) {
-        return bColumnRepository.save(BColumn);
-    }
-
-    @Override
-    public Optional<BColumn> findById(Long id) {
-        return bColumnRepository.findById(id);
-    }
-
     public boolean updateBColumn(BColumn column, UpdateColumnRequest updateColumnRequest) {
         switch (updateColumnRequest.getOperation()) {
             case MOVE:
@@ -57,17 +47,12 @@ public class BColumnServiceImpl implements BColumnService {
         }
     }
 
-    @Override
-    public void delete(BColumn bColumn) {
-        bColumnRepository.delete(bColumn);
-    }
-
     public void updatePositions(List<BColumn> columns) {
         for (int i = 0; i < columns.size(); i++) {
-            Optional<BColumn> column = findById(columns.get(i).getId());
+            Optional<BColumn> column = bColumnRepository.findById(columns.get(i).getId());
             if (column.isPresent()) {
                 column.get().setPosition(i);
-                save(column.get());
+                bColumnRepository.save(column.get());
             } else {
                 System.out.println("column does not exists");
             }
@@ -82,7 +67,7 @@ public class BColumnServiceImpl implements BColumnService {
         column.setBoard(board);
         column.setPosition(board.getColumns().size());
         System.out.println("column name: " + column.getName() + "wip limit: " + column.getWipLimit());
-        return save(column);
+        return bColumnRepository.save(column);
     }
 
     public ResponseEntity<String> createColumn(CreateColumnRequest createColumnRequest) {

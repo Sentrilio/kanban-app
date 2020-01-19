@@ -5,6 +5,7 @@ import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.payload.response.MessageResponse;
+import com.domko.kanbanbackendapp.repository.BColumnRepository;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
 import com.domko.kanbanbackendapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private BColumnServiceImpl bColumnService;
+    private BColumnRepository bColumnRepository;
     @Autowired
     private TrendServiceImpl trendService;
     @Autowired
@@ -35,7 +36,7 @@ public class TaskServiceImpl implements TaskService {
 
     public ResponseEntity<String> updateTask(UpdateTaskRequest updateTaskRequest) {
         Optional<Task> task = taskRepository.findById(updateTaskRequest.getTaskId());
-        Optional<BColumn> destColumn = bColumnService.findById(updateTaskRequest.getColumnId());
+        Optional<BColumn> destColumn = bColumnRepository.findById(updateTaskRequest.getColumnId());
         if (task.isPresent() && destColumn.isPresent()) {
             if (permissionService.hasPermissionTo(task.get())) {
                 if (handleTaskUpdate(task.get(), destColumn.get(), updateTaskRequest)) {
@@ -55,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
 
 
     public ResponseEntity<String> createTask(CreateTaskRequest createTaskRequest) {
-        Optional<BColumn> column = bColumnService.findById(createTaskRequest.getColumnId());
+        Optional<BColumn> column = bColumnRepository.findById(createTaskRequest.getColumnId());
         if (column.isPresent()) {
             if (permissionService.hasPermissionTo(column.get())) {
                 Task task = createTask(column.get(), createTaskRequest);
@@ -98,12 +99,12 @@ public class TaskServiceImpl implements TaskService {
                     long oldColumnId = task.getColumn().getId();
                     task.setColumn(destColumn);
                     destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                    BColumn updatedColumn = bColumnService.save(destColumn);
+                    BColumn updatedColumn = bColumnRepository.save(destColumn);
                     updatePositions(updatedColumn.getTasks());
-                    Optional<BColumn> oldColumn = bColumnService.findById(oldColumnId);
+                    Optional<BColumn> oldColumn = bColumnRepository.findById(oldColumnId);
                     if (oldColumn.isPresent()) {
                         oldColumn.get().getTasks().remove(task);
-                        BColumn updatedOldColumn = bColumnService.save(oldColumn.get());
+                        BColumn updatedOldColumn = bColumnRepository.save(oldColumn.get());
                         updatePositions(updatedOldColumn.getTasks());
                         return true;
                     } else {
