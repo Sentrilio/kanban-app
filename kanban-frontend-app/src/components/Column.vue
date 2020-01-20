@@ -18,7 +18,7 @@
         :group="{name: 'task',put: false}"
         @change="change($event, column)"
       >
-        <div v-for="task in column.tasks" :key="task.id">
+        <div  v-for="task in column.tasks" :key="task.id">
           <task :task="task"></task>
         </div>
       </draggable>

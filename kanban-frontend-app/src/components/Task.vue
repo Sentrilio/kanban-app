@@ -50,6 +50,8 @@ export default {
   display: flex;
   flex-direction: row;
   margin-bottom: 5px;
+  margin-right: 5px;
+  padding-right: 5px;
 }
 .icon {
   vertical-align: middle;
@@ -63,9 +65,13 @@ div.task-icon {
   /* align-content: center; */
 }
 div.task-description {
-  flex: 0 0 130px;
+  flex: 0 0 143px;
   /* margin-bottom: 10px; */
   text-align: left;
+}
+div.list-group-item.btn.task{
+  padding-right: 10px;
+  margin-right: 0px !important;
 }
 
 /* .red.yellow.orange { */
