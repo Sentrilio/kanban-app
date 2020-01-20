@@ -1,5 +1,6 @@
 <template>
   <div class="board">
+    <modal name="hello-world">hello, world!</modal>
     <nav class="navbar navbar-expand navbar-dark white" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
         <li class="btn">
@@ -153,7 +154,7 @@ export default {
       console.log(from);
       this.setBoard();
       // this.show = false;
-    }
+    },
     // $route: "setBoard"
   }
 };

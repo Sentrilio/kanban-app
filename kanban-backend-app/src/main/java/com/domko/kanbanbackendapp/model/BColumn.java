@@ -1,7 +1,6 @@
 package com.domko.kanbanbackendapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -39,13 +37,13 @@ public class BColumn {
 
     @JsonManagedReference
     @OrderColumn(name = "position")// jesli nie ma rekordu to tworzony jest null
-    @OneToMany(mappedBy = "column")
+    @OneToMany(mappedBy = "column", orphanRemoval = true)
     private List<Task> tasks;
 
     @Column(name = "wip_limit", nullable = false)
     private Integer wipLimit;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "column")
+    @OneToMany(mappedBy = "column", orphanRemoval = true)
     private List<Trend> trends;
 }

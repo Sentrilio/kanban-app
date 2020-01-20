@@ -1,10 +1,15 @@
 <template>
   <div class="column">
-    <div class="column-name">
-      <a>
+    <div class="column-header">
+      <div class="column-name">
         {{column.name}}
         limit: {{column.wipLimit}}
-      </a>
+      </div>
+      <div class="btn minus-icon" @click="deleteColumn(column)">
+        <div>
+          <font-awesome-icon icon="minus" />
+        </div>
+      </div>
     </div>
     <div v-if="limitReached">
       <draggable
@@ -13,7 +18,7 @@
         :group="{name: 'task',put: false}"
         @change="change($event, column)"
       >
-        <div v-for="task in column.tasks" :key="task.id">
+        <div  v-for="task in column.tasks" :key="task.id">
           <task :task="task"></task>
         </div>
       </draggable>
@@ -86,6 +91,16 @@ export default {
     }
   },
   methods: {
+    deleteColumn(column) {
+      ColumnService.deleteColumn(column.id)
+        .then(response => {
+          this.$emit("refresh");
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err.response);
+        });
+    },
     createTask() {
       TaskService.createTask(this.column.id, this.taskDescription)
         .then(response => {
@@ -127,6 +142,11 @@ export default {
 </script>
 
 <style lang="css" scoped>
+div.column-name{
+  padding-left: 10px;
+  width: 300px;
+}
+
 .column {
   margin-left: 10px;
   outline-width: 1px;
@@ -137,11 +157,22 @@ export default {
 
   width: 250px;
 }
-.column-name {
-  margin: 10px;
-  align-content: center;
+div.minus-icon{
+  padding-right: 0px;
+  /* padding-right: 10px; */
+  /* align-content: center; */
+}
+div.column-header {
+  /* flex: 0 0 100%;  */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 .task-input {
   margin-top: 8px;
 }
+/* div.column-name { */
+  /* flex: 0 0 130px; */
+/* } */
 </style>

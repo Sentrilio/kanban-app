@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,7 @@ public class BoardServiceImpl implements BoardService {
 
     private void createBoard(CreateBoardRequest createBoardRequest, Team team) {
         Board board = new Board();
+        board.setCreateDate(new Date());
         board.setName(createBoardRequest.getBoardName());
         board.setTeam(team);
         boardRepository.save(board);

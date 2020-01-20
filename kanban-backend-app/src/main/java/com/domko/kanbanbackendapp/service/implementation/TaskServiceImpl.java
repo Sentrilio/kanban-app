@@ -82,6 +82,8 @@ public class TaskServiceImpl implements TaskService {
         Optional<Task> task = taskRepository.findById(taskId);
         if (task.isPresent()) {
             if (permissionService.hasPermissionTo(task.get())) {
+                task.get().getColumn().getTasks().remove(task.get());
+                bColumnRepository.save(task.get().getColumn());
                 taskRepository.delete(task.get());
                 template.convertAndSend("/topic/board/" + task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);

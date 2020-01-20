@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    
     <nav class="navbar navbar-expand navbar-dark bg-dark" v-if="!$route.meta.hideNavigation">
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -179,7 +178,6 @@ export default {
           name: "board",
           params: { teamId, boardId, boardName }
         });
-        // this.$route.params.pathMatch;
 
       } else {
         console.log("team does not exists");
