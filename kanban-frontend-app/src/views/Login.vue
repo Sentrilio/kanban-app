@@ -8,7 +8,7 @@
       />
       <form name="form" @submit.prevent="handleLogin">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">Nazwa użytkownika</label>
           <input
             type="text"
             class="form-control"
@@ -20,10 +20,10 @@
             class="alert alert-danger"
             role="alert"
             v-if="errors.has('username')"
-          >Username is required!</div>
+          >Nazwa użytkownika jest wymagana!</div>
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Hasło</label>
           <input
             type="password"
             class="form-control"
@@ -35,12 +35,12 @@
             class="alert alert-danger"
             role="alert"
             v-if="errors.has('password')"
-          >Password is required!</div>
+          >Hasło jest wymagane!</div>
         </div>
         <div class="form-group">
           <button class="btn btn-primary btn-block" :disabled="loading">
             <span class="spinner-border spinner-border-sm" v-show="loading"></span>
-            <span>Login</span>
+            <span>Zaloguj się</span>
           </button>
         </div>
         <div class="form-group">

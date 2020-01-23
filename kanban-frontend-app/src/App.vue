@@ -16,7 +16,7 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            >Boards</button>
+            >Tablice</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <div v-for="team in teams" :key="team.id">
                 <div>
@@ -36,7 +36,7 @@
                 </div>
               </div>
               <div>
-                <a class="dropdown-item" href="#" @click="createBoard">Create board</a>
+                <a class="dropdown-item" href="#" @click="createBoard">Utwórz tablice</a>
               </div>
             </div>
           </div>
@@ -46,12 +46,12 @@
       <div class="navbar-nav ml-auto" v-if="!currentUser">
         <li class="nav-item">
           <a href="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" />Sign Up
+            <font-awesome-icon icon="user-plus" />Rejestracja
           </a>
         </li>
         <li class="nav-item">
           <a href="/login" class="nav-link">
-            <font-awesome-icon icon="sign-in-alt" />Login
+            <font-awesome-icon icon="sign-in-alt" />Logowanie
           </a>
         </li>
       </div>
@@ -65,7 +65,7 @@
         </li>
         <li class="nav-item">
           <a href class="nav-link" @click="logOut">
-            <font-awesome-icon icon="sign-out-alt" />LogOut
+            <font-awesome-icon icon="sign-out-alt" />Wyloguj
           </a>
         </li>
       </div>

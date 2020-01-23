@@ -44,17 +44,17 @@
         data-toggle="collapse"
         :data-target="'#currentColumn'+currentColumn.id"
       >
-        <font-awesome-icon icon="plus" style="padding-right:5px;" />Create Task
+        <font-awesome-icon icon="plus" style="padding-right:5px;" />Dodaj zadanie
       </button>
       <div :id="'currentColumn'+currentColumn.id" class="collapse">
         <input
           type="text"
           class="task-input"
           v-model="taskDescription"
-          placeholder="task description"
+          placeholder="opis zadania"
         />
 
-        <button class="button" @click="createTask" :disabled="!taskDescription">Create</button>
+        <button class="button" @click="createTask" :disabled="!taskDescription">Dodaj</button>
       </div>
     </div>
   </div>
