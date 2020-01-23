@@ -55,7 +55,7 @@ export const router = new Router({
     {
       path: '/board/create',
       component: CreateBoard,
-      meta: { hideNavigation: true },
+      // meta: { hideNavigation: true },
       beforeEnter: isLoggedIn,
 
     },
@@ -68,7 +68,7 @@ export const router = new Router({
     {
       path: '/team/create',
       component: CreateTeam,
-      meta: { hideNavigation: true },
+      // meta: { hideNavigation: true },
       beforeEnter: isLoggedIn,
     },
     {
