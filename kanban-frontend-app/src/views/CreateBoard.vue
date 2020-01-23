@@ -16,13 +16,13 @@
         <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
           <a class="dropdown-item" href="#">{{team.name}}</a>
         </li>
-        <a class="dropdown-item" href="/team/create">Utwórz zespół</a>
+        <a class="dropdown-item" href="/team/create">Stwórz zespół</a>
       </div>
     </div>
 
     <form @submit.prevent="createBoard">
       <input type="text" placeholder="Nazwa tablicy" v-model="boardName" />
-      <button :disabled="!selectedTeam || !boardName" type="submit">Utwórz tablicę</button>
+      <button :disabled="!selectedTeam || !boardName" type="submit">Stwórz tablicę</button>
     </form>
   </div>
 </template>
