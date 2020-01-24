@@ -1,6 +1,6 @@
 <template>
   <div class="members">
-    <header>Team members ({{teamMembers.length}})</header>
+    <header>Członkowie zespołu ({{teamMembers.length}})</header>
     <br />
     <div v-for="member in teamMembers" :key="member.user.id">
       <TeamMember :member="member"></TeamMember>
@@ -13,9 +13,9 @@
         name="email"
         v-model="userEmail"
         v-validate="'required|email'"
-        placeholder="user@kanban.com"
+        placeholder="użytkownik@email.com"
       />
-      <button>Add User</button>
+      <button>Dodaj użytkownika</button>
     </form>
   </div>
 </template>
