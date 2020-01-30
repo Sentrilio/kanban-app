@@ -3,7 +3,6 @@ package com.domko.kanbanbackendapp.model;
 import lombok.Data;
 import org.joda.time.LocalDateTime;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,4 +41,5 @@ public class SeriesSet {
                 ", dates=" + dates +
                 '}';
     }
+
 }

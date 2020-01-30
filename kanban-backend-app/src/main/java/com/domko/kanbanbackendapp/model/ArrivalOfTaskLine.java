@@ -1,4 +1,4 @@
 package com.domko.kanbanbackendapp.model;
 
-public interface Series {
+public class ArrivalOfTaskLine {
 }
