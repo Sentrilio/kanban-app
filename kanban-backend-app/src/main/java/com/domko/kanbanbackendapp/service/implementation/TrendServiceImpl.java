@@ -10,8 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 @Service
 @Transactional
@@ -78,47 +82,55 @@ public class TrendServiceImpl implements TrendService {
     }
 
     private void prepareTrendLines(Board board, SeriesSet seriesSet) {
-        TrendSeries trendSeries = new TrendSeries("trend", "line");
-        TrendSeries dotsSeries = new TrendSeries("Dots", "line");
+        TrendSeries trendSeries = new TrendSeries("Linia trendu", "line");
+        TrendSeries arrivalOfTasksSeries = new TrendSeries("Tempo przybywania", "line");
         Random random = new Random();
         List<Integer> trends = new ArrayList<>();
-        List<Float> dots = new ArrayList<>();
+        List<Integer> arrivals = new ArrayList<>();
+//        List<Float> dots = new ArrayList<>();
         for (int i = 0; i < seriesSet.getDates().size(); i++) {
-            Integer rand = random.nextInt(80);
-            trends.add(rand);
-            dots.add(rand.floatValue());
+//            Integer rand = random.nextInt(80);
+            trends.add(random.nextInt(100));
+            arrivals.add(random.nextInt(100));
+//            dots.add(rand.floatValue());
 //            trends.add(seriesSet.getDates().size()-i);
 //            dots.add((float) seriesSet.getDates().size()-i);
         }
-        List<Float> calulatedValues = getBestFitLine(trends);
-        trendSeries.addAll(calulatedValues);
+        List<BigDecimal> trendsBestFitLine = getBestFitLine(trends);
+        trendSeries.addAll(trendsBestFitLine);
         seriesSet.add(trendSeries);
-        dotsSeries.addAll(dots);
-        seriesSet.add(dotsSeries);
+
+        List<BigDecimal> arrivalsBestFitLine = getBestFitLine(arrivals);
+        arrivalOfTasksSeries.addAll(arrivalsBestFitLine);
+        seriesSet.add(arrivalOfTasksSeries);
     }
 
-    private List<Float> getBestFitLine(List<Integer> list) {
-        Float xSum = 0.0f;
-        Float ySum = 0.0f;
+    private List<BigDecimal> getBestFitLine(List<Integer> list) {
+        BigDecimal xSum = new BigDecimal(0);
+        BigDecimal ySum = new BigDecimal(0);
 
         for (int i = 0; i < list.size(); i++) {
-            xSum += i + 1;
-            ySum += list.get(i);
+            xSum = xSum.add( new BigDecimal(i + 1));
+            ySum = ySum.add(new BigDecimal(list.get(i)));
         }
-        xSum = xSum / list.size();
-        ySum = ySum / list.size();
-        float sumOfSquaredDeviation = 0.0f;
-        float sumOfMultipliedDeviations = 0.0f;
+        xSum = xSum.divide(new BigDecimal(list.size()),RoundingMode.HALF_UP);
+        ySum = ySum.divide(new BigDecimal(list.size()),RoundingMode.HALF_UP);
+        BigDecimal sumOfSquaredDeviation = new BigDecimal(0);
+        System.out.println(sumOfSquaredDeviation.scale());
+        BigDecimal sumOfMultipliedDeviations = new BigDecimal(0);
         for (int i = 0; i < list.size(); i++) {
-            sumOfMultipliedDeviations += ((i + 1 - xSum) * (list.get(i) - ySum));
-            sumOfSquaredDeviation += (Math.pow((i + 1 - xSum), 2));
+            sumOfMultipliedDeviations =sumOfMultipliedDeviations.add(new BigDecimal ((i + 1 - xSum.doubleValue()) * (list.get(i) - ySum.doubleValue())));
+            sumOfSquaredDeviation = sumOfSquaredDeviation.add(new BigDecimal((Math.pow((i + 1 - xSum.doubleValue()), 2))));
         }
-        Float m = sumOfMultipliedDeviations / sumOfSquaredDeviation;
+        BigDecimal m = sumOfMultipliedDeviations.divide(sumOfSquaredDeviation,RoundingMode.HALF_UP);
         System.out.println(m);
-        float b = ySum - (m * xSum);
-        List<Float> result = new ArrayList<>();
+        BigDecimal b = (ySum.subtract(m.multiply(xSum)));
+        List<BigDecimal> result = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("##.##");
         for (int i = 0; i < list.size(); i++) {
-            Float y = m * (i + 1) + b;
+//            double y = m * (i + 1) + b;
+            BigDecimal y= m.multiply(new BigDecimal(i+1)).add(b);
+//            BigDecimal bd = new BigDecimal(y).setScale(2, RoundingMode.HALF_UP);
             result.add(y);
         }
         return result;
