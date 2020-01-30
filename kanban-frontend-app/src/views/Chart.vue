@@ -99,19 +99,30 @@ export default {
             },
             autoSelected: "zoom"
           },
-          stacked: true,
-          height: 350,
+          // stacked: true,
+          height: 350
           // type: "area"
         },
         dataLabels: {
           enabled: false
         },
         stroke: {
-          curve: "smooth",
-          // curve: "straight"
+          // curve: "smooth",
+          curve: "straight"
         },
         legend: {
           fontSize: "15px"
+        },
+        yaxis: {
+          // show: false,
+          // tickAmount: 20,
+          // floating:false,
+          decimalsInFloat: false,
+          // allowDecimals: false,
+          // type: "number",
+          // ticks: {
+            // stepSize: 1
+          // }
         },
         xaxis: {
           type: "datetime",

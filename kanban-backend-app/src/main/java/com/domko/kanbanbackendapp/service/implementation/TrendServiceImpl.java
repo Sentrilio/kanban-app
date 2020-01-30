@@ -50,8 +50,7 @@ public class TrendServiceImpl implements TrendService {
             SeriesSet seriesSet = new SeriesSet();
             seriesSet.prepareDates(board.get());
             prepareColumnTrends(board.get(), seriesSet);
-//            prepareTrendLines(board.get(), seriesSet);
-
+            prepareTrendLines(board.get(), seriesSet);
             return new ResponseEntity<>(seriesSet, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,23 +61,72 @@ public class TrendServiceImpl implements TrendService {
     private void prepareColumnTrends(Board board, SeriesSet seriesSet) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        board.getColumns().forEach((column) -> {
-            List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(column.getId());
+        for (int k = 0; k < board.getColumns().size(); k++) {
+
+            List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(board.getColumns().get(k).getId());
             int j = 0;
             ColumnSeries series = new ColumnSeries(seriesSet.getDates().size(), "area");
-            series.setName(column.getName());
+            series.setName(board.getColumns().get(k).getName());
             for (int i = 0; i < seriesSet.getDates().size(); i++) {
-                if (j == trends.size()) {
-                    break;
+                if (j < trends.size()) {
+                    if (seriesSet.getDates().get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
+                        int previousValue = 0;
+                        if (k > 0) {
+                            ColumnSeries previousSeries = (ColumnSeries) seriesSet.getSeriesList().get(k - 1);
+                            previousValue = previousSeries.getData().get(i);
+                        }
+                        series.set(i, trends.get(j).getElements() + previousValue);
+                        j++;
+                    } else {
+                        int previousValue = calulatePreviousValue(k, i, seriesSet);
+                        series.set(i, previousValue);
+                    }
+                } else {
+//                    int previousValue = 0;
+//                    if (k > 0) {
+//                        ColumnSeries previousSeries = (ColumnSeries) seriesSet.getSeriesList().get(k - 1);
+//                        previousValue = previousSeries.getData().get(i);
+//                    }
+                    int previousValue = calulatePreviousValue(k, i, seriesSet);
+                    series.set(i, previousValue);
                 }
-                if (seriesSet.getDates().get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
-                    series.set(i, trends.get(j).getElements());
-                    j++;
-                }
+
             }
             seriesSet.add(series);
-        });
+        }
 
+        //previous
+//        board.getColumns().forEach((column) -> {
+//            List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(column.getId());
+//            int j = 0;
+//            ColumnSeries series = new ColumnSeries(seriesSet.getDates().size(), "area");
+//            series.setName(column.getName());
+//            for (int i = 0; i < seriesSet.getDates().size(); i++) {
+//                if (j == trends.size()) {
+//                    break;
+//                }
+//                if (seriesSet.getDates().get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
+//                    series.set(i, trends.get(j).getElements());
+//                    j++;
+//                }
+//            }
+//            seriesSet.add(series);
+//        });
+
+    }
+
+    private int calulatePreviousValue(int colIndex, int valueIndex, SeriesSet seriesSet) {
+        int previousValue = 0;
+        if (colIndex > 0) {
+            ColumnSeries previousSeries = (ColumnSeries) seriesSet.getSeriesList().get(colIndex - 1);
+            previousValue = previousSeries.getData().get(valueIndex);
+        }
+        return previousValue;
+    }
+
+
+    private Integer getSumOfOtherColumns(int index) {
+        return 0;
     }
 
     private void prepareTrendLines(Board board, SeriesSet seriesSet) {
