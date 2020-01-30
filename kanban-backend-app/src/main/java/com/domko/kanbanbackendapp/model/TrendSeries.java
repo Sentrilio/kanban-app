@@ -10,14 +10,14 @@ import java.util.List;
 public class TrendSeries implements Series {
     private String name;
     private String type;
-    private List<BigDecimal> data = new ArrayList<>();
+    private List<Double> data = new ArrayList<>();
 
     public TrendSeries(String name, String type) {
         this.name=name;
         this.type=type;
     }
 
-    public void addAll(List<BigDecimal> values){
+    public void addAll(List<Double> values){
         data.addAll(values);
     }
 

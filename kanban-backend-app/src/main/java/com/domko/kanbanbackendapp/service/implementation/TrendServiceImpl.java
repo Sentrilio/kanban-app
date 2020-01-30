@@ -50,7 +50,7 @@ public class TrendServiceImpl implements TrendService {
             SeriesSet seriesSet = new SeriesSet();
             seriesSet.prepareDates(board.get());
             prepareColumnTrends(board.get(), seriesSet);
-            prepareTrendLines(board.get(), seriesSet);
+//            prepareTrendLines(board.get(), seriesSet);
 
             return new ResponseEntity<>(seriesSet, HttpStatus.OK);
         } else {
@@ -96,41 +96,38 @@ public class TrendServiceImpl implements TrendService {
 //            trends.add(seriesSet.getDates().size()-i);
 //            dots.add((float) seriesSet.getDates().size()-i);
         }
-        List<BigDecimal> trendsBestFitLine = getBestFitLine(trends);
+        List<Double> trendsBestFitLine = getBestFitLine(trends);
         trendSeries.addAll(trendsBestFitLine);
         seriesSet.add(trendSeries);
 
-        List<BigDecimal> arrivalsBestFitLine = getBestFitLine(arrivals);
+        List<Double> arrivalsBestFitLine = getBestFitLine(arrivals);
         arrivalOfTasksSeries.addAll(arrivalsBestFitLine);
         seriesSet.add(arrivalOfTasksSeries);
     }
 
-    private List<BigDecimal> getBestFitLine(List<Integer> list) {
-        BigDecimal xSum = new BigDecimal(0);
-        BigDecimal ySum = new BigDecimal(0);
+    private List<Double> getBestFitLine(List<Integer> list) {
+        double xSum = 0;
+        double ySum = 0;
 
         for (int i = 0; i < list.size(); i++) {
-            xSum = xSum.add( new BigDecimal(i + 1));
-            ySum = ySum.add(new BigDecimal(list.get(i)));
+            xSum += (i + 1);
+            ySum += list.get(i);
         }
-        xSum = xSum.divide(new BigDecimal(list.size()),RoundingMode.HALF_UP);
-        ySum = ySum.divide(new BigDecimal(list.size()),RoundingMode.HALF_UP);
-        BigDecimal sumOfSquaredDeviation = new BigDecimal(0);
-        System.out.println(sumOfSquaredDeviation.scale());
-        BigDecimal sumOfMultipliedDeviations = new BigDecimal(0);
+        xSum = xSum / list.size();
+        ySum = ySum / list.size();
+        double sumOfSquaredDeviation = 0;
+        double sumOfMultipliedDeviations = 0;
         for (int i = 0; i < list.size(); i++) {
-            sumOfMultipliedDeviations =sumOfMultipliedDeviations.add(new BigDecimal ((i + 1 - xSum.doubleValue()) * (list.get(i) - ySum.doubleValue())));
-            sumOfSquaredDeviation = sumOfSquaredDeviation.add(new BigDecimal((Math.pow((i + 1 - xSum.doubleValue()), 2))));
+            sumOfMultipliedDeviations += ((i + 1 - xSum) * (list.get(i) - ySum));
+            sumOfSquaredDeviation += Math.pow((i + 1 - xSum), 2);
         }
-        BigDecimal m = sumOfMultipliedDeviations.divide(sumOfSquaredDeviation,RoundingMode.HALF_UP);
+        double m = sumOfMultipliedDeviations / sumOfSquaredDeviation;
         System.out.println(m);
-        BigDecimal b = (ySum.subtract(m.multiply(xSum)));
-        List<BigDecimal> result = new ArrayList<>();
+        double b = ySum - (m * xSum);
+        List<Double> result = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("##.##");
         for (int i = 0; i < list.size(); i++) {
-//            double y = m * (i + 1) + b;
-            BigDecimal y= m.multiply(new BigDecimal(i+1)).add(b);
-//            BigDecimal bd = new BigDecimal(y).setScale(2, RoundingMode.HALF_UP);
+            double y = m * (i + 1) + b;
             result.add(y);
         }
         return result;
