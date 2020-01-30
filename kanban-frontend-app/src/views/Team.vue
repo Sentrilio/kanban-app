@@ -5,9 +5,9 @@
     </div>
     <div>
       <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" @click="boardsClick" class="btn btn-secondary">Boards</button>
-        <button type="button" @click="membersClick" class="btn btn-secondary">Members</button>
-        <button type="button" @click="settingsClick" class="btn btn-secondary">Settings</button>
+        <button type="button" @click="boardsClick" class="btn btn-secondary">Tablice</button>
+        <button type="button" @click="membersClick" class="btn btn-secondary">Członkowie</button>
+        <button type="button" @click="settingsClick" class="btn btn-secondary">Ustawienia</button>
       </div>
       <div class="selected-content">
         <div v-if="selectedContent==='boards'">
@@ -22,7 +22,7 @@
           <TeamMembers :teamMembers="teamMembers"></TeamMembers>
         </div>
         <div v-else-if="selectedContent==='settings'">
-          <a>settings</a>
+          <a>ustawienia</a>
         </div>
       </div>
     </div>

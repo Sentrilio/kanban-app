@@ -26,7 +26,7 @@ public class TaskController {
         return taskService.createTask(createTaskRequest);
     }
 
-    @PostMapping(value = "/update")
+    @PutMapping(value = "/update")
     public ResponseEntity<String> handleTaskUpdate(@RequestBody UpdateTaskRequest updateTaskRequest) {
         return taskService.updateTask(updateTaskRequest);
     }

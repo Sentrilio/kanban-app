@@ -1,9 +1,9 @@
 <template>
   <div class="create-column">
     <div>
-      <button class="btn" data-toggle="collapse" data-target="#demo">Create Column</button>
+      <button class="btn" data-toggle="collapse" data-target="#demo">Dodaj kolumnę</button>
       <div id="demo" class="collapse">
-        <input v-model="columnNameInput" type="text" placeholder="column name" />
+        <input v-model="columnNameInput" type="text" placeholder="nazwa kolumny" />
         <div class="dropdown">
           limit
           <button
@@ -22,7 +22,7 @@
           </div>
         </div>
         <br />
-        <button class="button" @click="createColumn" :disabled="!columnNameInput">Create Column</button>
+        <button class="button" @click="createColumn" :disabled="!columnNameInput">Dodaj</button>
       </div>
     </div>
   </div>

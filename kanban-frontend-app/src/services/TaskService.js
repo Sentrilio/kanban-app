@@ -12,7 +12,7 @@ class TaskService {
     }
 
     updateTask(data) {
-        return axios.post(API_URL + "task/update", data, { headers: authHeader() })
+        return axios.put(API_URL + "task/update", data, { headers: authHeader() })
     }
     deleteTask(taskId) {
         return axios.delete(API_URL + "task/delete/" + taskId, { headers: authHeader() })

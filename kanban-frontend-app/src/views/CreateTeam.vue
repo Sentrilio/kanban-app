@@ -3,7 +3,7 @@
     <div v-if="currentUser">
       <form @submit.prevent="createTeam">
         <input type="text" placeholder="Team Name" v-model="teamName" />
-        <button :disabled="!teamName" type="submit">Create Team</button>
+        <button :disabled="!teamName" type="submit">Stwórz zespół</button>
       </form>
     </div>
   </div>

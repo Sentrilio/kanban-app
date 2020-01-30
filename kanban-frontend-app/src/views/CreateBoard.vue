@@ -1,29 +1,28 @@
 <template>
   <div v-if="currentUser" class="jumbotron text-center">
     <div class="dropdown">
-      <button
-        class="btn btn-secondary dropdown-toggle"
-        type="button"
-        id="dropdownMenuButton"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <a v-if="!selectedTeam">Select Team</a>
-        <a v-else>{{selectedTeam.name}}</a>
-      </button>
-
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <a v-if="!selectedTeam">Wybierz zespół</a>
+          <a v-else>{{selectedTeam.name}}</a>
+        </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
           <a class="dropdown-item" href="#">{{team.name}}</a>
         </li>
-        <a class="dropdown-item" href="/team/create">Create Team</a>
+        <a class="dropdown-item" href="/team/create">Stwórz zespół</a>
       </div>
     </div>
 
     <form @submit.prevent="createBoard">
-      <input type="text" placeholder="Board Name" v-model="boardName" />
-      <button :disabled="!selectedTeam || !boardName" type="submit">Create Board</button>
+      <input type="text" placeholder="Nazwa tablicy" v-model="boardName" />
+      <button :disabled="!selectedTeam || !boardName" type="submit">Stwórz tablicę</button>
     </form>
   </div>
 </template>
@@ -85,4 +84,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+div {
+  margin-bottom: 15px;
+}
 </style>

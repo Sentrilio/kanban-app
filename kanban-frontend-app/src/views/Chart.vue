@@ -30,6 +30,61 @@ export default {
       ],
       chartOptions: {
         chart: {
+          defaultLocale: "pl",
+          locales: [
+            {
+              name: "pl",
+              options: {
+                months: [
+                  "Styczeń",
+                  "Luty",
+                  "Marzec",
+                  "Kwiecień",
+                  "Maj",
+                  "Czerwiec",
+                  "Lipiec",
+                  "Sierpień",
+                  "Wrzesień",
+                  "Październik",
+                  "Listopad",
+                  "Grudzień"
+                ],
+                shortMonths: [
+                  "Sty",
+                  "Lut",
+                  "Mar",
+                  "Kwi",
+                  "Maj",
+                  "Cze",
+                  "Lip",
+                  "Sie",
+                  "Wrz",
+                  "Paź",
+                  "Lis",
+                  "Gru"
+                ],
+                days: [
+                  "Niedziela",
+                  "Poniedziałek",
+                  "Wtorek",
+                  "Środa",
+                  "Czwartek",
+                  "Piątek",
+                  "Sobota"
+                ],
+                shortDays: ["Nie", "Pon", "Wto", "Śro", "Cz", "Pią", "Sob"],
+                toolbar: {
+                  download: "Pobierz SVG",
+                  selection: "Zaznaczenie",
+                  selectionZoom: "Przybliż Zaznaczenie",
+                  zoomIn: "Przybliż",
+                  zoomOut: "Oddal",
+                  pan: "Panning",
+                  reset: "Zresetuj przybliżenie"
+                }
+              }
+            }
+          ],
           toolbar: {
             show: true,
             tools: {
@@ -39,14 +94,14 @@ export default {
               zoomin: true,
               zoomout: true,
               pan: false,
-              reset: true | '<img src="/static/icons/reset.png" width="20">',
+              reset: true | '<img src="/static/icons/reset.png" width="20">'
               // customIcons: []
             },
             autoSelected: "zoom"
           },
+          stacked: true,
           height: 350,
           type: "area"
-          // type: "line"
         },
         dataLabels: {
           enabled: false
@@ -129,7 +184,7 @@ button {
   background-color: #ebebe0;
   margin-top: 10px;
 }
-.chart{
+.chart {
   width: 1500px;
 }
 </style>
