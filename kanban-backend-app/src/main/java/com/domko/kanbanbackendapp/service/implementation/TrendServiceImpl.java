@@ -84,7 +84,7 @@ public class TrendServiceImpl implements TrendService {
         List<Integer> trends = new ArrayList<>();
         List<Float> dots = new ArrayList<>();
         for (int i = 0; i < seriesSet.getDates().size(); i++) {
-            Integer rand = random.nextInt(100);
+            Integer rand = random.nextInt(80);
             trends.add(rand);
             dots.add(rand.floatValue());
 //            trends.add(seriesSet.getDates().size()-i);
@@ -107,15 +107,15 @@ public class TrendServiceImpl implements TrendService {
         }
         xSum = xSum / list.size();
         ySum = ySum / list.size();
-        Float sumOfSquaredDeviation = 0.0f;
-        Float sumOfMultipliedDeviations = 0.0f;
+        float sumOfSquaredDeviation = 0.0f;
+        float sumOfMultipliedDeviations = 0.0f;
         for (int i = 0; i < list.size(); i++) {
-            sumOfMultipliedDeviations += (i + 1 - xSum) * (list.get(i) - ySum);
-            Double squared = Math.pow((i + 1 - xSum), 2);
-            sumOfSquaredDeviation += squared.floatValue();
+            sumOfMultipliedDeviations += ((i + 1 - xSum) * (list.get(i) - ySum));
+            sumOfSquaredDeviation += (Math.pow((i + 1 - xSum), 2));
         }
         Float m = sumOfMultipliedDeviations / sumOfSquaredDeviation;
-        Float b = ySum - (m * xSum);
+        System.out.println(m);
+        float b = ySum - (m * xSum);
         List<Float> result = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Float y = m * (i + 1) + b;
