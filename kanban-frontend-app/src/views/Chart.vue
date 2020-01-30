@@ -5,7 +5,7 @@
       {{boardName}}
     </button>
     <div class="chart-area" v-if="this.render">
-      <apexchart type="area" height="550" :options="chartOptions" :series="series"></apexchart>
+      <apexchart type="line" height="550" :options="chartOptions" :series="series"></apexchart>
     </div>
   </div>
 </template>
@@ -99,19 +99,30 @@ export default {
             },
             autoSelected: "zoom"
           },
-          stacked: true,
-          height: 350,
-          type: "area"
+          // stacked: true,
+          height: 350
+          // type: "area"
         },
         dataLabels: {
           enabled: false
         },
         stroke: {
-          curve: "smooth"
-          // curve: "straight"
+          // curve: "smooth",
+          curve: "straight"
         },
         legend: {
           fontSize: "15px"
+        },
+        yaxis: {
+          // show: false,
+          // tickAmount: 20,
+          // floating:false,
+          decimalsInFloat: false,
+          // allowDecimals: false,
+          // type: "number",
+          // ticks: {
+            // stepSize: 1
+          // }
         },
         xaxis: {
           type: "datetime",
