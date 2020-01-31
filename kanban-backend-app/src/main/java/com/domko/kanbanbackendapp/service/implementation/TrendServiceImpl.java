@@ -2,6 +2,7 @@ package com.domko.kanbanbackendapp.service.implementation;
 
 import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
+import com.domko.kanbanbackendapp.repository.BoardStatisticsRepository;
 import com.domko.kanbanbackendapp.repository.TrendRepository;
 import com.domko.kanbanbackendapp.service.TrendService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,16 @@ public class TrendServiceImpl implements TrendService {
 
     private final TrendRepository trendRepository;
     private final BoardRepository boardRepository;
+    private final BoardStatisticsRepository boardStatisticsRepository;
+    private final BoardServiceImpl boardService;
 
     @Autowired
-    public TrendServiceImpl(TrendRepository trendRepository, BoardRepository boardRepository) {
+    public TrendServiceImpl(TrendRepository trendRepository, BoardRepository boardRepository,
+                            BoardStatisticsRepository boardStatisticsRepository, BoardServiceImpl boardService) {
         this.trendRepository = trendRepository;
         this.boardRepository = boardRepository;
+        this.boardStatisticsRepository = boardStatisticsRepository;
+        this.boardService = boardService;
     }
 
     public void addTrend(Task task) {
@@ -107,19 +113,6 @@ public class TrendServiceImpl implements TrendService {
 
     }
 
-    private int calulatePreviousValue(int colIndex, int valueIndex, SeriesSet seriesSet) {
-        int previousValue = 0;
-        if (colIndex > 0) {
-            ColumnSeries previousSeries = (ColumnSeries) seriesSet.getSeriesList().get(colIndex - 1);
-            previousValue = previousSeries.getData().get(valueIndex);
-        }
-        return previousValue;
-    }
-
-
-    private Integer getSumOfOtherColumns(int index) {
-        return 0;
-    }
 
     private void prepareTrendLines(Board board, SeriesSet seriesSet) {
         TrendSeries trendSeries = new TrendSeries("Linia trendu", "line");
@@ -128,7 +121,7 @@ public class TrendServiceImpl implements TrendService {
         List<Integer> trends = new ArrayList<>();
         List<Integer> arrivals = new ArrayList<>();
 //        List<Float> dots = new ArrayList<>();
-        for (int i = 0; i < seriesSet.getDates().size() ; i++) {
+        for (int i = 0; i < seriesSet.getDates().size(); i++) {
 //            Integer rand = random.nextInt(80);
             trends.add(random.nextInt(100));
             arrivals.add(random.nextInt(100));
@@ -171,6 +164,41 @@ public class TrendServiceImpl implements TrendService {
             result.add(y);
         }
         return result;
+    }
+
+    private int calulatePreviousValue(int colIndex, int valueIndex, SeriesSet seriesSet) {
+        int previousValue = 0;
+        if (colIndex > 0) {
+            ColumnSeries previousSeries = (ColumnSeries) seriesSet.getSeriesList().get(colIndex - 1);
+            previousValue = previousSeries.getData().get(valueIndex);
+        }
+        return previousValue;
+    }
+
+    public void updateNumberOfTasks(long boardId) {
+        Optional<Board> board = boardRepository.findById(boardId);
+        if (board.isPresent()) {
+            Optional<BoardStatistics> boardStatistics = boardStatisticsRepository.findByBoardIdAndDate(board.get().getId(), new Date());
+            if (boardStatistics.isPresent()) {
+                boardStatistics.get().setNumberOfTasks(boardService.getNumberOfTasks(board.get().getId()));
+                boardStatisticsRepository.save(boardStatistics.get());
+            } else {
+                System.out.println("board statistics for date " + new Date() + " not found");
+            }
+        }
+    }
+
+    public void incrementArrivalOfTasks(long boardId) {
+        Optional<Board> board = boardRepository.findById(boardId);
+        if (board.isPresent()) {
+            Optional<BoardStatistics> boardStatistics = boardStatisticsRepository.findByBoardIdAndDate(board.get().getId(), new Date());
+            if (boardStatistics.isPresent()) {
+                boardStatistics.get().setArrivalOfTasks(boardStatistics.get().getArrivalOfTasks() + 1);
+                boardStatisticsRepository.save(boardStatistics.get());
+            } else {
+                System.out.println("board statistics for date " + new Date() + " not found");
+            }
+        }
     }
 
 }

@@ -10,6 +10,7 @@ import com.domko.kanbanbackendapp.repository.TeamRepository;
 import com.domko.kanbanbackendapp.repository.UserRepository;
 import com.domko.kanbanbackendapp.repository.UserTeamRepository;
 import com.domko.kanbanbackendapp.service.BoardService;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,4 +89,16 @@ public class BoardServiceImpl implements BoardService {
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+    public int getNumberOfTasks(long boardId) {
+        Optional<Board> board = boardRepository.findById(boardId);
+        if (board.isPresent()) {
+//            board.get().getColumns().forEach(System.out::println);
+//            return board.get().getColumns().stream().mapToInt(o->o.getTasks().size()).sum();
+        return 0;
+        }else{
+            return 0;
+        }
+    }
+
 }

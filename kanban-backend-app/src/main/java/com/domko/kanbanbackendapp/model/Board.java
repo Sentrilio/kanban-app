@@ -35,12 +35,25 @@ public class Board {
     private Team team;
 
     @JsonManagedReference
-    @OrderColumn(name="position")
-    @OneToMany(mappedBy = "board")
+    @OrderColumn(name = "position")
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     private List<BColumn> columns;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     private List<BoardStatistics> statistics;
 
+
+    public int getNumberOfTasks() {
+//        int sum=0;
+//        for (BColumn col : getColumns()) {
+//            System.out.println(col.getTasks());
+//            sum+=col.getTasks().size();
+//        }
+//        return sum;
+        return getColumns()
+                .stream()
+                .mapToInt(o -> o.getTasks().size())
+                .sum();
+    }
 }

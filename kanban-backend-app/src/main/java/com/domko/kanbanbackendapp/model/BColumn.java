@@ -31,13 +31,13 @@ public class BColumn {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "position", unique = true, nullable = false)
     private Integer position;
 
     @JsonManagedReference
     @OrderColumn(name = "position")// jesli nie ma rekordu to tworzony jest null
-    @OneToMany(mappedBy = "column", orphanRemoval = true)
+    @OneToMany(mappedBy = "column", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Task> tasks;
 
     @Column(name = "wip_limit", nullable = false)
@@ -46,4 +46,5 @@ public class BColumn {
     @JsonManagedReference
     @OneToMany(mappedBy = "column", orphanRemoval = true)
     private List<Trend> trends;
+
 }

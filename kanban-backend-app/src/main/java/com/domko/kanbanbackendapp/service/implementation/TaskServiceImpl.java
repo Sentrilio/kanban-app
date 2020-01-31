@@ -65,7 +65,12 @@ public class TaskServiceImpl implements TaskService {
                 Task task = createTask(column.get(), createTaskRequest);
                 if (task != null) {
                     trendService.addTrend(task);
-                    template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
+                    trendService.updateNumberOfTasks(task.getColumn().getBoard().getId());
+//                    if (task.getColumn().getPosition() == 0) {// adds statistics only if added into first column
+                    trendService.incrementArrivalOfTasks(task.getColumn().getBoard().getId());
+//                    }
+                    template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(),
+                            new MessageResponse("board updated"));
                     return new ResponseEntity<>("Task created", HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>("Task could not be created", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,6 +91,7 @@ public class TaskServiceImpl implements TaskService {
                 task.get().getColumn().getTasks().remove(task.get());
                 bColumnRepository.save(task.get().getColumn());
                 taskRepository.delete(task.get());
+                trendService.updateNumberOfTasks(task.get().getColumn().getBoard().getId());
                 template.convertAndSend("/topic/board/" + task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
             } else {

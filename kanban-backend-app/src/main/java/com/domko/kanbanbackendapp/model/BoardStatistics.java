@@ -31,6 +31,6 @@ public class BoardStatistics {
     @Column(name = "arrival_of_tasks", nullable = false)
     private int arrivalOfTasks;
 
-    @Column(name = "average_of_tasks", nullable = false)
-    private double averageOfTasks;
+    @Column(name = "number_of_tasks", nullable = false)
+    private double numberOfTasks;
 }
