@@ -39,5 +39,8 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<BColumn> columns;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "board")
+    private List<BoardStatistics> statistics;
 
 }

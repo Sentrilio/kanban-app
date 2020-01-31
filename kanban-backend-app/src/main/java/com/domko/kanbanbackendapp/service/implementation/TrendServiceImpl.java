@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -55,7 +53,6 @@ public class TrendServiceImpl implements TrendService {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
     private void prepareColumnTrends(Board board, SeriesSet seriesSet) {
@@ -82,11 +79,6 @@ public class TrendServiceImpl implements TrendService {
                         series.set(i, previousValue);
                     }
                 } else {
-//                    int previousValue = 0;
-//                    if (k > 0) {
-//                        ColumnSeries previousSeries = (ColumnSeries) seriesSet.getSeriesList().get(k - 1);
-//                        previousValue = previousSeries.getData().get(i);
-//                    }
                     int previousValue = calulatePreviousValue(k, i, seriesSet);
                     series.set(i, previousValue);
                 }
@@ -136,7 +128,7 @@ public class TrendServiceImpl implements TrendService {
         List<Integer> trends = new ArrayList<>();
         List<Integer> arrivals = new ArrayList<>();
 //        List<Float> dots = new ArrayList<>();
-        for (int i = 0; i < seriesSet.getDates().size(); i++) {
+        for (int i = 0; i < seriesSet.getDates().size() ; i++) {
 //            Integer rand = random.nextInt(80);
             trends.add(random.nextInt(100));
             arrivals.add(random.nextInt(100));
