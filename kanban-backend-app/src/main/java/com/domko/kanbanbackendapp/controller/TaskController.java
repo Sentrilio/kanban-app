@@ -23,19 +23,16 @@ public class TaskController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        System.out.println("/api/task/create");
         return taskService.createTask(createTaskRequest);
     }
 
     @PutMapping(value = "/update")
     public ResponseEntity<String> handleTaskUpdate(@RequestBody UpdateTaskRequest updateTaskRequest) {
-        System.out.println("/api/task/update");
         return taskService.updateTask(updateTaskRequest);
     }
 
     @DeleteMapping(value = "/delete/{taskId}")
     public ResponseEntity<String> handleDeleteTask(@PathVariable("taskId") long taskId) {
-        System.out.println("/api/task/delete");
         return taskService.deleteTask(taskId);
     }
 }

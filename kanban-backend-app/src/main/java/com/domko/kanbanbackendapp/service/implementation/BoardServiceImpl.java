@@ -39,13 +39,13 @@ public class BoardServiceImpl implements BoardService {
         this.permissionService = permissionService;
     }
 
-    public ResponseEntity<String> createBoard(CreateBoardRequest createBoardRequest) {
+    public ResponseEntity<?> createBoard(CreateBoardRequest createBoardRequest) {
         Optional<Team> team = teamRepository.findById(createBoardRequest.getTeamId());
         if (team.isPresent()) {
             if (permissionService.hasPermissionTo(team.get())) {
                 Board board = createBoard(createBoardRequest, team.get());
                 createBoardStatisticsForTodayAndTomorrow(board);
-                return new ResponseEntity<>("Board created", HttpStatus.CREATED);
+                return new ResponseEntity<>(board, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("You do not participate in this team", HttpStatus.FORBIDDEN);
             }

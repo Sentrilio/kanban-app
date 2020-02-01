@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-//@Component
 @Service
 @Transactional
 public class ScheduleService {
@@ -29,7 +28,7 @@ public class ScheduleService {
         this.boardService = boardService;
     }
 
-    //    @Scheduled(cron = "0 30 12 * * ?")//it worked at 12:30:00
+    //    @Scheduled(cron = "0 12 20 * * ?")//it worked at 12:30:00
     private void createAndFillStatisticsForAllBoardsInThePastTillToday() {
         Random random = new Random();
         List<Board> allBoards = boardRepository.findAll();
@@ -39,8 +38,7 @@ public class ScheduleService {
             while (startDate.isBefore(dateTimeTomorrow)) {
                 BoardStatistic boardStatistic = new BoardStatistic();
                 boardStatistic.setBoard(board);
-//                boardStatistics.setNumberOfTasks(board.getNumberOfTasks());
-                boardStatistic.setNumberOfTasks(random.nextInt(20));
+                boardStatistic.setNumberOfTasks(random.nextInt(10)+10);
                 boardStatistic.setArrivalOfTasks(random.nextInt(5));
                 boardStatistic.setDate(startDate.toDate());
                 System.out.println(startDate.toDate());
@@ -48,10 +46,10 @@ public class ScheduleService {
                 startDate = startDate.plusDays(1);
             }
         });
-        System.out.println("filled statistics");
+        System.out.println("filled previous days with random statistics");
     }
 
-//    @Scheduled(cron = "0 0 23 * * ?")
+    //    @Scheduled(cron = "0 0 23 * * ?")
     private void createStatisticsEntityForTomorrow() {
         List<Board> allBoards = boardRepository.findAll();
         DateTime dateTimeTomorrow = new DateTime().plusDays(1);
@@ -65,6 +63,9 @@ public class ScheduleService {
                 boardStatistic.setArrivalOfTasks(0);
                 boardStatistic.setDate(dateTimeTomorrow.toDate());
                 boardStatisticRepository.save(boardStatistic);
+                System.out.println(board.getName() + ": board statistic for tomorrow created");
+            } else {
+                System.out.println(board.getName() + ": board statistic for tomorrow exists");
             }
         });
         System.out.println("Date tomorrow: " + dateTimeTomorrow.toDate());

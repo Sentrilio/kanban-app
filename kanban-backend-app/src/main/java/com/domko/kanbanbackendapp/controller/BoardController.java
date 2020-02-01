@@ -22,7 +22,7 @@ public class BoardController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createBoard(@RequestBody CreateBoardRequest createBoardRequest) {
+    public ResponseEntity<?> createBoard(@RequestBody CreateBoardRequest createBoardRequest) {
         return boardService.createBoard(createBoardRequest);
     }
 

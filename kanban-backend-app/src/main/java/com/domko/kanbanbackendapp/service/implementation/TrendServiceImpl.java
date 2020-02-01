@@ -130,7 +130,6 @@ public class TrendServiceImpl implements TrendService {
     private List<Double> getBestFitLine(List<Double> list) {
         double xSum = 0;
         double ySum = 0;
-
         for (int i = 0; i < list.size(); i++) {
             xSum += (i + 1);
             ySum += list.get(i);
@@ -143,11 +142,16 @@ public class TrendServiceImpl implements TrendService {
             sumOfMultipliedDeviations += ((i + 1 - xSum) * (list.get(i) - ySum));
             sumOfSquaredDeviation += Math.pow((i + 1 - xSum), 2);
         }
-        double m = sumOfMultipliedDeviations / sumOfSquaredDeviation;
-        System.out.println(m);
+        double m;
+        if (sumOfSquaredDeviation != 0) {
+            m = sumOfMultipliedDeviations / sumOfSquaredDeviation;
+            System.out.println("m = "+m);
+        } else {
+            System.out.println("m = 0");
+            m = 0;
+        }
         double b = ySum - (m * xSum);
         List<Double> result = new ArrayList<>();
-        DecimalFormat df = new DecimalFormat("##.##");
         for (int i = 0; i < list.size(); i++) {
             double y = m * (i + 1) + b;
             result.add(y);

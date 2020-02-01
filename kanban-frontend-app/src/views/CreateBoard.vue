@@ -1,17 +1,17 @@
 <template>
   <div v-if="currentUser" class="jumbotron text-center">
     <div class="dropdown">
-        <button
-          class="btn btn-secondary dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          <a v-if="!selectedTeam">Wybierz zespół</a>
-          <a v-else>{{selectedTeam.name}}</a>
-        </button>
+      <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <a v-if="!selectedTeam">Wybierz zespół</a>
+        <a v-else>{{selectedTeam.name}}</a>
+      </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <li v-for="team in teams" v-on:click="selectTeam(team)" v-bind:key="team.id">
           <a class="dropdown-item" href="#">{{team.name}}</a>
@@ -69,8 +69,15 @@ export default {
     createBoard() {
       BoardService.createBoard(this.boardName, this.selectedTeam.id).then(
         response => {
-          console.log(response);
-          this.$router.push("/"); //should be prompted info about successful creation and ok to click
+          console.log(response.data);
+          let board = response.data;
+          let boardName = board.name;
+          let boardId= board.id;
+          // this.$router.push("/"); //should be prompted info about successful creation and ok to click
+          this.$router.push({
+            name: "board",
+            params: { boardId, boardName }
+          });
         },
         error => {
           console.log(error.response);
