@@ -23,15 +23,13 @@ public class TrendServiceImpl implements TrendService {
     private final TrendRepository trendRepository;
     private final BoardRepository boardRepository;
     private final BoardStatisticsRepository boardStatisticsRepository;
-    private final BoardServiceImpl boardService;
 
     @Autowired
     public TrendServiceImpl(TrendRepository trendRepository, BoardRepository boardRepository,
-                            BoardStatisticsRepository boardStatisticsRepository, BoardServiceImpl boardService) {
+                            BoardStatisticsRepository boardStatisticsRepository) {
         this.trendRepository = trendRepository;
         this.boardRepository = boardRepository;
         this.boardStatisticsRepository = boardStatisticsRepository;
-        this.boardService = boardService;
     }
 
     public void addTrend(Task task) {
@@ -120,14 +118,9 @@ public class TrendServiceImpl implements TrendService {
         Random random = new Random();
         List<Integer> trends = new ArrayList<>();
         List<Integer> arrivals = new ArrayList<>();
-//        List<Float> dots = new ArrayList<>();
         for (int i = 0; i < seriesSet.getDates().size(); i++) {
-//            Integer rand = random.nextInt(80);
             trends.add(random.nextInt(100));
             arrivals.add(random.nextInt(100));
-//            dots.add(rand.floatValue());
-//            trends.add(seriesSet.getDates().size()-i);
-//            dots.add((float) seriesSet.getDates().size()-i);
         }
         List<Double> trendsBestFitLine = getBestFitLine(trends);
         trendSeries.addAll(trendsBestFitLine);
@@ -180,7 +173,7 @@ public class TrendServiceImpl implements TrendService {
         if (board.isPresent()) {
             Optional<BoardStatistics> boardStatistics = boardStatisticsRepository.findByBoardIdAndDate(board.get().getId(), new Date());
             if (boardStatistics.isPresent()) {
-                boardStatistics.get().setNumberOfTasks(boardService.getNumberOfTasks(board.get().getId()));
+                boardStatistics.get().setNumberOfTasks(board.get().getNumberOfTasks());
                 boardStatisticsRepository.save(boardStatistics.get());
             } else {
                 System.out.println("board statistics for date " + new Date() + " not found");

@@ -90,15 +90,4 @@ public class BoardServiceImpl implements BoardService {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    public int getNumberOfTasks(long boardId) {
-        Optional<Board> board = boardRepository.findById(boardId);
-        if (board.isPresent()) {
-//            board.get().getColumns().forEach(System.out::println);
-//            return board.get().getColumns().stream().mapToInt(o->o.getTasks().size()).sum();
-        return 0;
-        }else{
-            return 0;
-        }
-    }
-
 }
