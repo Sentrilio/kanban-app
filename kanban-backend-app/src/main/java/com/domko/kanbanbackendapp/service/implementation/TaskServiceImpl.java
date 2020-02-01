@@ -64,6 +64,8 @@ public class TaskServiceImpl implements TaskService {
             if (permissionService.hasPermissionTo(column.get())) {
                 Task task = createTask(column.get(), createTaskRequest);
                 if (task != null) {
+                    column.get().getTasks().add(task);
+                    bColumnRepository.save(column.get());
                     trendService.addTrend(task);
                     trendService.updateNumberOfTasks(task.getColumn().getBoard().getId());
 //                    if (task.getColumn().getPosition() == 0) {// adds statistics only if added into first column
@@ -88,10 +90,11 @@ public class TaskServiceImpl implements TaskService {
         Optional<Task> task = taskRepository.findById(taskId);
         if (task.isPresent()) {
             if (permissionService.hasPermissionTo(task.get())) {
+                long boardId = task.get().getColumn().getBoard().getId();
                 task.get().getColumn().getTasks().remove(task.get());
                 bColumnRepository.save(task.get().getColumn());
                 taskRepository.delete(task.get());
-                trendService.updateNumberOfTasks(task.get().getColumn().getBoard().getId());
+                trendService.updateNumberOfTasks(boardId);
                 template.convertAndSend("/topic/board/" + task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
             } else {

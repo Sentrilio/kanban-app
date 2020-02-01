@@ -2,9 +2,10 @@ package com.domko.kanbanbackendapp.service.implementation;
 
 import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
-import com.domko.kanbanbackendapp.repository.BoardStatisticsRepository;
+import com.domko.kanbanbackendapp.repository.BoardStatisticRepository;
 import com.domko.kanbanbackendapp.repository.TrendRepository;
 import com.domko.kanbanbackendapp.service.TrendService;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,16 @@ public class TrendServiceImpl implements TrendService {
 
     private final TrendRepository trendRepository;
     private final BoardRepository boardRepository;
-    private final BoardStatisticsRepository boardStatisticsRepository;
+    private final BoardStatisticRepository boardStatisticRepository;
+    private final BoardServiceImpl boardService;
 
     @Autowired
     public TrendServiceImpl(TrendRepository trendRepository, BoardRepository boardRepository,
-                            BoardStatisticsRepository boardStatisticsRepository) {
+                            BoardStatisticRepository boardStatisticRepository, BoardServiceImpl boardService) {
         this.trendRepository = trendRepository;
         this.boardRepository = boardRepository;
-        this.boardStatisticsRepository = boardStatisticsRepository;
+        this.boardStatisticRepository = boardStatisticRepository;
+        this.boardService = boardService;
     }
 
     public void addTrend(Task task) {
@@ -61,9 +64,7 @@ public class TrendServiceImpl implements TrendService {
 
     private void prepareColumnTrends(Board board, SeriesSet seriesSet) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
         for (int k = 0; k < board.getColumns().size(); k++) {
-
             List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(board.getColumns().get(k).getId());
             int j = 0;
             ColumnSeries series = new ColumnSeries(seriesSet.getDates().size(), "area");
@@ -90,37 +91,23 @@ public class TrendServiceImpl implements TrendService {
             }
             seriesSet.add(series);
         }
-
-        //previous
-//        board.getColumns().forEach((column) -> {
-//            List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(column.getId());
-//            int j = 0;
-//            ColumnSeries series = new ColumnSeries(seriesSet.getDates().size(), "area");
-//            series.setName(column.getName());
-//            for (int i = 0; i < seriesSet.getDates().size(); i++) {
-//                if (j == trends.size()) {
-//                    break;
-//                }
-//                if (seriesSet.getDates().get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
-//                    series.set(i, trends.get(j).getElements());
-//                    j++;
-//                }
-//            }
-//            seriesSet.add(series);
-//        });
-
     }
 
 
     private void prepareTrendLines(Board board, SeriesSet seriesSet) {
         TrendSeries trendSeries = new TrendSeries("Linia trendu", "line");
         TrendSeries arrivalOfTasksSeries = new TrendSeries("Tempo przybywania", "line");
-        Random random = new Random();
-        List<Integer> trends = new ArrayList<>();
-        List<Integer> arrivals = new ArrayList<>();
-        for (int i = 0; i < seriesSet.getDates().size(); i++) {
-            trends.add(random.nextInt(100));
-            arrivals.add(random.nextInt(100));
+        DateTime dateTimeTomorrow = new DateTime().plusDays(1);
+        List<BoardStatistic> statistics = boardStatisticRepository.findAllByBoardIdAndDateBeforeOrderByDate(board.getId(), dateTimeTomorrow.toDate());
+        List<Double> trends = new ArrayList<>();
+        List<Double> arrivals = new ArrayList<>();
+        double arrivalOfTaskSum = 0;
+        double numberOfTaskSum = 0;
+        for (int i = 0; i < statistics.size(); i++) {
+            arrivalOfTaskSum += statistics.get(i).getArrivalOfTasks();
+            numberOfTaskSum += statistics.get(i).getNumberOfTasks();
+            arrivals.add(calulateAverage(arrivalOfTaskSum, i + 1));
+            trends.add(calulateAverage(numberOfTaskSum, i + 1));
         }
         List<Double> trendsBestFitLine = getBestFitLine(trends);
         trendSeries.addAll(trendsBestFitLine);
@@ -131,7 +118,16 @@ public class TrendServiceImpl implements TrendService {
         seriesSet.add(arrivalOfTasksSeries);
     }
 
-    private List<Double> getBestFitLine(List<Integer> list) {
+    private double calulateAverage(double sum, int size) {
+        if (size > 0) {
+            double avg = sum / size;
+            return avg;
+        } else {
+            throw new IllegalArgumentException("dividing by 0");
+        }
+    }
+
+    private List<Double> getBestFitLine(List<Double> list) {
         double xSum = 0;
         double ySum = 0;
 
@@ -171,10 +167,10 @@ public class TrendServiceImpl implements TrendService {
     public void updateNumberOfTasks(long boardId) {
         Optional<Board> board = boardRepository.findById(boardId);
         if (board.isPresent()) {
-            Optional<BoardStatistics> boardStatistics = boardStatisticsRepository.findByBoardIdAndDate(board.get().getId(), new Date());
+            Optional<BoardStatistic> boardStatistics = boardStatisticRepository.findByBoardIdAndDate(board.get().getId(), new Date());
             if (boardStatistics.isPresent()) {
-                boardStatistics.get().setNumberOfTasks(board.get().getNumberOfTasks());
-                boardStatisticsRepository.save(boardStatistics.get());
+                boardStatistics.get().setNumberOfTasks(boardService.getNumberOfTasks(board.get()));
+                boardStatisticRepository.save(boardStatistics.get());
             } else {
                 System.out.println("board statistics for date " + new Date() + " not found");
             }
@@ -184,10 +180,10 @@ public class TrendServiceImpl implements TrendService {
     public void incrementArrivalOfTasks(long boardId) {
         Optional<Board> board = boardRepository.findById(boardId);
         if (board.isPresent()) {
-            Optional<BoardStatistics> boardStatistics = boardStatisticsRepository.findByBoardIdAndDate(board.get().getId(), new Date());
+            Optional<BoardStatistic> boardStatistics = boardStatisticRepository.findByBoardIdAndDate(board.get().getId(), new Date());
             if (boardStatistics.isPresent()) {
                 boardStatistics.get().setArrivalOfTasks(boardStatistics.get().getArrivalOfTasks() + 1);
-                boardStatisticsRepository.save(boardStatistics.get());
+                boardStatisticRepository.save(boardStatistics.get());
             } else {
                 System.out.println("board statistics for date " + new Date() + " not found");
             }

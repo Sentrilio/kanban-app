@@ -105,6 +105,9 @@ export default {
         },
         dataLabels: {
           enabled: false
+          // style: {
+          //   colors: ["#F44336", "#E91E63", "#9C27B0"]
+          // }
         },
         stroke: {
           // curve: "smooth",
@@ -113,15 +116,33 @@ export default {
         legend: {
           fontSize: "15px"
         },
+        colors: [
+          "#F3B415",
+          "#00A7C6",
+          "#663F59",
+          "#46AF78",
+          "#F27036",
+          "#000000",
+          "#18D8D8",
+          "#A9D794",
+          "#A93F55",
+          "#8C5E58",
+          "#2176FF",
+          "#33A1FD",
+          "#7A918D",
+          "#BAFF29",
+          "#6A6E94",
+          "#4E88B4"
+        ],
         yaxis: {
           // show: false,
           // tickAmount: 20,
           // floating:false,
-          decimalsInFloat: false,
+          decimalsInFloat: false
           // allowDecimals: false,
           // type: "number",
           // ticks: {
-            // stepSize: 1
+          // stepSize: 1
           // }
         },
         xaxis: {

@@ -1,18 +1,15 @@
 package com.domko.kanbanbackendapp.service.implementation;
 
 import com.domko.kanbanbackendapp.model.Board;
-import com.domko.kanbanbackendapp.model.BoardStatistics;
-import com.domko.kanbanbackendapp.repository.BColumnRepository;
+import com.domko.kanbanbackendapp.model.BoardStatistic;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
-import com.domko.kanbanbackendapp.repository.BoardStatisticsRepository;
+import com.domko.kanbanbackendapp.repository.BoardStatisticRepository;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -21,17 +18,18 @@ import java.util.Random;
 @Service
 @Transactional
 public class ScheduleService {
-    private final BoardStatisticsRepository boardStatisticsRepository;
+    private final BoardStatisticRepository boardStatisticRepository;
     private final BoardRepository boardRepository;
+    private final BoardServiceImpl boardService;
 
     @Autowired
-    public ScheduleService(BoardStatisticsRepository boardStatisticsRepository, BoardRepository boardRepository) {
-        this.boardStatisticsRepository = boardStatisticsRepository;
+    public ScheduleService(BoardStatisticRepository boardStatisticRepository, BoardRepository boardRepository, BoardServiceImpl boardService) {
+        this.boardStatisticRepository = boardStatisticRepository;
         this.boardRepository = boardRepository;
+        this.boardService = boardService;
     }
 
-    //    @Scheduled(cron = "0 0 23 * * ?")
-    @Scheduled(cron = "0 30 12 * * ?")//it worked at 14:35:00
+    //    @Scheduled(cron = "0 30 12 * * ?")//it worked at 12:30:00
     private void createAndFillStatisticsForAllBoardsInThePastTillToday() {
         Random random = new Random();
         List<Board> allBoards = boardRepository.findAll();
@@ -39,44 +37,38 @@ public class ScheduleService {
         allBoards.forEach(board -> {
             DateTime startDate = new DateTime(board.getCreateDate());
             while (startDate.isBefore(dateTimeTomorrow)) {
-                BoardStatistics boardStatistics = new BoardStatistics();
-                boardStatistics.setBoard(board);
+                BoardStatistic boardStatistic = new BoardStatistic();
+                boardStatistic.setBoard(board);
 //                boardStatistics.setNumberOfTasks(board.getNumberOfTasks());
-                boardStatistics.setNumberOfTasks(random.nextInt(20));
-                boardStatistics.setArrivalOfTasks(random.nextInt(5));
-                boardStatistics.setDate(startDate.toDate());
+                boardStatistic.setNumberOfTasks(random.nextInt(20));
+                boardStatistic.setArrivalOfTasks(random.nextInt(5));
+                boardStatistic.setDate(startDate.toDate());
                 System.out.println(startDate.toDate());
-                boardStatisticsRepository.save(boardStatistics);
+                boardStatisticRepository.save(boardStatistic);
                 startDate = startDate.plusDays(1);
             }
         });
         System.out.println("filled statistics");
     }
 
-    @Scheduled(cron = "0 57 12 * * ?")
+//    @Scheduled(cron = "0 0 23 * * ?")
     private void createStatisticsEntityForTomorrow() {
         List<Board> allBoards = boardRepository.findAll();
         DateTime dateTimeTomorrow = new DateTime().plusDays(1);
         allBoards.forEach(board -> {
-            BoardStatistics boardStatistics = new BoardStatistics();
-            boardStatistics.setBoard(board);
-            boardStatistics.setNumberOfTasks(board.getNumberOfTasks());
-            boardStatistics.setArrivalOfTasks(0);
-            boardStatistics.setDate(dateTimeTomorrow.toDate());
-            boardStatisticsRepository.save(boardStatistics);
+            Optional<BoardStatistic> tomorrowStatistic = boardStatisticRepository.findByBoardIdAndDate(board.getId(),
+                    dateTimeTomorrow.toDate());
+            if (tomorrowStatistic.isEmpty()) {
+                BoardStatistic boardStatistic = new BoardStatistic();
+                boardStatistic.setBoard(board);
+                boardStatistic.setNumberOfTasks(boardService.getNumberOfTasks(board));
+                boardStatistic.setArrivalOfTasks(0);
+                boardStatistic.setDate(dateTimeTomorrow.toDate());
+                boardStatisticRepository.save(boardStatistic);
+            }
         });
         System.out.println("Date tomorrow: " + dateTimeTomorrow.toDate());
         System.out.println("created statistics field for tomorrow");
 
     }
-
-
-//    private double getAverageOfPreviousTasks(Board board) {
-//        List<BoardStatistics> statistics = boardStatisticsRepository.findAllByBoardIdAndDateBeforeOrderByDate(board.getId(), new Date());
-//        return statistics
-//                .stream()
-//                .mapToDouble(BoardStatistics::getNumberOfTasks)
-//                .sum() / statistics.size();
-//    }
-
 }
