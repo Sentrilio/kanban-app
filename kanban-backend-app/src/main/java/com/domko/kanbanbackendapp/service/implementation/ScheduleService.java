@@ -8,6 +8,8 @@ import com.domko.kanbanbackendapp.repository.BoardStatisticRepository;
 import com.domko.kanbanbackendapp.repository.TrendRepository;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class ScheduleService {
     private final BoardRepository boardRepository;
     private final TrendRepository trendRepository;
     private final BoardServiceImpl boardService;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     public ScheduleService(BoardStatisticRepository boardStatisticRepository, BoardRepository boardRepository,
@@ -37,7 +39,53 @@ public class ScheduleService {
     }
 
 
-    //    @Scheduled(cron = "0 20 23 * * ?")
+    //today
+    @Scheduled(cron = "5 0 0 * * ?")
+    private void updateAllStatisticsForToday() {
+        List<Board> allBoards = boardRepository.findAll();
+        DateTime dateTimeToday = new DateTime();
+        allBoards.forEach(board -> {
+            Optional<BoardStatistic> statistic = boardStatisticRepository.findByBoardIdAndDate(
+                    board.getId(), dateTimeToday.toDate());
+            if (statistic.isPresent()) {
+                statistic.get().setNumberOfTasks(boardService.getNumberOfTasks(board));
+                boardStatisticRepository.save(statistic.get());
+            } else {
+                BoardStatistic boardStatistic = new BoardStatistic();
+                boardStatistic.setBoard(board);
+                boardStatistic.setNumberOfTasks(boardService.getNumberOfTasks(board));
+                boardStatistic.setDate(dateTimeToday.toDate());
+                boardStatisticRepository.save(boardStatistic);
+            }
+        });
+        System.out.println("Board statistic for today updated: " + dateTimeToday);
+    }
+
+    @Scheduled(cron = "5 0 0 * * ?")
+    private void updateAllColumnTrendsForToday() {
+        List<Board> allBoards = boardRepository.findAll();
+        DateTime dateTimeToday = new DateTime();
+        allBoards.forEach(board -> {
+            board.getColumns().forEach(column -> {
+                Optional<Trend> trend = trendRepository.findByColumnIdAndDate(column.getId(), dateTimeToday.toDate());
+                if (trend.isPresent()) {
+                    trend.get().setElements(column.getTasks().size());
+                    trendRepository.save(trend.get());
+                } else {
+                    Trend trendToSave = new Trend();
+                    trendToSave.setColumn(column);
+                    trendToSave.setDate(dateTimeToday.toDate());
+                    trendToSave.setElements(column.getTasks().size());
+                    trendRepository.save(trendToSave);
+                }
+            });
+
+        });
+        System.out.println("Board statistic for today updated: " + dateTimeToday);
+    }
+
+    //tomorrow
+    @Scheduled(cron = "0 30 23 * * ?")
     private void createStatisticsEntitiesForTomorrow() {
         List<Board> allBoards = boardRepository.findAll();
         DateTime dateTimeTomorrow = new DateTime().plusDays(1);
@@ -61,7 +109,7 @@ public class ScheduleService {
 
     }
 
-    //    @Scheduled(cron = "0 30 23 * * ?")
+    @Scheduled(cron = "0 30 23 * * ?")
     private void createTrendsEntityForTomorrow() {
         List<Board> allBoards = boardRepository.findAll();
         DateTime dateTimeTomorrow = new DateTime().plusDays(1);
@@ -82,52 +130,56 @@ public class ScheduleService {
         });
     }
 
-    @Scheduled(cron = "0 56 1 * * ?")//it worked at 12:30:00
+    //past till tomorrow
+    @EventListener(ApplicationReadyEvent.class)
     private void createAndFillStatisticsForAllBoardsInThePastTillToday() {
+        boardStatisticRepository.deleteAll();
         Random random = new Random();
         List<Board> allBoards = boardRepository.findAll();
-        DateTime dateTimeTomorrow = new DateTime();
+        DateTime dayAfterTomorrow = new DateTime().plusDays(1);
+        String dateTimeToday = simpleDateFormat.format(new DateTime().toDate());
         allBoards.forEach(board -> {
             DateTime startDate = new DateTime(board.getCreateDate());
-            while (startDate.isBefore(dateTimeTomorrow)) {
-//                System.out.println(simpleDateFormat.format( startDate.toDate()));
-//                System.out.println(simpleDateFormat.format(new DateTime().toDate()));
-                if (simpleDateFormat.format(startDate.toDate()).equals(simpleDateFormat.format(new DateTime().toDate()))) {
+            while (startDate.isBefore(dayAfterTomorrow)) {
+                if (simpleDateFormat.format(startDate.toDate()).equals(dateTimeToday)) {
                     BoardStatistic boardStatistic = new BoardStatistic();
                     boardStatistic.setBoard(board);
                     boardStatistic.setNumberOfTasks(boardService.getNumberOfTasks(board));
                     boardStatistic.setArrivalOfTasks(0);
                     boardStatistic.setDate(startDate.toDate());
                     boardStatisticRepository.save(boardStatistic);
+                } else {
+                    BoardStatistic boardStatistic = new BoardStatistic();
+                    boardStatistic.setBoard(board);
+                    boardStatistic.setNumberOfTasks(random.nextInt(10) + 5);
+                    boardStatistic.setArrivalOfTasks(random.nextInt(5));
+                    boardStatistic.setDate(startDate.toDate());
+                    boardStatisticRepository.save(boardStatistic);
                 }
-                BoardStatistic boardStatistic = new BoardStatistic();
-                boardStatistic.setBoard(board);
-                boardStatistic.setNumberOfTasks(random.nextInt(10) + 5);
-                boardStatistic.setArrivalOfTasks(random.nextInt(5));
-                boardStatistic.setDate(startDate.toDate());
-                boardStatisticRepository.save(boardStatistic);
                 startDate = startDate.plusDays(1);
             }
         });
         System.out.println("filled previous days with random statistics");
     }
 
-    @Scheduled(cron = "0 56 1 * * ?")
-    private void createAndFillTrendsForAllBoardsInThePastTillToday() {
+    @EventListener(ApplicationReadyEvent.class)
+    private void createAndFillTrendsForAllBoardsInThePastTillTomorrow() {
+        trendRepository.deleteAll();
         Random random = new Random();
         List<Board> allBoards = boardRepository.findAll();
-        DateTime dateTimeTomorrow = new DateTime();
+        DateTime dayAfterTomorrow = new DateTime().plusDays(1);
+        String dateTimeToday = simpleDateFormat.format(new DateTime().toDate());
         allBoards.forEach(board -> {
             board.getColumns().forEach(column -> {
                 DateTime startDate = new DateTime(board.getCreateDate());
-                while (startDate.isBefore(dateTimeTomorrow)) {
-                    if (simpleDateFormat.format(startDate.toDate()).equals(simpleDateFormat.format(new DateTime().toDate()))) {
+                while (startDate.isBefore(dayAfterTomorrow)) {
+                    if (simpleDateFormat.format(startDate.toDate()).equals(dateTimeToday)) {
                         Trend trendToSave = new Trend();
                         trendToSave.setColumn(column);
                         trendToSave.setDate(startDate.toDate());
                         trendToSave.setElements(column.getTasks().size());
                         trendRepository.save(trendToSave);
-                    }else{
+                    } else {
                         Trend trendToSave = new Trend();
                         trendToSave.setColumn(column);
                         trendToSave.setDate(startDate.toDate());
@@ -141,6 +193,5 @@ public class ScheduleService {
         });
         System.out.println("filled previous days with random trends");
     }
-
 
 }

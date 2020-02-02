@@ -105,9 +105,6 @@ export default {
         },
         dataLabels: {
           enabled: false
-          // style: {
-          //   colors: ["#F44336", "#E91E63", "#9C27B0"]
-          // }
         },
         stroke: {
           // curve: "smooth",
@@ -139,42 +136,19 @@ export default {
               "#8C5E58",
         ],
         yaxis: {
-          // show: false,
-          // tickAmount: 20,
           // floating:false,
           decimalsInFloat: false
           // allowDecimals: false,
-          // type: "number",
-          // ticks: {
-          // stepSize: 1
-          // }
         },
         xaxis: {
           type: "datetime",
           categories: [],
-          // tickPlacement: "between",
-          //   "2018-09-19T00:00:00.000Z",
-
           labels: {
             style: {
               fontSize: "15px"
-              // margin: "15px",
             }
-            // datetimeFormatter: {
-            // year: "yyyy",
-            // month: "MMM 'yy",
-            // day: "dd MMM",
-            // hour: "HH:mm"
-            // }
           }
-          // tickAmount: 2,
         }
-        // tooltip: {
-        // x: {
-        // format: "yyyy/MM/dd HH:mm"
-        // format: "dd/MM/yy HH:mm"
-        // }
-        // }
       }
     };
   },
