@@ -43,10 +43,8 @@ public class TaskServiceImpl implements TaskService {
         Optional<Task> task = taskRepository.findById(updateTaskRequest.getTaskId());
         Optional<BColumn> destColumn = bColumnRepository.findById(updateTaskRequest.getColumnId());
         if (task.isPresent() && destColumn.isPresent()) {
-            BColumn oldColumn = task.get().getColumn();
             if (permissionService.hasPermissionTo(task.get())) {
                 if (handleTaskUpdate(task.get(), destColumn.get(), updateTaskRequest)) {
-//                    trendService.addTrend(task.get());
                     trendService.updateBoardTrends(task.get().getColumn().getBoard());
                     template.convertAndSend("/topic/board/" + destColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
@@ -69,7 +67,6 @@ public class TaskServiceImpl implements TaskService {
                 if (task != null) {
                     column.get().getTasks().add(task);
                     bColumnRepository.save(column.get());
-//                    trendService.addTrend(task);
                     trendService.updateBoardTrends(task.getColumn().getBoard());
                     trendService.updateNumberOfTasks(task.getColumn().getBoard().getId());
 //                    if (task.getColumn().getPosition() == 0) {// adds statistics only if added into first column
@@ -99,7 +96,6 @@ public class TaskServiceImpl implements TaskService {
                 bColumnRepository.save(task.get().getColumn());
                 taskRepository.delete(task.get());
                 trendService.updateBoardTrends(task.get().getColumn().getBoard());
-//                trendService.updateTrendForColumn(task.get().getColumn());
                 trendService.updateNumberOfTasks(boardId);
                 template.convertAndSend("/topic/board/" + task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);

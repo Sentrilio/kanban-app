@@ -127,7 +127,7 @@ public class TrendServiceImpl implements TrendService {
 
     private double calulateAverage(double sum, int size) {
         if (size > 0) {
-            return sum/size;
+            return sum / size;
         } else {
             throw new IllegalArgumentException("dividing by 0");
         }
@@ -175,14 +175,21 @@ public class TrendServiceImpl implements TrendService {
     }
 
     public void updateNumberOfTasks(long boardId) {
+        Date today = new Date();
         Optional<Board> board = boardRepository.findById(boardId);
         if (board.isPresent()) {
-            Optional<BoardStatistic> boardStatistics = boardStatisticRepository.findByBoardIdAndDate(board.get().getId(), new Date());
+            Optional<BoardStatistic> boardStatistics = boardStatisticRepository.findByBoardIdAndDate(board.get().getId(), today);
             if (boardStatistics.isPresent()) {
                 boardStatistics.get().setNumberOfTasks(boardService.getNumberOfTasks(board.get()));
                 boardStatisticRepository.save(boardStatistics.get());
             } else {
-                System.out.println("board statistics for date " + new Date() + " not found");
+                BoardStatistic boardStatistic = new BoardStatistic();
+                boardStatistic.setNumberOfTasks(boardService.getNumberOfTasks(board.get()));
+                boardStatistic.setBoard(board.get());
+                boardStatistic.setDate(today);
+                boardStatistic.setArrivalOfTasks(0);
+                boardStatisticRepository.save(boardStatistic);
+                System.out.println("board statistics for date " + today + " created");
             }
         }
     }
