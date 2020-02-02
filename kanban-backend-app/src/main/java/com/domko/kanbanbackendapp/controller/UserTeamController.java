@@ -4,6 +4,7 @@ import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.CreateTeamRequest;
 import com.domko.kanbanbackendapp.service.implementation.UserTeamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,8 @@ public class UserTeamController {
     }
 
     @PostMapping(value = "/create")
-    @PreAuthorize("hasRole('USER')")
-    public UserTeam createTeam(@RequestBody CreateTeamRequest createTeamRequest) {
+//    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createTeam(@RequestBody CreateTeamRequest createTeamRequest) {
         return userTeamService.createTeam(createTeamRequest);
     }
 }

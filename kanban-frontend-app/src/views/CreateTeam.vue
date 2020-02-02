@@ -30,7 +30,13 @@ export default {
       TeamService.createTeam(this.teamName).then(
         response => {
           console.log(response);
-          this.$router.push("/");
+          let team = response.data;
+          let teamId = team.id;
+          let teamName = team.name;
+          this.$router.push({
+            name: "team",
+            params: { teamId, teamName }
+          });
         },
         error => {
           console.log(error.response);

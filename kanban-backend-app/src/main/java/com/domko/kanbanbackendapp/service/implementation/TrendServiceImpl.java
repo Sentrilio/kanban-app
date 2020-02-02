@@ -48,6 +48,25 @@ public class TrendServiceImpl implements TrendService {
             trendRepository.save(trendToSave);
         }
     }
+    public void updateBoardTrends(Board board){
+        board.getColumns().forEach(bColumn -> {
+            updateTrendForColumn(bColumn);
+        });
+    }
+
+    private void updateTrendForColumn(BColumn column) {
+        Optional<Trend> trend = trendRepository.findByColumnIdAndDate(column.getId(), new Date());
+        if (trend.isPresent()) {
+            trend.get().setElements(column.getTasks().size());
+            trendRepository.save(trend.get());
+        } else {
+            Trend trendToSave = new Trend();
+            trendToSave.setColumn(column);
+            trendToSave.setDate(new Date());
+            trendToSave.setElements(column.getTasks().size());
+            trendRepository.save(trendToSave);
+        }
+    }
 
     public ResponseEntity<SeriesSet> getTrendsFromLastDays(Long boardId) {
         Optional<Board> board = boardRepository.findById(boardId);
@@ -64,11 +83,14 @@ public class TrendServiceImpl implements TrendService {
 
     private void prepareColumnTrends(Board board, SeriesSet seriesSet) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        for (int k = 0; k < board.getColumns().size(); k++) {
-            List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(board.getColumns().get(k).getId());
+        List<BColumn> columns = new ArrayList<>(board.getColumns());
+//        Collections.copy(columns,board.getColumns());
+        Collections.reverse(columns);
+        for (int k = 0; k < columns.size(); k++) {
+            List<Trend> trends = trendRepository.findAllByColumnIdOrderByDate(columns.get(k).getId());
             int j = 0;
             ColumnSeries series = new ColumnSeries(seriesSet.getDates().size(), "area");
-            series.setName(board.getColumns().get(k).getName());
+            series.setName(columns.get(k).getName());
             for (int i = 0; i < seriesSet.getDates().size(); i++) {
                 if (j < trends.size()) {
                     if (seriesSet.getDates().get(i).substring(0, 10).equals(simpleDateFormat.format(trends.get(j).getDate()))) {
@@ -91,6 +113,7 @@ public class TrendServiceImpl implements TrendService {
             }
             seriesSet.add(series);
         }
+//        Collections.reverse(seriesSet.getSeriesList());
     }
 
 
@@ -142,18 +165,18 @@ public class TrendServiceImpl implements TrendService {
             sumOfMultipliedDeviations += ((i + 1 - xSum) * (list.get(i) - ySum));
             sumOfSquaredDeviation += Math.pow((i + 1 - xSum), 2);
         }
-        double m;
+        double a;
         if (sumOfSquaredDeviation != 0) {
-            m = sumOfMultipliedDeviations / sumOfSquaredDeviation;
-            System.out.println("m = "+m);
+            a = sumOfMultipliedDeviations / sumOfSquaredDeviation;
+            System.out.println("a = " + a);
         } else {
-            System.out.println("m = 0");
-            m = 0;
+            System.out.println("a = 0");
+            a = 0; //it will happened only if size = 1 (statistics from 1 day)
         }
-        double b = ySum - (m * xSum);
+        double b = ySum - (a * xSum);
         List<Double> result = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            double y = m * (i + 1) + b;
+            double y = a * (i + 1) + b;
             result.add(y);
         }
         return result;

@@ -7,6 +7,8 @@ import com.domko.kanbanbackendapp.repository.UserRepository;
 import com.domko.kanbanbackendapp.repository.UserTeamRepository;
 import com.domko.kanbanbackendapp.service.UserTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +35,7 @@ public class UserTeamServiceImpl implements UserTeamService {
         return userTeamRepository.save(new UserTeam(new UserTeamKey(user.getId(), team.getId()), user, team, role));
     }
 
-    public UserTeam createTeam(CreateTeamRequest createTeamRequest) {
+    public ResponseEntity<?> createTeam(CreateTeamRequest createTeamRequest) {
         String teamName = createTeamRequest.getTeamName();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -42,13 +44,12 @@ public class UserTeamServiceImpl implements UserTeamService {
             if (user.isPresent()) {
                 Team team = teamRepository.save(new Team(teamName));
                 addUserToTeam(user.get(), team, TeamRole.LEADER);
-                return null;
+                return new ResponseEntity<>(team, HttpStatus.CREATED);
             } else {
-                return null;
+                return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
-            System.out.println("authentication is instance of anonymouauthenticationtoken");
-            return null;
+            return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
         }
     }
 }
