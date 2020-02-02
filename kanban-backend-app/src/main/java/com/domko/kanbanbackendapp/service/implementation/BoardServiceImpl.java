@@ -1,15 +1,10 @@
 package com.domko.kanbanbackendapp.service.implementation;
 
-import com.domko.kanbanbackendapp.model.Board;
-import com.domko.kanbanbackendapp.model.Team;
-import com.domko.kanbanbackendapp.model.User;
-import com.domko.kanbanbackendapp.model.UserTeam;
+import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
-import com.domko.kanbanbackendapp.repository.BoardRepository;
-import com.domko.kanbanbackendapp.repository.TeamRepository;
-import com.domko.kanbanbackendapp.repository.UserRepository;
-import com.domko.kanbanbackendapp.repository.UserTeamRepository;
+import com.domko.kanbanbackendapp.repository.*;
 import com.domko.kanbanbackendapp.service.BoardService;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,38 +24,53 @@ public class BoardServiceImpl implements BoardService {
     private final UserTeamRepository userTeamRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final BoardStatisticRepository boardStatisticRepository;
     private final PermissionService permissionService;
 
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository, UserTeamRepository userTeamRepository,
                             TeamRepository teamRepository, UserRepository userRepository,
-                            PermissionService permissionService) {
+                            BoardStatisticRepository boardStatisticRepository, PermissionService permissionService) {
         this.boardRepository = boardRepository;
         this.userTeamRepository = userTeamRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
+        this.boardStatisticRepository = boardStatisticRepository;
         this.permissionService = permissionService;
     }
 
-    private void createBoard(CreateBoardRequest createBoardRequest, Team team) {
-        Board board = new Board();
-        board.setCreateDate(new Date());
-        board.setName(createBoardRequest.getBoardName());
-        board.setTeam(team);
-        boardRepository.save(board);
-    }
-
-    public ResponseEntity<String> createBoard(CreateBoardRequest createBoardRequest) {
+    public ResponseEntity<?> createBoard(CreateBoardRequest createBoardRequest) {
         Optional<Team> team = teamRepository.findById(createBoardRequest.getTeamId());
         if (team.isPresent()) {
             if (permissionService.hasPermissionTo(team.get())) {
-                createBoard(createBoardRequest, team.get());
-                return new ResponseEntity<>("Board created", HttpStatus.CREATED);
+                Board board = createBoard(createBoardRequest, team.get());
+                createBoardStatisticsForTodayAndTomorrow(board);
+                return new ResponseEntity<>(board, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("You do not participate in this team", HttpStatus.FORBIDDEN);
             }
         } else {
             return new ResponseEntity<>("Team does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private Board createBoard(CreateBoardRequest createBoardRequest, Team team) {
+        Board board = new Board();
+        board.setCreateDate(new Date());
+        board.setName(createBoardRequest.getBoardName());
+        board.setTeam(team);
+        return boardRepository.save(board);
+    }
+
+    private void createBoardStatisticsForTodayAndTomorrow(Board board) {
+        DateTime dateTime = new DateTime();
+        for (int i = 0; i < 2; i++) {
+            BoardStatistic boardStatistic = new BoardStatistic();
+            boardStatistic.setArrivalOfTasks(0);
+            boardStatistic.setNumberOfTasks(0);
+            boardStatistic.setBoard(board);
+            boardStatistic.setDate(dateTime.plusDays(i).toDate());
+            boardStatisticRepository.save(boardStatistic);
         }
     }
 
@@ -75,7 +85,6 @@ public class BoardServiceImpl implements BoardService {
             return new ResponseEntity<>(boards, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-
     }
 
     public ResponseEntity<Board> getBoardById(long boardId) {
@@ -88,4 +97,12 @@ public class BoardServiceImpl implements BoardService {
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+    public int getNumberOfTasks(Board board) {
+        return board.getColumns()
+                .stream()
+                .mapToInt(o -> o.getTasks().size())
+                .sum();
+    }
+
 }

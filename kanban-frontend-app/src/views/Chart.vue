@@ -113,43 +113,42 @@ export default {
         legend: {
           fontSize: "15px"
         },
+        colors: [
+          "#F3B415",
+          "#00A7C6",
+          "#663F59",
+          "#46AF78",
+          "#F27036",
+          "#000000",
+         "#00FF00",
+       
+          
+          
+          "#2176FF",
+          "#33A1FD",
+          "#7A918D",
+          "#BAFF29",
+          "#6A6E94",
+          "#4E88B4",
+           "#18D8D8",
+              "#A9D794",
+              "#A93F55",
+              "#8C5E58",
+        ],
         yaxis: {
-          // show: false,
-          // tickAmount: 20,
           // floating:false,
-          decimalsInFloat: false,
+          decimalsInFloat: false
           // allowDecimals: false,
-          // type: "number",
-          // ticks: {
-            // stepSize: 1
-          // }
         },
         xaxis: {
           type: "datetime",
           categories: [],
-          // tickPlacement: "between",
-          //   "2018-09-19T00:00:00.000Z",
-
           labels: {
             style: {
               fontSize: "15px"
-              // margin: "15px",
             }
-            // datetimeFormatter: {
-            // year: "yyyy",
-            // month: "MMM 'yy",
-            // day: "dd MMM",
-            // hour: "HH:mm"
-            // }
           }
-          // tickAmount: 2,
         }
-        // tooltip: {
-        // x: {
-        // format: "yyyy/MM/dd HH:mm"
-        // format: "dd/MM/yy HH:mm"
-        // }
-        // }
       }
     };
   },

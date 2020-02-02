@@ -1,14 +1,12 @@
 package com.domko.kanbanbackendapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +21,7 @@ public class Board {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "create_date", nullable = false)
@@ -35,9 +33,12 @@ public class Board {
     private Team team;
 
     @JsonManagedReference
-    @OrderColumn(name="position")
-    @OneToMany(mappedBy = "board")
+    @OrderColumn(name = "position")
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     private List<BColumn> columns;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    private List<BoardStatistic> statistics;
 
 }

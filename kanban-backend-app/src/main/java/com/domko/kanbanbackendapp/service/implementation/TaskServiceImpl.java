@@ -3,6 +3,7 @@ package com.domko.kanbanbackendapp.service.implementation;
 import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
+import com.domko.kanbanbackendapp.payload.request.Operation;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
@@ -42,9 +43,11 @@ public class TaskServiceImpl implements TaskService {
         Optional<Task> task = taskRepository.findById(updateTaskRequest.getTaskId());
         Optional<BColumn> destColumn = bColumnRepository.findById(updateTaskRequest.getColumnId());
         if (task.isPresent() && destColumn.isPresent()) {
+            BColumn oldColumn = task.get().getColumn();
             if (permissionService.hasPermissionTo(task.get())) {
                 if (handleTaskUpdate(task.get(), destColumn.get(), updateTaskRequest)) {
-                    trendService.addTrend(task.get());
+//                    trendService.addTrend(task.get());
+                    trendService.updateBoardTrends(task.get().getColumn().getBoard());
                     template.convertAndSend("/topic/board/" + destColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
@@ -64,8 +67,16 @@ public class TaskServiceImpl implements TaskService {
             if (permissionService.hasPermissionTo(column.get())) {
                 Task task = createTask(column.get(), createTaskRequest);
                 if (task != null) {
-                    trendService.addTrend(task);
-                    template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(), new MessageResponse("board updated"));
+                    column.get().getTasks().add(task);
+                    bColumnRepository.save(column.get());
+//                    trendService.addTrend(task);
+                    trendService.updateBoardTrends(task.getColumn().getBoard());
+                    trendService.updateNumberOfTasks(task.getColumn().getBoard().getId());
+//                    if (task.getColumn().getPosition() == 0) {// adds statistics only if added into first column
+                    trendService.incrementArrivalOfTasks(task.getColumn().getBoard().getId());
+//                    }
+                    template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(),
+                            new MessageResponse("board updated"));
                     return new ResponseEntity<>("Task created", HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>("Task could not be created", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,9 +94,13 @@ public class TaskServiceImpl implements TaskService {
         Optional<Task> task = taskRepository.findById(taskId);
         if (task.isPresent()) {
             if (permissionService.hasPermissionTo(task.get())) {
+                long boardId = task.get().getColumn().getBoard().getId();
                 task.get().getColumn().getTasks().remove(task.get());
                 bColumnRepository.save(task.get().getColumn());
                 taskRepository.delete(task.get());
+                trendService.updateBoardTrends(task.get().getColumn().getBoard());
+//                trendService.updateTrendForColumn(task.get().getColumn());
+                trendService.updateNumberOfTasks(boardId);
                 template.convertAndSend("/topic/board/" + task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
                 return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
             } else {
