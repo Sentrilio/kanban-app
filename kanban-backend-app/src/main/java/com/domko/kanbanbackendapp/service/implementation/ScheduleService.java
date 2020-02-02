@@ -132,37 +132,11 @@ public class ScheduleService {
 
     //past till tomorrow
     @EventListener(ApplicationReadyEvent.class)
-    private void createAndFillStatisticsForAllBoardsInThePastTillToday() {
-        boardStatisticRepository.deleteAll();
-        Random random = new Random();
-        List<Board> allBoards = boardRepository.findAll();
-        DateTime dayAfterTomorrow = new DateTime().plusDays(1);
-        String dateTimeToday = simpleDateFormat.format(new DateTime().toDate());
-        allBoards.forEach(board -> {
-            DateTime startDate = new DateTime(board.getCreateDate());
-            while (startDate.isBefore(dayAfterTomorrow)) {
-                if (simpleDateFormat.format(startDate.toDate()).equals(dateTimeToday)) {
-                    BoardStatistic boardStatistic = new BoardStatistic();
-                    boardStatistic.setBoard(board);
-                    boardStatistic.setNumberOfTasks(boardService.getNumberOfTasks(board));
-                    boardStatistic.setArrivalOfTasks(0);
-                    boardStatistic.setDate(startDate.toDate());
-                    boardStatisticRepository.save(boardStatistic);
-                } else {
-                    BoardStatistic boardStatistic = new BoardStatistic();
-                    boardStatistic.setBoard(board);
-                    boardStatistic.setNumberOfTasks(random.nextInt(10) + 5);
-                    boardStatistic.setArrivalOfTasks(random.nextInt(5));
-                    boardStatistic.setDate(startDate.toDate());
-                    boardStatisticRepository.save(boardStatistic);
-                }
-                startDate = startDate.plusDays(1);
-            }
-        });
-        System.out.println("filled previous days with random statistics");
+    private void fillColumnTrendsAndBoardStatistics(){
+        createAndFillTrendsForAllBoardsInThePastTillTomorrow();
+        createAndFillStatisticsForAllBoardsInThePastTillToday();
     }
 
-    @EventListener(ApplicationReadyEvent.class)
     private void createAndFillTrendsForAllBoardsInThePastTillTomorrow() {
         trendRepository.deleteAll();
         Random random = new Random();
@@ -193,5 +167,38 @@ public class ScheduleService {
         });
         System.out.println("filled previous days with random trends");
     }
+    private void createAndFillStatisticsForAllBoardsInThePastTillToday() {
+        boardStatisticRepository.deleteAll();
+        Random random = new Random();
+        List<Board> allBoards = boardRepository.findAll();
+        DateTime dayAfterTomorrow = new DateTime().plusDays(1);
+        String dateTimeToday = simpleDateFormat.format(new DateTime().toDate());
+        allBoards.forEach(board -> {
+            DateTime startDate = new DateTime(board.getCreateDate());
+            while (startDate.isBefore(dayAfterTomorrow)) {
+                if (simpleDateFormat.format(startDate.toDate()).equals(dateTimeToday)) {
+                    BoardStatistic boardStatistic = new BoardStatistic();
+                    boardStatistic.setBoard(board);
+                    boardStatistic.setNumberOfTasks(boardService.getNumberOfTasks(board));
+                    boardStatistic.setArrivalOfTasks(0);
+                    boardStatistic.setDate(startDate.toDate());
+                    boardStatisticRepository.save(boardStatistic);
+                } else {
+                    BoardStatistic boardStatistic = new BoardStatistic();
+                    boardStatistic.setBoard(board);
+                    boardStatistic.setNumberOfTasks(trendRepository
+                            .getSumOfElementsByBoardIdAndDate(board.getId(),startDate.toDate()));
+                    boardStatistic.setArrivalOfTasks(random.nextInt(5));
+                    boardStatistic.setDate(startDate.toDate());
+                    boardStatisticRepository.save(boardStatistic);
+                }
+                startDate = startDate.plusDays(1);
+            }
+        });
+        System.out.println("filled previous days with random statistics");
+    }
+
+
+
 
 }

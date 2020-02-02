@@ -48,7 +48,8 @@ public class TrendServiceImpl implements TrendService {
             trendRepository.save(trendToSave);
         }
     }
-    public void updateBoardTrends(Board board){
+
+    public void updateBoardTrends(Board board) {
         board.getColumns().forEach(bColumn -> {
             updateTrendForColumn(bColumn);
         });
@@ -124,6 +125,9 @@ public class TrendServiceImpl implements TrendService {
         List<BoardStatistic> statistics = boardStatisticRepository.findAllByBoardIdAndDateBeforeOrderByDate(board.getId(), dateTimeTomorrow.toDate());
         List<Double> trends = new ArrayList<>();
         List<Double> arrivals = new ArrayList<>();
+        for (BoardStatistic statistic : statistics) {
+            System.out.println("statistic: " + statistic.getNumberOfTasks());
+        }
         double arrivalOfTaskSum = 0;
         double numberOfTaskSum = 0;
         for (int i = 0; i < statistics.size(); i++) {
@@ -131,6 +135,7 @@ public class TrendServiceImpl implements TrendService {
             numberOfTaskSum += statistics.get(i).getNumberOfTasks();
             arrivals.add(calulateAverage(arrivalOfTaskSum, i + 1));
             trends.add(calulateAverage(numberOfTaskSum, i + 1));
+            System.out.println("avg: "+calulateAverage(numberOfTaskSum,i+1));
         }
         List<Double> trendsBestFitLine = getBestFitLine(trends);
         trendSeries.addAll(trendsBestFitLine);
