@@ -35,20 +35,6 @@ public class TrendServiceImpl implements TrendService {
         this.boardService = boardService;
     }
 
-    public void addTrend(Task task) {
-        Optional<Trend> trend = trendRepository.findByColumnIdAndDate(task.getColumn().getId(), new Date());
-        if (trend.isPresent()) {
-            trend.get().setElements(trend.get().getElements() + 1);
-            trendRepository.save(trend.get());
-        } else {
-            Trend trendToSave = new Trend();
-            trendToSave.setColumn(task.getColumn());
-            trendToSave.setDate(new Date());
-            trendToSave.setElements(1);
-            trendRepository.save(trendToSave);
-        }
-    }
-
     public void updateBoardTrends(Board board) {
         board.getColumns().forEach(bColumn -> {
             updateTrendForColumn(bColumn);
@@ -56,14 +42,15 @@ public class TrendServiceImpl implements TrendService {
     }
 
     private void updateTrendForColumn(BColumn column) {
-        Optional<Trend> trend = trendRepository.findByColumnIdAndDate(column.getId(), new Date());
+        Date today = new Date();
+        Optional<Trend> trend = trendRepository.findByColumnIdAndDate(column.getId(), today);
         if (trend.isPresent()) {
             trend.get().setElements(column.getTasks().size());
             trendRepository.save(trend.get());
         } else {
             Trend trendToSave = new Trend();
             trendToSave.setColumn(column);
-            trendToSave.setDate(new Date());
+            trendToSave.setDate(today);
             trendToSave.setElements(column.getTasks().size());
             trendRepository.save(trendToSave);
         }
@@ -114,7 +101,6 @@ public class TrendServiceImpl implements TrendService {
             }
             seriesSet.add(series);
         }
-//        Collections.reverse(seriesSet.getSeriesList());
     }
 
 
@@ -126,7 +112,7 @@ public class TrendServiceImpl implements TrendService {
         List<Double> trends = new ArrayList<>();
         List<Double> arrivals = new ArrayList<>();
         for (BoardStatistic statistic : statistics) {
-            System.out.println("statistic: " + statistic.getNumberOfTasks());
+//            System.out.println("statistic: " + statistic.getNumberOfTasks());
         }
         double arrivalOfTaskSum = 0;
         double numberOfTaskSum = 0;
@@ -135,7 +121,7 @@ public class TrendServiceImpl implements TrendService {
             numberOfTaskSum += statistics.get(i).getNumberOfTasks();
             arrivals.add(calulateAverage(arrivalOfTaskSum, i + 1));
             trends.add(calulateAverage(numberOfTaskSum, i + 1));
-            System.out.println("avg: "+calulateAverage(numberOfTaskSum,i+1));
+//            System.out.println("avg: "+calulateAverage(numberOfTaskSum,i+1));
         }
         List<Double> trendsBestFitLine = getBestFitLine(trends);
         trendSeries.addAll(trendsBestFitLine);
@@ -221,5 +207,20 @@ public class TrendServiceImpl implements TrendService {
             }
         }
     }
+
+
+//    public void addTrend(Task task) {
+//        Optional<Trend> trend = trendRepository.findByColumnIdAndDate(task.getColumn().getId(), new Date());
+//        if (trend.isPresent()) {
+//            trend.get().setElements(trend.get().getElements() + 1);
+//            trendRepository.save(trend.get());
+//        } else {
+//            Trend trendToSave = new Trend();
+//            trendToSave.setColumn(task.getColumn());
+//            trendToSave.setDate(new Date());
+//            trendToSave.setElements(1);
+//            trendRepository.save(trendToSave);
+//        }
+//    }
 
 }

@@ -3,7 +3,23 @@
     <div class="column-header">
       <div class="column-name">
         {{column.name}}
-        limit: {{column.wipLimit}}
+        <!-- limit: {{column.wipLimit}} -->
+      </div>
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          :v-model="column.wipLimit"
+        >{{column.wipLimit}}</button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div class="drp-items" v-for="index in 15" :key="index">
+            <div class="dropdown-item btn" @click="setSelectedLimit(index)">{{index}}</div>
+          </div>
+        </div>
       </div>
       <div class="btn minus-icon" @click="deleteColumn(column)">
         <div>
@@ -18,7 +34,7 @@
         :group="{name: 'task',put: false}"
         @change="change($event, column)"
       >
-        <div  v-for="task in column.tasks" :key="task.id">
+        <div v-for="task in column.tasks" :key="task.id">
           <task :task="task"></task>
         </div>
       </draggable>
@@ -47,12 +63,7 @@
         <font-awesome-icon icon="plus" style="padding-right:5px;" />Dodaj zadanie
       </button>
       <div :id="'currentColumn'+currentColumn.id" class="collapse">
-        <input
-          type="text"
-          class="task-input"
-          v-model="taskDescription"
-          placeholder="opis zadania"
-        />
+        <input type="text" class="task-input" v-model="taskDescription" placeholder="opis zadania" />
 
         <button class="button" @click="createTask" :disabled="!taskDescription">Dodaj</button>
       </div>
@@ -112,7 +123,20 @@ export default {
           console.log(err);
         });
     },
-
+    setSelectedLimit(limit) {
+      let data = {
+        columnId: this.column.id,
+        limit: limit
+      };
+      ColumnService.updateColumnLimit(data)
+        .then(response => {
+          console.log(response);
+          this.$emit("refresh");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     updateTask(event, column, operation) {
       console.log(event);
       let updateObject = {
@@ -142,7 +166,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
-div.column-name{
+div.column-name {
   padding-left: 10px;
   width: 300px;
 }
@@ -157,7 +181,7 @@ div.column-name{
 
   width: 250px;
 }
-div.minus-icon{
+div.minus-icon {
   padding-right: 0px;
   /* padding-right: 10px; */
   /* align-content: center; */
@@ -168,11 +192,9 @@ div.column-header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 .task-input {
   margin-top: 8px;
 }
-/* div.column-name { */
-  /* flex: 0 0 130px; */
-/* } */
 </style>

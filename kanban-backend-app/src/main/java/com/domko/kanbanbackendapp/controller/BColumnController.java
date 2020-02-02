@@ -2,6 +2,7 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.payload.request.CreateColumnRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateColumnRequest;
+import com.domko.kanbanbackendapp.payload.request.UpdateWiPLimit;
 import com.domko.kanbanbackendapp.service.implementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,11 @@ public class BColumnController {
     @DeleteMapping(value = "/delete/{columnId}")
     public ResponseEntity<String> handleDeleteBColumn(@PathVariable("columnId") Long column) {
         return bColumnService.delete(column);
+    }
+
+    @PutMapping(value = "update-limit")
+    public ResponseEntity<String> handleUpdateColumnLimit(@RequestBody UpdateWiPLimit updateWiPLimit) {
+        return bColumnService.updateLimit(updateWiPLimit);
     }
 
 }
