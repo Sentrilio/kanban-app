@@ -131,7 +131,7 @@ public class ScheduleService {
     }
 
     //past till tomorrow
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
     private void fillColumnTrendsAndBoardStatistics(){
         createAndFillTrendsForAllBoardsInThePastTillTomorrow();
         createAndFillStatisticsForAllBoardsInThePastTillToday();
