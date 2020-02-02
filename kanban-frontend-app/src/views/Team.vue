@@ -12,7 +12,7 @@
       <div class="selected-content">
         <div v-if="selectedContent==='boards'">
           <div>
-            <a>Boards:</a>
+            <a>Tablice:</a>
             <div v-for="board in team.boards" :key="board.id">
               <a>{{board.name}}</a>
             </div>
@@ -22,7 +22,7 @@
           <TeamMembers :teamMembers="teamMembers"></TeamMembers>
         </div>
         <div v-else-if="selectedContent==='settings'">
-          <a>ustawienia</a>
+          <a>Ustawienia</a>
         </div>
       </div>
     </div>

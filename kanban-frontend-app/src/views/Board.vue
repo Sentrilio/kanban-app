@@ -10,6 +10,16 @@
           <!-- <font-awesome-icon icon="chart-line" /> -->
           <font-awesome-icon icon="chart-area" />
         </li>
+        <!-- <li> -->
+        <div class="legend">
+          <a>Liczba cofnięć jednostek na tablicy:&nbsp; 1 -&nbsp;</a>
+          <font-awesome-icon style="color: yellow;" icon="circle" />
+          <a>&nbsp;,&nbsp;2 -&nbsp;</a>
+          <font-awesome-icon style="color: orange;" icon="circle" />
+          <a>&nbsp;,&nbsp;3 i więcej&nbsp;-&nbsp;</a>
+          <font-awesome-icon style="color: red;" icon="circle" />
+        </div>
+        <!-- </li> -->
       </div>
     </nav>
     <div class="wrapper">
@@ -154,7 +164,7 @@ export default {
       console.log(from);
       this.setBoard();
       // this.show = false;
-    },
+    }
     // $route: "setBoard"
   }
 };
@@ -176,6 +186,11 @@ export default {
 }
 .navbar {
   background-color: grey;
+}
+div.legend {
+  padding: 5px;
+  border-radius: 4px;
+  background-color: #ecece8;
 }
 .btn {
   background-color: #ebebe0;

@@ -17,7 +17,7 @@
           >{{selectedLimit}}</button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <div v-for="index in 15" :key="index">
-              <a class="dropdown-item" @click="setSelectedLimit(index)">{{index}}</a>
+              <div class="dropdown-item btn" @click="setSelectedLimit(index)">{{index}}</div>
             </div>
           </div>
         </div>
@@ -88,6 +88,12 @@ div.dropdown {
 
 .btn {
   background-color: #888888;
+}
+div.btn {
+  background-color: white;
+}
+div.btn:hover {
+  background-color: #ebebe0;
 }
 
 .btn:hover {
