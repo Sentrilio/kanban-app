@@ -186,6 +186,7 @@ div.minus-icon {
   /* padding-right: 10px; */
   /* align-content: center; */
 }
+
 div.column-header {
   /* flex: 0 0 100%;  */
   display: flex;

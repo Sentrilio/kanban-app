@@ -79,8 +79,10 @@ public class BColumnServiceImpl implements BColumnService {
             if (permissionService.hasPermissionTo(board.get())) {
                 BColumn column = createColumn(board.get(), createColumnRequest);
                 if (column != null) {
-//                    trendService.updateBoardTrends(column.getBoard());
-                    template.convertAndSend("/topic/greetings/" + column.getBoard().getId(), new MessageResponse("board updated"));
+//                    board.get().getColumns().add(column);
+//                    Board updatedBoard = boardRepository.save(board.get());
+                    template.convertAndSend("/topic/greetings/" + column.getBoard().getId(),
+                            new MessageResponse("board updated"));
                     return new ResponseEntity<>("Column created", HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>("Creation unsuccessful", HttpStatus.INTERNAL_SERVER_ERROR);
