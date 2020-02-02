@@ -2,7 +2,7 @@
   <div class="column">
     <div class="column-header">
       <div class="column-name">
-        {{column.name}}
+        {{getColumnName}}
         <!-- limit: {{column.wipLimit}} -->
       </div>
       <div class="dropdown">
@@ -94,6 +94,14 @@ export default {
     };
   },
   computed: {
+    getColumnName() {
+      let columnName = this.column.name;
+      if (columnName.length > 12) {
+        return columnName.substring(0, 12) + "...";
+      } else {
+        return columnName;
+      }
+    },
     limitReached() {
       return ColumnService.isLimitReached(this.column);
     },
@@ -168,9 +176,12 @@ export default {
 <style lang="css" scoped>
 div.column-name {
   padding-left: 10px;
-  width: 300px;
+  width: 200px;
+  max-width: 133px;
 }
-
+#dropdownMenuButton {
+  margin-right: 0 !important;
+}
 .column {
   margin-left: 10px;
   outline-width: 1px;
