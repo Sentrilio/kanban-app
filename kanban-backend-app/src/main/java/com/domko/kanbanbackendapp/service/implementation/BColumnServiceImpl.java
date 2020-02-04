@@ -30,11 +30,10 @@ public class BColumnServiceImpl implements BColumnService {
 
     @Autowired
     public BColumnServiceImpl(BColumnRepository bColumnRepository, BoardRepository boardRepository,
-                              PermissionService permissionService, TrendServiceImpl trendService, SimpMessagingTemplate template) {
+                              PermissionService permissionService, SimpMessagingTemplate template) {
         this.bColumnRepository = bColumnRepository;
         this.boardRepository = boardRepository;
         this.permissionService = permissionService;
-        this.trendService = trendService;
         this.template = template;
     }
 
