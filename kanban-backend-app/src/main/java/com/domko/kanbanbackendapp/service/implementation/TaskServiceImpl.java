@@ -3,7 +3,6 @@ package com.domko.kanbanbackendapp.service.implementation;
 import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
-import com.domko.kanbanbackendapp.payload.request.Operation;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;

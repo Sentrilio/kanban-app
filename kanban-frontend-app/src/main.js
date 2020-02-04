@@ -24,8 +24,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import VueApexCharts from 'vue-apexcharts'
 import VModal from 'vue-js-modal'
+import VueInputDropdown from 'vue-input-dropdown'
  
 Vue.use(VModal)
+Vue.use(VueInputDropdown)
 
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faMinus, 
   faPlus, faEllipsisV, faChartLine,faChartArea,faDotCircle,faCircle,faArrowLeft);

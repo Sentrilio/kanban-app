@@ -136,7 +136,7 @@ public class BColumnServiceImpl implements BColumnService {
         Optional<BColumn> column = bColumnRepository.findById(updateWiPLimit.getColumnId());
         if (column.isPresent()) {
             if (permissionService.hasPermissionTo(column.get())) {
-                if (updateWiPLimit.getLimit() > 0 && updateWiPLimit.getLimit() <= 15) {
+                if (updateWiPLimit.getLimit() >= 0) {
                     column.get().setWipLimit(updateWiPLimit.getLimit());
                     bColumnRepository.save(column.get());
                     template.convertAndSend("/topic/board/" + column.get().getBoard().getId(), new MessageResponse("board updated"));

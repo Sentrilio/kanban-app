@@ -5,7 +5,19 @@
         {{getColumnName}}
         <!-- limit: {{column.wipLimit}} -->
       </div>
-      <div class="dropdown">
+
+      <input min="0" type="number" class="limit" v-on:blur="handleBlur" v-on:keyup.enter="onEnter" :value="getColumnLimit" />
+      <!-- <input  type="number" /> -->
+
+      <!-- <vue-input-dropdown
+        type="number"
+        :selected="getColumnLimit"
+        :picked="picked"
+        :items="items"
+        :options="options"
+      ></vue-input-dropdown>-->
+
+      <!-- <div class="dropdown">
         <button
           class="btn btn-secondary dropdown-toggle"
           type="button"
@@ -20,7 +32,7 @@
             <div class="dropdown-item btn" @click="setSelectedLimit(index)">{{index}}</div>
           </div>
         </div>
-      </div>
+      </div>-->
       <div class="btn minus-icon" @click="deleteColumn(column)">
         <div>
           <font-awesome-icon icon="minus" />
@@ -90,10 +102,14 @@ export default {
   },
   data() {
     return {
+      selectedLimit: "",
       taskDescription: ""
     };
   },
   computed: {
+    getColumnLimit() {
+      return this.column.wipLimit;
+    },
     getColumnName() {
       let columnName = this.column.name;
       if (columnName.length > 12) {
@@ -110,6 +126,25 @@ export default {
     }
   },
   methods: {
+    handleBlur(event){
+      console.log(event);
+      event.srcElement.value=this.getColumnLimit;
+    },
+    onEnter(event) {
+      if (event.srcElement.value > 0) {
+        this.setSelectedLimit(event.srcElement.value);
+        console.log(event.srcElement.value);
+        event.target.blur();
+      }
+    },
+    onSubmit(event) {
+      console.log(event);
+    },
+    picked: function(item) {
+      this.selected = item;
+      console.log(item);
+    },
+
     deleteColumn(column) {
       ColumnService.deleteColumn(column.id)
         .then(response => {
@@ -208,5 +243,9 @@ div.column-header {
 }
 .task-input {
   margin-top: 8px;
+}
+.limit {
+  width: 60px;
+  text-align: center; 
 }
 </style>

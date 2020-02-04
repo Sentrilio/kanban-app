@@ -25,6 +25,7 @@
     "vee-validate": "^2.2.15",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.5.2",
+    "vue-input-dropdown": "^0.1.9",
     "vue-kanban": "^1.6.1",
     "vue-native-websocket": "^2.0.13",
     "vue-router": "^3.1.3",
