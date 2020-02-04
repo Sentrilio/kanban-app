@@ -1,38 +1,17 @@
 <template>
   <div class="column">
     <div class="column-header">
-      <div class="column-name">
-        {{getColumnName}}
-        <!-- limit: {{column.wipLimit}} -->
-      </div>
+      <div class="column-name">{{getColumnName}}</div>
 
-      <input min="0" type="number" class="limit" v-on:blur="handleBlur" v-on:keyup.enter="onEnter" :value="getColumnLimit" />
-      <!-- <input  type="number" /> -->
-
-      <!-- <vue-input-dropdown
+      <input
+        min="0"
         type="number"
-        :selected="getColumnLimit"
-        :picked="picked"
-        :items="items"
-        :options="options"
-      ></vue-input-dropdown>-->
-
-      <!-- <div class="dropdown">
-        <button
-          class="btn btn-secondary dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          :v-model="column.wipLimit"
-        >{{column.wipLimit}}</button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <div class="drp-items" v-for="index in 15" :key="index">
-            <div class="dropdown-item btn" @click="setSelectedLimit(index)">{{index}}</div>
-          </div>
-        </div>
-      </div>-->
+        class="limit"
+        @keypress="isNumber($event)"
+        v-on:blur="handleBlur"
+        v-on:keyup.enter="onEnter"
+        :value="getColumnLimit"
+      />
       <div class="btn minus-icon" @click="deleteColumn(column)">
         <div>
           <font-awesome-icon icon="minus" />
@@ -63,9 +42,7 @@
         </div>
       </draggable>
     </div>
-    <!-- v-if="!limitReached" -->
     <div slot="footer" class="create-task" role="group" aria-label="Basic example" key="footer">
-      <!-- <button class="btn" data-toggle="collapse" :data-target="'#currentColumn'+currentColumn.id"> -->
       <button
         class="btn"
         :disabled="limitReached"
@@ -112,8 +89,8 @@ export default {
     },
     getColumnName() {
       let columnName = this.column.name;
-      if (columnName.length > 12) {
-        return columnName.substring(0, 12) + "...";
+      if (columnName.length > 14) {
+        return columnName.substring(0, 14) + "...";
       } else {
         return columnName;
       }
@@ -126,14 +103,17 @@ export default {
     }
   },
   methods: {
-    handleBlur(event){
-      console.log(event);
-      event.srcElement.value=this.getColumnLimit;
+    setColumnLimit(limit) {
+      this.column.wipLimit = limit;
+    },
+    handleBlur(event) {
+      event.srcElement.value = this.getColumnLimit;
     },
     onEnter(event) {
-      if (event.srcElement.value > 0) {
-        this.setSelectedLimit(event.srcElement.value);
-        console.log(event.srcElement.value);
+      let newLimit = Number.parseInt(event.srcElement.value);
+      if (newLimit >= 0) {
+        this.setColumnLimit(newLimit);
+        this.setSelectedLimit(newLimit);
         event.target.blur();
       }
     },
@@ -165,6 +145,19 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    isNumber: function(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 46
+      ) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
     },
     setSelectedLimit(limit) {
       let data = {
@@ -245,7 +238,12 @@ div.column-header {
   margin-top: 8px;
 }
 .limit {
-  width: 60px;
-  text-align: center; 
+  width: 45px;
+  text-align: center;
+  background-color: #ebebe0;
+  border: none;
+}
+.limit:focus {
+  background-color: white;
 }
 </style>

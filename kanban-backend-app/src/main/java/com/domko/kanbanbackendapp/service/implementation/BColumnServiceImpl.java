@@ -26,7 +26,6 @@ public class BColumnServiceImpl implements BColumnService {
     private final BColumnRepository bColumnRepository;
     private final BoardRepository boardRepository;
     private final PermissionService permissionService;
-    private final TrendServiceImpl trendService;
     private final SimpMessagingTemplate template;
 
     @Autowired
