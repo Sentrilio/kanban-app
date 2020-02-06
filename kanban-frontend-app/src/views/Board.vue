@@ -11,13 +11,13 @@
           <font-awesome-icon icon="chart-area" />
         </li>
         <!-- <li> -->
-        <div class="legend">
+        <div class="legend btn">
           <a>Liczba cofnięć jednostek na tablicy:&nbsp; 1 -&nbsp;</a>
-          <font-awesome-icon style="color: yellow;" icon="circle" />
+          <font-awesome-icon class="icon" style="color: yellow;" icon="circle" />
           <a>&nbsp;,&nbsp;2 -&nbsp;</a>
-          <font-awesome-icon style="color: orange;" icon="circle" />
+          <font-awesome-icon class="icon" style="color: orange;" icon="circle" />
           <a>&nbsp;,&nbsp;3 i więcej&nbsp;-&nbsp;</a>
-          <font-awesome-icon style="color: red;" icon="circle" />
+          <font-awesome-icon class="icon" style="color: red;" icon="circle" />
         </div>
         <!-- </li> -->
       </div>
@@ -191,6 +191,12 @@ div.legend {
   padding: 5px;
   border-radius: 4px;
   background-color: #ecece8;
+  vertical-align: middle;
+
+}
+.icon{
+  vertical-align: middle;
+  font-size:17px;
 }
 .btn {
   background-color: #ebebe0;

@@ -4,6 +4,7 @@ import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
 import com.domko.kanbanbackendapp.repository.BoardStatisticRepository;
 import com.domko.kanbanbackendapp.repository.TrendRepository;
+import com.domko.kanbanbackendapp.service.BoardService;
 import com.domko.kanbanbackendapp.service.TrendService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +24,26 @@ public class TrendServiceImpl implements TrendService {
     private final TrendRepository trendRepository;
     private final BoardRepository boardRepository;
     private final BoardStatisticRepository boardStatisticRepository;
-    private final BoardServiceImpl boardService;
+    private final BoardService boardService;
 
     @Autowired
     public TrendServiceImpl(TrendRepository trendRepository, BoardRepository boardRepository,
-                            BoardStatisticRepository boardStatisticRepository, BoardServiceImpl boardService) {
+                            BoardStatisticRepository boardStatisticRepository, BoardService boardService) {
         this.trendRepository = trendRepository;
         this.boardRepository = boardRepository;
         this.boardStatisticRepository = boardStatisticRepository;
         this.boardService = boardService;
     }
 
+    @Override
     public void updateBoardTrends(Board board) {
         board.getColumns().forEach(bColumn -> {
             updateTrendForColumn(bColumn);
         });
     }
 
-    private void updateTrendForColumn(BColumn column) {
+    @Override
+    public void updateTrendForColumn(BColumn column) {
         Date today = new Date();
         Optional<Trend> trend = trendRepository.findByColumnIdAndDate(column.getId(), today);
         if (trend.isPresent()) {
@@ -55,6 +58,7 @@ public class TrendServiceImpl implements TrendService {
         }
     }
 
+    @Override
     public ResponseEntity<SeriesSet> getTrendsFromLastDays(Long boardId) {
         Optional<Board> board = boardRepository.findById(boardId);
         if (board.isPresent()) {
@@ -68,7 +72,8 @@ public class TrendServiceImpl implements TrendService {
         }
     }
 
-    private void prepareColumnTrends(Board board, SeriesSet seriesSet) {
+    @Override
+    public void prepareColumnTrends(Board board, SeriesSet seriesSet) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<BColumn> columns = new ArrayList<>(board.getColumns());
         Collections.reverse(columns);
@@ -101,7 +106,8 @@ public class TrendServiceImpl implements TrendService {
     }
 
 
-    private void prepareTrendLines(Board board, SeriesSet seriesSet) {
+    @Override
+    public void prepareTrendLines(Board board, SeriesSet seriesSet) {
         TrendSeries trendSeries = new TrendSeries("Linia trendu", "line");
         TrendSeries arrivalOfTasksSeries = new TrendSeries("Tempo przybywania", "line");
         DateTime dateTimeTomorrow = new DateTime().plusDays(1);
@@ -125,7 +131,8 @@ public class TrendServiceImpl implements TrendService {
         seriesSet.add(arrivalOfTasksSeries);
     }
 
-    private double calulateAverage(double sum, int size) {
+    @Override
+    public double calulateAverage(double sum, int size) {
         if (size > 0) {
             return sum / size;
         } else {
@@ -133,7 +140,8 @@ public class TrendServiceImpl implements TrendService {
         }
     }
 
-    private List<Double> getBestFitLine(List<Double> list) {
+    @Override
+    public List<Double> getBestFitLine(List<Double> list) {
         double xSum = 0;
         double ySum = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -165,7 +173,8 @@ public class TrendServiceImpl implements TrendService {
         return result;
     }
 
-    private int calulatePreviousValue(int colIndex, int valueIndex, SeriesSet seriesSet) {
+    @Override
+    public int calulatePreviousValue(int colIndex, int valueIndex, SeriesSet seriesSet) {
         int previousValue = 0;
         if (colIndex > 0) {
             ColumnSeries previousSeries = (ColumnSeries) seriesSet.getSeriesList().get(colIndex - 1);
@@ -174,6 +183,7 @@ public class TrendServiceImpl implements TrendService {
         return previousValue;
     }
 
+    @Override
     public void updateNumberOfTasks(long boardId) {
         Date today = new Date();
         Optional<Board> board = boardRepository.findById(boardId);
@@ -194,6 +204,7 @@ public class TrendServiceImpl implements TrendService {
         }
     }
 
+    @Override
     public void incrementArrivalOfTasks(long boardId) {
         Optional<Board> board = boardRepository.findById(boardId);
         if (board.isPresent()) {

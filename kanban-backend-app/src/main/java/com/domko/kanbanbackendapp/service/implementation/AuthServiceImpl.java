@@ -45,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
         this.jwtUtils = jwtUtils;
     }
 
+    @Override
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -64,6 +65,7 @@ public class AuthServiceImpl implements AuthService {
                 roles));
     }
 
+    @Override
     public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity

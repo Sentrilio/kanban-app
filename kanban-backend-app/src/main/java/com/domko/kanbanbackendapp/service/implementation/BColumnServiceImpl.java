@@ -9,6 +9,7 @@ import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
 import com.domko.kanbanbackendapp.service.BColumnService;
+import com.domko.kanbanbackendapp.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,19 +27,18 @@ public class BColumnServiceImpl implements BColumnService {
     private final BColumnRepository bColumnRepository;
     private final BoardRepository boardRepository;
     private final PermissionService permissionService;
-    private final TrendServiceImpl trendService;
     private final SimpMessagingTemplate template;
 
     @Autowired
     public BColumnServiceImpl(BColumnRepository bColumnRepository, BoardRepository boardRepository,
-                              PermissionService permissionService, TrendServiceImpl trendService, SimpMessagingTemplate template) {
+                              PermissionService permissionService, SimpMessagingTemplate template) {
         this.bColumnRepository = bColumnRepository;
         this.boardRepository = boardRepository;
         this.permissionService = permissionService;
-        this.trendService = trendService;
         this.template = template;
     }
 
+    @Override
     public boolean updateBColumn(BColumn column, UpdateColumnRequest updateColumnRequest) {
         switch (updateColumnRequest.getOperation()) {
             case MOVE:
@@ -51,6 +51,7 @@ public class BColumnServiceImpl implements BColumnService {
         }
     }
 
+    @Override
     public void updatePositions(List<BColumn> columns) {
         for (int i = 0; i < columns.size(); i++) {
             Optional<BColumn> column = bColumnRepository.findById(columns.get(i).getId());
@@ -63,7 +64,8 @@ public class BColumnServiceImpl implements BColumnService {
         }
     }
 
-    private BColumn createColumn(Board board, CreateColumnRequest createColumnRequest) {
+    @Override
+    public BColumn createColumn(Board board, CreateColumnRequest createColumnRequest) {
         System.out.println("requested limit: " + createColumnRequest.getWipLimit());
         BColumn column = new BColumn();
         column.setName(createColumnRequest.getColumnName());
@@ -73,6 +75,7 @@ public class BColumnServiceImpl implements BColumnService {
         return bColumnRepository.save(column);
     }
 
+    @Override
     public ResponseEntity<String> createColumn(CreateColumnRequest createColumnRequest) {
         Optional<Board> board = boardRepository.findById(createColumnRequest.getBoardId());
         if (board.isPresent()) {
@@ -95,6 +98,7 @@ public class BColumnServiceImpl implements BColumnService {
         }
     }
 
+    @Override
     public ResponseEntity<String> updateBColumn(UpdateColumnRequest updateColumnRequest) {
         Optional<BColumn> bColumn = bColumnRepository.findById(updateColumnRequest.getColumnId());
         if (bColumn.isPresent()) {
@@ -113,6 +117,7 @@ public class BColumnServiceImpl implements BColumnService {
         }
     }
 
+    @Override
     public ResponseEntity<String> delete(Long columnId) {
         Optional<BColumn> bColumn = bColumnRepository.findById(columnId);
         if (bColumn.isPresent()) {
@@ -132,11 +137,12 @@ public class BColumnServiceImpl implements BColumnService {
         }
     }
 
+    @Override
     public ResponseEntity<String> updateLimit(UpdateWiPLimit updateWiPLimit) {
         Optional<BColumn> column = bColumnRepository.findById(updateWiPLimit.getColumnId());
         if (column.isPresent()) {
             if (permissionService.hasPermissionTo(column.get())) {
-                if (updateWiPLimit.getLimit() > 0 && updateWiPLimit.getLimit() <= 15) {
+                if (updateWiPLimit.getLimit() >= 0) {
                     column.get().setWipLimit(updateWiPLimit.getLimit());
                     bColumnRepository.save(column.get());
                     template.convertAndSend("/topic/board/" + column.get().getBoard().getId(), new MessageResponse("board updated"));

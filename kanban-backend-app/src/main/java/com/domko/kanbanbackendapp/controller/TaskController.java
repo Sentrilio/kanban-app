@@ -3,8 +3,7 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
-import com.domko.kanbanbackendapp.service.implementation.*;
-import net.bytebuddy.asm.Advice;
+import com.domko.kanbanbackendapp.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/task")
 public class TaskController {
 
-    private final TaskServiceImpl taskService;
+    private final TaskService taskService;
 
     @Autowired
-    public TaskController(TaskServiceImpl taskService) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 

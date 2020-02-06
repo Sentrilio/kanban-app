@@ -3,7 +3,7 @@ package com.domko.kanbanbackendapp.controller;
 import com.domko.kanbanbackendapp.payload.request.CreateColumnRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateColumnRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateWiPLimit;
-import com.domko.kanbanbackendapp.service.implementation.*;
+import com.domko.kanbanbackendapp.service.BColumnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BColumnController {
 
-    private final BColumnServiceImpl bColumnService;
+    private final BColumnService bColumnService;
 
     @Autowired
-    public BColumnController(BColumnServiceImpl bColumnService) {
+    public BColumnController(BColumnService bColumnService) {
         this.bColumnService = bColumnService;
     }
 

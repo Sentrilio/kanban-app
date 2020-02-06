@@ -2,7 +2,7 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
-import com.domko.kanbanbackendapp.service.implementation.*;
+import com.domko.kanbanbackendapp.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +14,10 @@ import java.util.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BoardController {
 
-    private final BoardServiceImpl boardService;
+    private final BoardService boardService;
 
     @Autowired
-    public BoardController(BoardServiceImpl boardService) {
+    public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
 

@@ -31,10 +31,12 @@ public class UserTeamServiceImpl implements UserTeamService {
         this.teamRepository = teamRepository;
     }
 
+    @Override
     public UserTeam addUserToTeam(User user, Team team, TeamRole role) {
         return userTeamRepository.save(new UserTeam(new UserTeamKey(user.getId(), team.getId()), user, team, role));
     }
 
+    @Override
     public ResponseEntity<?> createTeam(CreateTeamRequest createTeamRequest) {
         String teamName = createTeamRequest.getTeamName();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
