@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class UserRepositoryTest {
 
-
     @Autowired
     private TestEntityManager entityManager;
 
@@ -28,16 +27,33 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void test1(){
+    public void getUserByUserName() {
         //given
-        User user = new User("user1","user1@email.com","password");
+        User user = new User("user","user@email.com","password");
         entityManager.persist(user);
         entityManager.flush();
         //when
-        Optional<User> found = userRepository.findByEmail(user.getEmail());
+        Optional<User> found = userRepository.findByUsername(user.getUsername());
 
         //then
         assertThat(found.isPresent()).isEqualTo(true);
         assertThat(found.get().getUsername()).isEqualTo(user.getUsername());
+    }
+
+    @Test
+    public void getUserByEmail() {
+        //given
+        User user = new User("user","user@email.com","password");
+        entityManager.persist(user);
+        entityManager.flush();
+        //when
+        Optional<User> found = userRepository.findByEmail(user.getEmail());
+        //then
+        assertThat(found.isPresent()).isEqualTo(true);
+        assertThat(found.get().getEmail()).isEqualTo(user.getEmail());
+    }
+    public void getNonExistingUser(){
+        Optional<User> found = userRepository.findByUsername("username");
+        assertThat(found.isEmpty()).isEqualTo(true);
     }
 }

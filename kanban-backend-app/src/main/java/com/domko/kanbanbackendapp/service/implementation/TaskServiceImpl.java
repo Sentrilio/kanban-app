@@ -54,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
             }
         } else {
-            return new ResponseEntity<>("BColumn does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Task or BColumn does not exists", HttpStatus.BAD_REQUEST);
         }
     }
 

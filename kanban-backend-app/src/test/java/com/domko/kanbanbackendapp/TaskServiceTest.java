@@ -39,7 +39,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceTest {
+public class TaskServiceTest {
 
     @Mock
     TaskRepository taskRepository;
@@ -84,9 +84,29 @@ public class ServiceTest {
         doNothing().when(trendService).updateBoardTrends(any());
 
         ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
-        System.out.println(response);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void unsuccessfulTaskUpdate() {
+        TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3);
+        Board board = new Board();
+        BColumn bColumn = new BColumn();
+        bColumn.setBoard(board);
+        Optional<BColumn> bColumnOptional = Optional.of(bColumn);
+        Task task = new Task();
+        task.setColumn(bColumn);
+        Optional<Task> taskOptional = Optional.of(task);
+        when(taskRepository.findById(any(Long.class))).thenReturn(taskOptional);
+        when(bColumnRepository.findById(any(Long.class))).thenReturn(bColumnOptional);
+        when(permissionService.hasPermissionTo(any(Task.class))).thenReturn(true);
+        Mockito.doReturn(false).when(taskServiceSpy)
+                .handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));//has to be in this form cause of spy
+        doNothing().when(trendService).updateBoardTrends(any());
+
+        ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @Test
     public void userWithNoPermissionTaskUpdateRequest() {
@@ -109,8 +129,18 @@ public class ServiceTest {
         doNothing().when(trendService).updateBoardTrends(any());
 
         ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
-        System.out.println(response);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+    @Test
+    public void updateTaskUpdateRequestWithNonExistingTaskAndBoardId() {
+        TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3);
+        when(taskRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        when(bColumnRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
