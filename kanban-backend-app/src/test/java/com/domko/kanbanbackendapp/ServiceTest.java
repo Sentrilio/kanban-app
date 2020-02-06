@@ -1,6 +1,7 @@
 package com.domko.kanbanbackendapp;
 
 import com.domko.kanbanbackendapp.model.BColumn;
+import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.Operation;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
@@ -33,6 +34,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,17 +68,25 @@ public class ServiceTest {
         TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
 //        TaskServiceImpl taskServiceMock = Mockito.mock(TaskServiceImpl.class);
         UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3);
-        Task task = new Task();
-        Optional<Task> taskOptional = Optional.of(task);
+
+        Board board = new Board();
+
         BColumn bColumn = new BColumn();
+        bColumn.setBoard(board);
         Optional<BColumn> bColumnOptional = Optional.of(bColumn);
+
+        Task task = new Task();
+        task.setColumn(bColumn);
+        Optional<Task> taskOptional = Optional.of(task);
         when(taskRepository.findById(any(Long.class))).thenReturn(taskOptional);
         when(bColumnRepository.findById(any(Long.class))).thenReturn(bColumnOptional);
         when(permissionService.hasPermissionTo(any(Task.class))).thenReturn(true);
         Mockito.doReturn(true).when(taskServiceSpy).handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));
+        doNothing().when(trendService).updateBoardTrends(any());
+
 //        when(taskServiceSpy.handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class))).thenReturn(true);
 
-//        ResponseEntity response = taskService.updateTask(updateTaskRequest);
-//        System.out.println(response);
+        ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
+        System.out.println(response);
     }
 }
