@@ -7,17 +7,12 @@ import com.domko.kanbanbackendapp.payload.request.Operation;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
-import com.domko.kanbanbackendapp.service.TaskService;
-import com.domko.kanbanbackendapp.service.TrendService;
 import com.domko.kanbanbackendapp.service.implementation.PermissionService;
 import com.domko.kanbanbackendapp.service.implementation.TaskServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TrendServiceImpl;
-import net.bytebuddy.asm.Advice;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,7 +21,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -49,6 +43,7 @@ public class TaskServiceTest {
     TrendServiceImpl trendService;
     @Mock
     PermissionService permissionService;
+    //even tough there is no method call on template it has to be declared in order to inject all mocks into TaskServiceImpl
     @Mock
     SimpMessagingTemplate template;
 
@@ -71,26 +66,24 @@ public class TaskServiceTest {
         BColumn bColumn = new BColumn();
         bColumn.setBoard(board);
         Optional<BColumn> bColumnOptional = Optional.of(bColumn);
-
         Task task = new Task();
         task.setColumn(bColumn);
         Optional<Task> taskOptional = Optional.of(task);
+
         when(taskRepository.findById(any(Long.class))).thenReturn(taskOptional);
         when(bColumnRepository.findById(any(Long.class))).thenReturn(bColumnOptional);
         when(permissionService.hasPermissionTo(any(Task.class))).thenReturn(true);
         Mockito.doReturn(true).when(taskServiceSpy)
-                .handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));//has to be in this form cause of spy
-//        when(taskServiceSpy.handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class))).thenReturn(true);
+                .handleTaskUpdate(any(Task.class), any(BColumn.class), any(UpdateTaskRequest.class));//has to be in this form cause of spy
         doNothing().when(trendService).updateBoardTrends(any());
 
         ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
     @Test
     public void unsuccessfulTaskUpdate() {
         TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
-        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3);
         Board board = new Board();
         BColumn bColumn = new BColumn();
         bColumn.setBoard(board);
@@ -98,16 +91,19 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setColumn(bColumn);
         Optional<Task> taskOptional = Optional.of(task);
+
         when(taskRepository.findById(any(Long.class))).thenReturn(taskOptional);
         when(bColumnRepository.findById(any(Long.class))).thenReturn(bColumnOptional);
         when(permissionService.hasPermissionTo(any(Task.class))).thenReturn(true);
-        Mockito.doReturn(false).when(taskServiceSpy)
-                .handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));//has to be in this form cause of spy
+        Mockito.doReturn(false).when(taskServiceSpy).handleTaskUpdate(
+                any(Task.class), any(BColumn.class), any(UpdateTaskRequest.class));//has to be in this form cause of spy
         doNothing().when(trendService).updateBoardTrends(any());
 
-        ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
+        ResponseEntity response = taskServiceSpy.updateTask(
+                new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @Test
     public void userWithNoPermissionTaskUpdateRequest() {
         TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
@@ -123,24 +119,22 @@ public class TaskServiceTest {
         when(taskRepository.findById(any(Long.class))).thenReturn(taskOptional);
         when(bColumnRepository.findById(any(Long.class))).thenReturn(bColumnOptional);
         when(permissionService.hasPermissionTo(any(Task.class))).thenReturn(false);
-        Mockito.doReturn(true).when(taskServiceSpy)
-                .handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));//has to be in this form cause of spy
-//        when(taskServiceSpy.handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class))).thenReturn(true);
+        Mockito.doReturn(true).when(taskServiceSpy).handleTaskUpdate(
+                any(Task.class), any(BColumn.class), any(UpdateTaskRequest.class));//has to be in this form cause of spy
         doNothing().when(trendService).updateBoardTrends(any());
 
         ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
+
     @Test
     public void updateTaskUpdateRequestWithNonExistingTaskAndBoardId() {
         TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
         UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3);
         when(taskRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         when(bColumnRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-
         ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

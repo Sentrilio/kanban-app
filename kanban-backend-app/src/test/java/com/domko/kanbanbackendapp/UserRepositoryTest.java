@@ -27,23 +27,22 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void getUserByUserName() {
+    public void givenUser_whenFindByUsername_thenReturnUser() {
         //given
-        User user = new User("user","user@email.com","password");
+        User user = new User("user", "user@email.com", "password");
         entityManager.persist(user);
         entityManager.flush();
         //when
         Optional<User> found = userRepository.findByUsername(user.getUsername());
-
         //then
         assertThat(found.isPresent()).isEqualTo(true);
         assertThat(found.get().getUsername()).isEqualTo(user.getUsername());
     }
 
     @Test
-    public void getUserByEmail() {
+    public void givenUser_whenFindByEmail_thenReturnUser() {
         //given
-        User user = new User("user","user@email.com","password");
+        User user = new User("user", "user@email.com", "password");
         entityManager.persist(user);
         entityManager.flush();
         //when
@@ -52,7 +51,8 @@ public class UserRepositoryTest {
         assertThat(found.isPresent()).isEqualTo(true);
         assertThat(found.get().getEmail()).isEqualTo(user.getEmail());
     }
-    public void getNonExistingUser(){
+
+    public void givenNothing_whenFindByUsername_thenReturnOptionalEmpty() {
         Optional<User> found = userRepository.findByUsername("username");
         assertThat(found.isEmpty()).isEqualTo(true);
     }

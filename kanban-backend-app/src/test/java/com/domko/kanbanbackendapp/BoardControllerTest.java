@@ -14,12 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,9 +60,9 @@ public class BoardControllerTest {
     @Test
     @WithMockUser
     public void givenMockUser_whenGetBoardById_then200() throws Exception {
-        long boardId=1;
+        long boardId = 1;
         given(boardService.getBoardById(any(Long.class))).willReturn(new ResponseEntity<>(new Board(), HttpStatus.OK));
-        mockMvc.perform(get("/api/board/get/"+boardId)
+        mockMvc.perform(get("/api/board/get/" + boardId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
