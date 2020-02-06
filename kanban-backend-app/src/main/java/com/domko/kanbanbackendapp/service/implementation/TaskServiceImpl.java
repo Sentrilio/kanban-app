@@ -7,6 +7,7 @@ import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
+import com.domko.kanbanbackendapp.service.PermissionService;
 import com.domko.kanbanbackendapp.service.TaskService;
 import com.domko.kanbanbackendapp.service.TrendService;
 import org.springframework.beans.factory.annotation.Autowired;

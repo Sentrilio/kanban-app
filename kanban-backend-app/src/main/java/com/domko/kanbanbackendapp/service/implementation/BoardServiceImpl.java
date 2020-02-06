@@ -4,6 +4,7 @@ import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.CreateBoardRequest;
 import com.domko.kanbanbackendapp.repository.*;
 import com.domko.kanbanbackendapp.service.BoardService;
+import com.domko.kanbanbackendapp.service.PermissionService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ public class BoardServiceImpl implements BoardService {
         this.permissionService = permissionService;
     }
 
+    @Override
     public ResponseEntity<?> createBoard(CreateBoardRequest createBoardRequest) {
         Optional<Team> team = teamRepository.findById(createBoardRequest.getTeamId());
         if (team.isPresent()) {
@@ -54,7 +56,8 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    private Board createBoard(CreateBoardRequest createBoardRequest, Team team) {
+    @Override
+    public Board createBoard(CreateBoardRequest createBoardRequest, Team team) {
         Board board = new Board();
         board.setCreateDate(new Date());
         board.setName(createBoardRequest.getBoardName());
@@ -62,7 +65,8 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.save(board);
     }
 
-    private void createBoardStatisticsForTodayAndTomorrow(Board board) {
+    @Override
+    public void createBoardStatisticsForTodayAndTomorrow(Board board) {
         DateTime dateTime = new DateTime();
         for (int i = 0; i < 2; i++) {
             BoardStatistic boardStatistic = new BoardStatistic();
@@ -73,7 +77,7 @@ public class BoardServiceImpl implements BoardService {
             boardStatisticRepository.save(boardStatistic);
         }
     }
-
+    @Override
     public ResponseEntity<List<Board>> getUserBoards() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userRepository.findByUsername(authentication.getName());
@@ -87,6 +91,7 @@ public class BoardServiceImpl implements BoardService {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
+    @Override
     public ResponseEntity<Board> getBoardById(long boardId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userRepository.findByUsername(authentication.getName());
@@ -98,6 +103,7 @@ public class BoardServiceImpl implements BoardService {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
+    @Override
     public int getNumberOfTasks(Board board) {
         return board.getColumns()
                 .stream()

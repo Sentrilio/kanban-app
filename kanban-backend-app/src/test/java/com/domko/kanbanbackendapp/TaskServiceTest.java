@@ -7,7 +7,7 @@ import com.domko.kanbanbackendapp.payload.request.Operation;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
-import com.domko.kanbanbackendapp.service.implementation.PermissionService;
+import com.domko.kanbanbackendapp.service.implementation.PermissionServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TaskServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TrendServiceImpl;
 import org.junit.Rule;
@@ -42,7 +42,7 @@ public class TaskServiceTest {
     @Mock
     TrendServiceImpl trendService;
     @Mock
-    PermissionService permissionService;
+    PermissionServiceImpl permissionService;
     //even tough there is no method call on template it has to be declared in order to inject all mocks into TaskServiceImpl
     @Mock
     SimpMessagingTemplate template;

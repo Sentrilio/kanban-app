@@ -5,7 +5,9 @@ import com.domko.kanbanbackendapp.payload.request.AddUserRequest;
 import com.domko.kanbanbackendapp.repository.TeamRepository;
 import com.domko.kanbanbackendapp.repository.UserRepository;
 import com.domko.kanbanbackendapp.repository.UserTeamRepository;
+import com.domko.kanbanbackendapp.service.PermissionService;
 import com.domko.kanbanbackendapp.service.TeamService;
+import com.domko.kanbanbackendapp.service.UserTeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,11 +24,11 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
     private final UserTeamRepository userTeamRepository;
-    private final UserTeamServiceImpl userTeamService;
+    private final UserTeamService userTeamService;
     private final PermissionService permissionService;
 
     public TeamServiceImpl(TeamRepository teamRepository, UserRepository userRepository,
-                           UserTeamRepository userTeamRepository, UserTeamServiceImpl userTeamService,
+                           UserTeamRepository userTeamRepository, UserTeamService userTeamService,
                            PermissionService permissionService) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
@@ -36,6 +38,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
 
+    @Override
     public ResponseEntity<List<Team>> getUserTeams() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userRepository.findByUsername(authentication.getName());
@@ -49,6 +52,7 @@ public class TeamServiceImpl implements TeamService {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
+    @Override
     public ResponseEntity<List<UserTeam>> getTeamMembers(long teamId) {
         Optional<Team> team = teamRepository.findById(teamId);
         if (team.isPresent()) {
@@ -63,6 +67,7 @@ public class TeamServiceImpl implements TeamService {
         }
     }
 
+    @Override
     public ResponseEntity<Team> getTeamById(long teamId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userRepository.findByUsername(authentication.getName());
@@ -73,12 +78,13 @@ public class TeamServiceImpl implements TeamService {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
+    @Override
     public ResponseEntity<String> getTeamMembers(AddUserRequest addUserRequest) {
         Optional<Team> team = teamRepository.findById(addUserRequest.getTeamId());
         Optional<User> invitedUser = userRepository.findByEmail(addUserRequest.getEmail());
         if (team.isPresent() && invitedUser.isPresent()) {
             if (permissionService.hasPermissionTo(team.get())) {
-                userTeamService.addUserToTeam(invitedUser.get(),team.get(),TeamRole.MEMBER);
+                userTeamService.addUserToTeam(invitedUser.get(), team.get(), TeamRole.MEMBER);
                 return new ResponseEntity<>("User added to team", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);

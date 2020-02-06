@@ -1,6 +1,7 @@
 package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.User;
+import com.domko.kanbanbackendapp.service.UserService;
 import com.domko.kanbanbackendapp.service.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 public class UserController {
 
-	private final UserServiceImpl userService;
+	private final UserService userService;
 
 	@Autowired
 	public UserController(UserServiceImpl userService) {

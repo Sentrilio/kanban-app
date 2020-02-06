@@ -4,6 +4,7 @@ import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
 import com.domko.kanbanbackendapp.repository.BoardStatisticRepository;
 import com.domko.kanbanbackendapp.repository.TrendRepository;
+import com.domko.kanbanbackendapp.service.BoardService;
 import com.domko.kanbanbackendapp.service.TrendService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,11 @@ public class TrendServiceImpl implements TrendService {
     private final TrendRepository trendRepository;
     private final BoardRepository boardRepository;
     private final BoardStatisticRepository boardStatisticRepository;
-    private final BoardServiceImpl boardService;
+    private final BoardService boardService;
 
     @Autowired
     public TrendServiceImpl(TrendRepository trendRepository, BoardRepository boardRepository,
-                            BoardStatisticRepository boardStatisticRepository, BoardServiceImpl boardService) {
+                            BoardStatisticRepository boardStatisticRepository, BoardService boardService) {
         this.trendRepository = trendRepository;
         this.boardRepository = boardRepository;
         this.boardStatisticRepository = boardStatisticRepository;

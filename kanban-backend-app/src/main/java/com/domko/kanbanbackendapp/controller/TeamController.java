@@ -2,7 +2,7 @@ package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.payload.request.AddUserRequest;
-import com.domko.kanbanbackendapp.service.implementation.*;
+import com.domko.kanbanbackendapp.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +14,10 @@ import java.util.*;
 @RequestMapping(value = "/api/team")
 public class TeamController {
 
-    private final TeamServiceImpl teamService;
+    private final TeamService teamService;
 
     @Autowired
-    public TeamController(TeamServiceImpl teamService) {
+    public TeamController(TeamService teamService) {
         this.teamService = teamService;
     }
 

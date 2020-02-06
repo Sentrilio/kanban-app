@@ -6,6 +6,8 @@ import com.domko.kanbanbackendapp.model.Trend;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
 import com.domko.kanbanbackendapp.repository.BoardStatisticRepository;
 import com.domko.kanbanbackendapp.repository.TrendRepository;
+import com.domko.kanbanbackendapp.service.BoardService;
+import com.domko.kanbanbackendapp.service.ScheduleService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -22,16 +24,16 @@ import java.util.Random;
 
 @Service
 @Transactional
-public class ScheduleService {
+public class ScheduleServiceImpl implements ScheduleService {
     private final BoardStatisticRepository boardStatisticRepository;
     private final BoardRepository boardRepository;
     private final TrendRepository trendRepository;
-    private final BoardServiceImpl boardService;
+    private final BoardService boardService;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
-    public ScheduleService(BoardStatisticRepository boardStatisticRepository, BoardRepository boardRepository,
-                           TrendRepository trendRepository, BoardServiceImpl boardService) {
+    public ScheduleServiceImpl(BoardStatisticRepository boardStatisticRepository, BoardRepository boardRepository,
+                               TrendRepository trendRepository, BoardService boardService) {
         this.boardStatisticRepository = boardStatisticRepository;
         this.boardRepository = boardRepository;
         this.trendRepository = trendRepository;
@@ -131,7 +133,7 @@ public class ScheduleService {
     }
 
     //past till tomorrow
-//    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     private void fillColumnTrendsAndBoardStatistics(){
         createAndFillTrendsForAllBoardsInThePastTillTomorrow();
         createAndFillStatisticsForAllBoardsInThePastTillToday();

@@ -4,8 +4,6 @@ package com.domko.kanbanbackendapp.controller;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.service.TaskService;
-import com.domko.kanbanbackendapp.service.implementation.*;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

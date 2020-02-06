@@ -1,25 +1,12 @@
 package com.domko.kanbanbackendapp.controller;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 import javax.validation.Valid;
 
-import com.domko.kanbanbackendapp.model.ERole;
-import com.domko.kanbanbackendapp.model.Role;
-import com.domko.kanbanbackendapp.model.User;
 import com.domko.kanbanbackendapp.payload.request.LoginRequest;
 import com.domko.kanbanbackendapp.payload.request.SignupRequest;
-import com.domko.kanbanbackendapp.payload.response.MessageResponse;
-import com.domko.kanbanbackendapp.repository.RoleRepository;
-import com.domko.kanbanbackendapp.repository.UserRepository;
-import com.domko.kanbanbackendapp.security.jwt.JwtUtils;
-import com.domko.kanbanbackendapp.service.implementation.AuthServiceImpl;
+import com.domko.kanbanbackendapp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     @Autowired
-    public AuthController(AuthServiceImpl authService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
