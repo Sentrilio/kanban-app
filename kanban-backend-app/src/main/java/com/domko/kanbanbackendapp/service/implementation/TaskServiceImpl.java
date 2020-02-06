@@ -8,6 +8,7 @@ import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
 import com.domko.kanbanbackendapp.service.TaskService;
+import com.domko.kanbanbackendapp.service.TrendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,12 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final BColumnRepository bColumnRepository;
-    private final TrendServiceImpl trendService;
+    private final TrendService trendService;
     private final PermissionService permissionService;
     private final SimpMessagingTemplate template;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, BColumnRepository bColumnRepository, TrendServiceImpl trendService,
+    public TaskServiceImpl(TaskRepository taskRepository, BColumnRepository bColumnRepository, TrendService trendService,
                            PermissionService permissionService, SimpMessagingTemplate template) {
         this.taskRepository = taskRepository;
         this.bColumnRepository = bColumnRepository;
@@ -38,6 +39,7 @@ public class TaskServiceImpl implements TaskService {
         this.template = template;
     }
 
+    @Override
     public ResponseEntity<String> updateTask(UpdateTaskRequest updateTaskRequest) {
         Optional<Task> task = taskRepository.findById(updateTaskRequest.getTaskId());
         Optional<BColumn> destColumn = bColumnRepository.findById(updateTaskRequest.getColumnId());
@@ -58,6 +60,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
     public ResponseEntity<String> createTask(CreateTaskRequest createTaskRequest) {
         Optional<BColumn> column = bColumnRepository.findById(createTaskRequest.getColumnId());
         if (column.isPresent()) {
@@ -86,6 +89,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
+    @Override
     public ResponseEntity<String> deleteTask(Long taskId) {
         Optional<Task> task = taskRepository.findById(taskId);
         if (task.isPresent()) {
@@ -106,6 +110,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
     public boolean handleTaskUpdate(Task task, BColumn destColumn, UpdateTaskRequest updateTaskRequest) {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
@@ -139,6 +144,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
     public void updatePositions(List<Task> tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             Optional<Task> task = taskRepository.findById(tasks.get(i).getId());
@@ -151,6 +157,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
     public Task createTask(BColumn column, CreateTaskRequest createTaskRequest) {
         if (column.getTasks().size() < column.getWipLimit()) {
             Task task = new Task();
@@ -164,6 +171,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
     public void updateImportance(Task task, BColumn destColumn) {
         if (destColumn.getPosition() < task.getColumn().getPosition()) {
             incrementImportance(task);
@@ -171,6 +179,7 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
+    @Override
     public void incrementImportance(Task task) {
         if (task.getImportance() < 3) {
             task.setImportance(task.getImportance() + 1);

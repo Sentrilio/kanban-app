@@ -4,7 +4,6 @@
     <div class="task-icon">
       <font-awesome-icon class="icon" v-bind:class="taskClass" icon="circle" />
     </div>
-    <!-- imp:{{task.importance}} -->
     <div @click="deleteTask(task)">
       <font-awesome-icon icon="minus" />
     </div>
@@ -40,7 +39,6 @@ export default {
     },
     logTask(task) {
       console.log("clicked" + task.id);
-      //to do - add window prompt with task settings
     }
   }
 };
@@ -69,7 +67,7 @@ div.task-description {
   /* margin-bottom: 10px; */
   text-align: left;
 }
-div.list-group-item.btn.task{
+div.list-group-item.btn.task {
   padding-right: 10px;
   margin-right: 0px !important;
 }
