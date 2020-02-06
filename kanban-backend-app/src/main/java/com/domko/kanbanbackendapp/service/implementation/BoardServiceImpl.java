@@ -84,7 +84,7 @@ public class BoardServiceImpl implements BoardService {
             userTeams.forEach(e -> boards.addAll(e.getTeam().getBoards()));
             return new ResponseEntity<>(boards, HttpStatus.OK);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     public ResponseEntity<Board> getBoardById(long boardId) {
