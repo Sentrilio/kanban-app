@@ -27,6 +27,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -57,20 +58,16 @@ public class ServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);//required
-        System.out.println("init method called");
     }
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Test
-    public void testUpdateTask() {
+    public void successfulTaskUpdate() {
         TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
-//        TaskServiceImpl taskServiceMock = Mockito.mock(TaskServiceImpl.class);
         UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3);
-
         Board board = new Board();
-
         BColumn bColumn = new BColumn();
         bColumn.setBoard(board);
         Optional<BColumn> bColumnOptional = Optional.of(bColumn);
@@ -81,12 +78,39 @@ public class ServiceTest {
         when(taskRepository.findById(any(Long.class))).thenReturn(taskOptional);
         when(bColumnRepository.findById(any(Long.class))).thenReturn(bColumnOptional);
         when(permissionService.hasPermissionTo(any(Task.class))).thenReturn(true);
-        Mockito.doReturn(true).when(taskServiceSpy).handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));
-        doNothing().when(trendService).updateBoardTrends(any());
-
+        Mockito.doReturn(true).when(taskServiceSpy)
+                .handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));//has to be in this form cause of spy
 //        when(taskServiceSpy.handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class))).thenReturn(true);
+        doNothing().when(trendService).updateBoardTrends(any());
 
         ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
         System.out.println(response);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void userWithNoPermissionTaskUpdateRequest() {
+        TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest(1l, 1l, 1, Operation.MOVE, 3);
+        Board board = new Board();
+        BColumn bColumn = new BColumn();
+        bColumn.setBoard(board);
+        Optional<BColumn> bColumnOptional = Optional.of(bColumn);
+
+        Task task = new Task();
+        task.setColumn(bColumn);
+        Optional<Task> taskOptional = Optional.of(task);
+        when(taskRepository.findById(any(Long.class))).thenReturn(taskOptional);
+        when(bColumnRepository.findById(any(Long.class))).thenReturn(bColumnOptional);
+        when(permissionService.hasPermissionTo(any(Task.class))).thenReturn(false);
+        Mockito.doReturn(true).when(taskServiceSpy)
+                .handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class));//has to be in this form cause of spy
+//        when(taskServiceSpy.handleTaskUpdate(any(Task.class),any(BColumn.class),any(UpdateTaskRequest.class))).thenReturn(true);
+        doNothing().when(trendService).updateBoardTrends(any());
+
+        ResponseEntity response = taskServiceSpy.updateTask(updateTaskRequest);
+        System.out.println(response);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }
