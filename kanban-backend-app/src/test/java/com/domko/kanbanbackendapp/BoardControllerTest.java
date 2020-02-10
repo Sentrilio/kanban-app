@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,11 +42,10 @@ public class BoardControllerTest {
     @Test
     @WithMockUser
     public void givenMockUser_whenGetBoards_then200() throws Exception {
-        List<Board> boards = Arrays.asList(new Board(), new Board(), new Board());
-        given(boardService.getUserBoards()).willReturn(new ResponseEntity<>(boards, HttpStatus.OK));
+        given(boardService.getUserBoards()).willReturn(new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK));
         mockMvc.perform(get("/api/board/get")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk());
     }
 
     @Test

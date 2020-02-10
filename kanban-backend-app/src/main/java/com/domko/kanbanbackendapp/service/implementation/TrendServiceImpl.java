@@ -108,7 +108,7 @@ public class TrendServiceImpl implements TrendService {
 
     @Override
     public void prepareTrendLines(Board board, SeriesSet seriesSet) {
-        TrendSeries trendSeries = new TrendSeries("Linia trendu", "line");
+        TrendSeries trendSeries = new TrendSeries("Liczba elementów", "line");
         TrendSeries arrivalOfTasksSeries = new TrendSeries("Tempo przybywania", "line");
         DateTime dateTimeTomorrow = new DateTime().plusDays(1);
         List<BoardStatistic> statistics = boardStatisticRepository.findAllByBoardIdAndDateBeforeOrderByDate(board.getId(), dateTimeTomorrow.toDate());

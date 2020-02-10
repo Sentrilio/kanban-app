@@ -21,10 +21,8 @@ public class UserRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
-
     @Autowired
     private UserRepository userRepository;
-
 
     @Test
     public void givenUser_whenFindByUsername_thenReturnUser() {
