@@ -34,7 +34,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskServiceTest {
-
     @Mock
     TaskRepository taskRepository;
     @Mock
@@ -46,7 +45,6 @@ public class TaskServiceTest {
     //even tough there is no method call on template it has to be declared in order to inject all mocks into TaskServiceImpl
     @Mock
     SimpMessagingTemplate template;
-
     @InjectMocks
     TaskServiceImpl taskService;
 
@@ -55,9 +53,8 @@ public class TaskServiceTest {
         MockitoAnnotations.initMocks(this);//required
     }
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
-
+//    @Rule
+//    public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Test
     public void successfulTaskUpdate() {
         TaskServiceImpl taskServiceSpy = Mockito.spy(this.taskService);

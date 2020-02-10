@@ -133,7 +133,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     //past till tomorrow
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
     private void fillColumnTrendsAndBoardStatistics(){
         createAndFillTrendsForAllBoardsInThePastTillTomorrow();
         createAndFillStatisticsForAllBoardsInThePastTillToday();
