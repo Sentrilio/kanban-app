@@ -2,7 +2,7 @@
   <div class="jumbotron text-center">
     <div v-if="currentUser">
       <form @submit.prevent="createTeam">
-        <input type="text" placeholder="Team Name" v-model="teamName" />
+        <input type="text" placeholder="Nazwa zespołu" v-model="teamName" />
         <button :disabled="!teamName" type="submit">Stwórz zespół</button>
       </form>
     </div>
