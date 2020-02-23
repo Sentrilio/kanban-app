@@ -50,6 +50,29 @@ public class UserRepositoryTest {
         assertThat(found.get().getEmail()).isEqualTo(user.getEmail());
     }
 
+    @Test
+    public void givenUser_whenExistByUsername_thenReturnUser() {
+        //given
+        User user = new User("user", "user@email.com", "password");
+        entityManager.persist(user);
+        entityManager.flush();
+        //when
+        Boolean exists = userRepository.existsByUsername(user.getUsername());
+        //then
+        assertThat(exists).isEqualTo(true);
+    }
+
+    @Test
+    public void givenUser_whenExistByEmail_thenReturnUser() {
+        //given
+        User user = new User("user", "user@email.com", "password");
+        entityManager.persist(user);
+        entityManager.flush();
+        //when
+        Boolean exists = userRepository.existsByEmail(user.getEmail());
+        //then
+        assertThat(exists).isEqualTo(true);
+    }
     public void givenNothing_whenFindByUsername_thenReturnOptionalEmpty() {
         Optional<User> found = userRepository.findByUsername("username");
         assertThat(found.isEmpty()).isEqualTo(true);
