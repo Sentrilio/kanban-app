@@ -37,7 +37,7 @@ public class TeamController {
     }
 
     @PostMapping(value = "/add/user")
-    public ResponseEntity<String> getTeamMembers(@RequestBody AddUserRequest addUserRequest) {
-        return teamService.getTeamMembers(addUserRequest);
+    public ResponseEntity<String> addUser(@RequestBody AddUserRequest addUserRequest) {
+        return teamService.addUser(addUserRequest);
     }
 }

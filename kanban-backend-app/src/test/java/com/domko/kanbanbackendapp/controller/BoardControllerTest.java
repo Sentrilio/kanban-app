@@ -1,4 +1,4 @@
-package com.domko.kanbanbackendapp;
+package com.domko.kanbanbackendapp.controller;
 
 import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.service.implementation.BoardServiceImpl;

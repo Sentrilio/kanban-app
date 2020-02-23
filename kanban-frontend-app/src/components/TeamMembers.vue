@@ -26,9 +26,6 @@ export default {
   components: {
     TeamMember
   },
-  props: {
-    members: Array
-  },
   data() {
     return {
       userEmail: "",
@@ -72,6 +69,9 @@ export default {
     }
   },
   created() {
+    this.getData();
+  },
+  updated(){
     this.getData();
   }
 };

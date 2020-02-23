@@ -19,7 +19,7 @@
           </div>
         </div>
         <div v-else-if="selectedContent==='members'">
-          <TeamMembers :teamMembers="teamMembers"></TeamMembers>
+          <TeamMembers></TeamMembers>
         </div>
         <div v-else-if="selectedContent==='settings'">
           <a>Ustawienia</a>

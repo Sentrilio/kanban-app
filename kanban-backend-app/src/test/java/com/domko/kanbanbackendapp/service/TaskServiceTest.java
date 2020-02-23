@@ -1,4 +1,4 @@
-package com.domko.kanbanbackendapp;
+package com.domko.kanbanbackendapp.service;
 
 import com.domko.kanbanbackendapp.model.BColumn;
 import com.domko.kanbanbackendapp.model.Board;
@@ -10,7 +10,6 @@ import com.domko.kanbanbackendapp.repository.TaskRepository;
 import com.domko.kanbanbackendapp.service.implementation.PermissionServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TaskServiceImpl;
 import com.domko.kanbanbackendapp.service.implementation.TrendServiceImpl;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.MockitoRule;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

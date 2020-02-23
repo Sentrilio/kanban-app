@@ -79,7 +79,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public ResponseEntity<String> getTeamMembers(AddUserRequest addUserRequest) {
+    public ResponseEntity<String> addUser(AddUserRequest addUserRequest) {
         Optional<Team> team = teamRepository.findById(addUserRequest.getTeamId());
         Optional<User> invitedUser = userRepository.findByEmail(addUserRequest.getEmail());
         if (team.isPresent() && invitedUser.isPresent()) {

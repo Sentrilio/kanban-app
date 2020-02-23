@@ -164,12 +164,7 @@ export default {
     },
     getTrends() {
       let boardId = this.boardId;
-      this.boardName = this.boardName;
-      let data = {
-        boardId: boardId,
-        days: 4
-      };
-      TrendService.getTrends(data)
+      TrendService.getTrends(boardId)
         .then(response => {
           this.trends = response.data;
           this.series = this.trends.seriesList;

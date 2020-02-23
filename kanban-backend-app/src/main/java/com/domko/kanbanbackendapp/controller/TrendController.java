@@ -20,8 +20,8 @@ public class TrendController {
         this.trendService = trendService;
     }
 
-    @PostMapping(value = "/get")
-    public ResponseEntity<SeriesSet> getTrends(@RequestBody TrendRequest trendRequest) {
-        return trendService.getTrendsFromLastDays(trendRequest.getBoardId());
+    @GetMapping(value = "/get/{boardId}")
+    public ResponseEntity<SeriesSet> getTrends(@PathVariable("boardId") long boardId) {
+        return trendService.getTrendsFromLastDays(boardId);
     }
 }
