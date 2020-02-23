@@ -17,5 +17,5 @@ public interface TeamService {
 
     ResponseEntity<Team> getTeamById(long teamId);
 
-    ResponseEntity<String> getTeamMembers(AddUserRequest addUserRequest);
+    ResponseEntity<String> addUser(AddUserRequest addUserRequest);
 }

@@ -1,4 +1,4 @@
-package com.domko.kanbanbackendapp;
+package com.domko.kanbanbackendapp.repository;
 
 import com.domko.kanbanbackendapp.model.User;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
