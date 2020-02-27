@@ -1,10 +1,9 @@
 package com.domko.kanbanbackendapp.service.implementation;
 
-import com.domko.kanbanbackendapp.model.Board;
-import com.domko.kanbanbackendapp.model.BoardStatistic;
-import com.domko.kanbanbackendapp.model.Trend;
+import com.domko.kanbanbackendapp.model.*;
 import com.domko.kanbanbackendapp.repository.BoardRepository;
 import com.domko.kanbanbackendapp.repository.BoardStatisticRepository;
+import com.domko.kanbanbackendapp.repository.RoleRepository;
 import com.domko.kanbanbackendapp.repository.TrendRepository;
 import com.domko.kanbanbackendapp.service.BoardService;
 import com.domko.kanbanbackendapp.service.ScheduleService;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -26,15 +24,17 @@ import java.util.Random;
 @Transactional
 public class ScheduleServiceImpl implements ScheduleService {
     private final BoardStatisticRepository boardStatisticRepository;
+    private final RoleRepository roleRepository;
     private final BoardRepository boardRepository;
     private final TrendRepository trendRepository;
     private final BoardService boardService;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
-    public ScheduleServiceImpl(BoardStatisticRepository boardStatisticRepository, BoardRepository boardRepository,
+    public ScheduleServiceImpl(BoardStatisticRepository boardStatisticRepository, RoleRepository roleRepository, BoardRepository boardRepository,
                                TrendRepository trendRepository, BoardService boardService) {
         this.boardStatisticRepository = boardStatisticRepository;
+        this.roleRepository = roleRepository;
         this.boardRepository = boardRepository;
         this.trendRepository = trendRepository;
         this.boardService = boardService;
@@ -134,9 +134,26 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     //past till tomorrow
 //    @EventListener(ApplicationReadyEvent.class)
-    private void fillColumnTrendsAndBoardStatistics(){
+    private void fillColumnTrendsAndBoardStatistics() {
         createAndFillTrendsForAllBoardsInThePastTillTomorrow();
         createAndFillStatisticsForAllBoardsInThePastTillToday();
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    private void fillRoles() {
+        if (roleRepository.findAll().size() != 3) {
+            roleRepository.deleteAll();
+            Role userRole = new Role();
+            userRole.setName(ERole.ROLE_USER);
+            Role modRole = new Role();
+            modRole.setName(ERole.ROLE_MODERATOR);
+            Role adminRole = new Role();
+            adminRole.setName(ERole.ROLE_ADMIN);
+            roleRepository.save(userRole);
+            roleRepository.save(modRole);
+            roleRepository.save(adminRole);
+            System.out.println("roles created at first start of the application");
+        }
     }
 
     private void createAndFillTrendsForAllBoardsInThePastTillTomorrow() {
@@ -169,6 +186,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         });
         System.out.println("filled previous days with random trends");
     }
+
     private void createAndFillStatisticsForAllBoardsInThePastTillToday() {
         boardStatisticRepository.deleteAll();
         Random random = new Random();
@@ -189,7 +207,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     BoardStatistic boardStatistic = new BoardStatistic();
                     boardStatistic.setBoard(board);
                     boardStatistic.setNumberOfTasks(trendRepository
-                            .getSumOfElementsByBoardIdAndDate(board.getId(),startDate.toDate()));
+                            .getSumOfElementsByBoardIdAndDate(board.getId(), startDate.toDate()));
                     boardStatistic.setArrivalOfTasks(random.nextInt(5));
                     boardStatistic.setDate(startDate.toDate());
                     boardStatisticRepository.save(boardStatistic);
@@ -199,8 +217,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         });
         System.out.println("filled previous days with random statistics");
     }
-
-
 
 
 }
