@@ -4,23 +4,13 @@
       <button class="btn" data-toggle="collapse" data-target="#demo">Dodaj kolumnę</button>
       <div id="demo" class="collapse">
         <input v-model="columnNameInput" type="text" placeholder="nazwa kolumny" />
-        <div class="dropdown">
-          limit
-          <button
-            class="btn btn-secondary dropdown-toggle"
-            type="button"
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            :v-model="selectedLimit"
-          >{{selectedLimit}}</button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <div v-for="index in 15" :key="index">
-              <div class="dropdown-item btn" @click="setSelectedLimit(index)">{{index}}</div>
-            </div>
-          </div>
-        </div>
+        limit
+        <input
+          min="0"
+          v-model=selectedLimit
+          type="number"
+          class="limit"
+        />
         <br />
         <button class="button" @click="createColumn" :disabled="!columnNameInput">Dodaj</button>
       </div>
@@ -42,6 +32,27 @@ export default {
   },
   computed: {},
   methods: {
+    isNumber: function(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 46
+      ) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
+    onEnter(event) {
+      let newLimit = Number.parseInt(event.srcElement.value);
+      if (newLimit >= 0) {
+        this.setColumnLimit(newLimit);
+        this.setSelectedLimit(newLimit);
+        event.target.blur();
+      }
+    },
     setSelectedLimit(limit) {
       this.selectedLimit = limit;
     },

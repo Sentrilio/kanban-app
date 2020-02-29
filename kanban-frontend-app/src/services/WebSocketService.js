@@ -6,6 +6,7 @@ var stompClient = null;
 class WebSocketService {
 
     connect(boardId, func) {
+        this.disconnect();
         var socket = new SockJS('http://localhost:8000/websocket');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
