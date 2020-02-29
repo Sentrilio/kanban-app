@@ -204,13 +204,19 @@ public class ScheduleServiceImpl implements ScheduleService {
                     boardStatistic.setDate(startDate.toDate());
                     boardStatisticRepository.save(boardStatistic);
                 } else {
-                    BoardStatistic boardStatistic = new BoardStatistic();
-                    boardStatistic.setBoard(board);
-                    boardStatistic.setNumberOfTasks(trendRepository
-                            .getSumOfElementsByBoardIdAndDate(board.getId(), startDate.toDate()));
-                    boardStatistic.setArrivalOfTasks(random.nextInt(5));
-                    boardStatistic.setDate(startDate.toDate());
-                    boardStatisticRepository.save(boardStatistic);
+                    try {
+                        BoardStatistic boardStatistic = new BoardStatistic();
+                        boardStatistic.setBoard(board);
+                        int sum = trendRepository.getSumOfElementsByBoardIdAndDate(board.getId(), startDate.toDate());
+                        boardStatistic.setNumberOfTasks(sum);
+                        boardStatistic.setArrivalOfTasks(random.nextInt(5));
+                        boardStatistic.setDate(startDate.toDate());
+                        boardStatisticRepository.save(boardStatistic);
+                    } catch (Exception e) {
+                        System.out.println("something is wrong with getSumOfElements" + board.getId() + " - " + board.getName());
+                        //board has to have at least 1 column to work getSumOfElements works properly
+//                        e.printStackTrace();
+                    }
                 }
                 startDate = startDate.plusDays(1);
             }
