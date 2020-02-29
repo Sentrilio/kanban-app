@@ -84,7 +84,7 @@ public class BColumnServiceImpl implements BColumnService {
                 if (column != null) {
 //                    board.get().getColumns().add(column);
 //                    Board updatedBoard = boardRepository.save(board.get());
-                    template.convertAndSend("/topic/greetings/" + column.getBoard().getId(),
+                    template.convertAndSend("/topic/board/" + column.getBoard().getId(),
                             new MessageResponse("board updated"));
                     return new ResponseEntity<>("Column created", HttpStatus.CREATED);
                 } else {
@@ -127,7 +127,9 @@ public class BColumnServiceImpl implements BColumnService {
                 bColumn.get().getTasks().removeAll(bColumn.get().getTasks());
                 boardRepository.save(bColumn.get().getBoard());
                 bColumnRepository.delete(bColumn.get());
-                template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+                updatePositions(bColumn.get().getBoard().getColumns());
+                template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(),
+                        new MessageResponse("board updated"));
                 return new ResponseEntity<>("Column Deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
