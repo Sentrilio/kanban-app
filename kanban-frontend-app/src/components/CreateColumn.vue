@@ -7,7 +7,8 @@
         limit
         <input
           min="0"
-          v-model=selectedLimit
+          v-model="selectedLimit"
+          @keypress="isNumber($event)"
           type="number"
           class="limit"
         />
