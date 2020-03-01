@@ -182,6 +182,7 @@ export default {
         oldIndex: event.oldIndex,
         operation: operation
       };
+      console.log(updateObject);
       TaskService.updateTask(updateObject)
         .then(response => {
           console.log(response);
