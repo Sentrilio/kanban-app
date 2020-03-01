@@ -42,10 +42,14 @@ public class BColumnServiceImpl implements BColumnService {
     public boolean updateBColumn(BColumn column, UpdateColumnRequest updateColumnRequest) {
         switch (updateColumnRequest.getOperation()) {
             case MOVE:
-                column.getBoard().getColumns().remove(column);
-                column.getBoard().getColumns().add(updateColumnRequest.getNewIndex(), column);
-                updatePositions(column.getBoard().getColumns());
-                return true;
+                if (updateColumnRequest.getNewIndex() >= 0 && updateColumnRequest.getNewIndex() <= column.getBoard().getColumns().size()) {
+                    column.getBoard().getColumns().remove(column);
+                    column.getBoard().getColumns().add(updateColumnRequest.getNewIndex(), column);
+                    updatePositions(column.getBoard().getColumns());
+                    return true;
+                } else {
+                    return false;
+                }
             default:
                 return false;
         }
@@ -107,6 +111,8 @@ public class BColumnServiceImpl implements BColumnService {
                     template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateColumnRequest.getOperation() + " on column successful", HttpStatus.OK);
                 } else {
+                    System.out.println("new column index: " + updateColumnRequest.getNewIndex());
+                    template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Column could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {

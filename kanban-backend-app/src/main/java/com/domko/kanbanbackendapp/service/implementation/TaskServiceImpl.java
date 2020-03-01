@@ -51,6 +51,8 @@ public class TaskServiceImpl implements TaskService {
                     template.convertAndSend("/topic/board/" + destColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
+                    System.out.println("task could not be updated.");
+                    template.convertAndSend("/topic/board/" + destColumn.get().getBoard().getId(), new MessageResponse("board updated"));
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
@@ -116,19 +118,25 @@ public class TaskServiceImpl implements TaskService {
         switch (updateTaskRequest.getOperation()) {
             case ADD:
                 if (destColumn.getTasks().size() < destColumn.getWipLimit()) {
-                    updateImportance(task, destColumn);
-                    long oldColumnId = task.getColumn().getId();
-                    task.setColumn(destColumn);
-                    destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                    BColumn updatedColumn = bColumnRepository.save(destColumn);
-                    updatePositions(updatedColumn.getTasks());
-                    Optional<BColumn> oldColumn = bColumnRepository.findById(oldColumnId);
-                    if (oldColumn.isPresent()) {
-                        oldColumn.get().getTasks().remove(task);
-                        BColumn updatedOldColumn = bColumnRepository.save(oldColumn.get());
-                        updatePositions(updatedOldColumn.getTasks());
-                        return true;
+                    if (updateTaskRequest.getNewIndex() >= 0 && updateTaskRequest.getNewIndex() <= destColumn.getTasks().size()) {
+                        updateImportance(task, destColumn);
+                        long oldColumnId = task.getColumn().getId();
+                        task.setColumn(destColumn);
+                        taskRepository.save(task);
+                        destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                        BColumn updatedColumn = bColumnRepository.save(destColumn);
+                        updatePositions(updatedColumn.getTasks());
+                        Optional<BColumn> oldColumn = bColumnRepository.findById(oldColumnId);
+                        if (oldColumn.isPresent()) {
+                            oldColumn.get().getTasks().remove(task);
+                            BColumn updatedOldColumn = bColumnRepository.save(oldColumn.get());
+                            updatePositions(updatedOldColumn.getTasks());
+                            return true;
+                        } else {
+                            return false;
+                        }
                     } else {
+                        System.out.println("new index: "+updateTaskRequest.getNewIndex());
                         return false;
                     }
                 } else {
