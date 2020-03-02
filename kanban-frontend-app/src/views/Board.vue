@@ -107,11 +107,15 @@ export default {
     },
 
     setSockJS() {
+      WebSocketService.disconnect();
       WebSocketService.connect(this.$route.params.boardId, this.messageHandle);
     },
     messageHandle(data) {
       if (JSON.parse(data.body).message === "board updated") {
         this.refresh();
+      }else{
+        console.log("message != board updated");
+        console.log(data);
       }
     },
     setBoard() {
