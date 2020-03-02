@@ -185,7 +185,8 @@ export default {
       console.log(updateObject);
       TaskService.updateTask(updateObject)
         .then(response => {
-          console.log(response);
+          console.log(response.status);
+          this.$emit("refresh");
         })
         .catch(err => {
           console.log(err);

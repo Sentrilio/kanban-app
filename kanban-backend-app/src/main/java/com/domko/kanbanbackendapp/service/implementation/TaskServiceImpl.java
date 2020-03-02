@@ -133,10 +133,11 @@ public class TaskServiceImpl implements TaskService {
                             updatePositions(updatedOldColumn.getTasks());
                             return true;
                         } else {
+                            System.out.println("old column not present");
                             return false;
                         }
                     } else {
-                        System.out.println("new index: "+updateTaskRequest.getNewIndex());
+                        System.out.println("new index: " + updateTaskRequest.getNewIndex());
                         return false;
                     }
                 } else {
@@ -144,10 +145,15 @@ public class TaskServiceImpl implements TaskService {
                     return false;
                 }
             case MOVE:
-                destColumn.getTasks().remove(task);
-                destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
-                updatePositions(destColumn.getTasks());
-                return true;
+                if (updateTaskRequest.getNewIndex() >= 0 && updateTaskRequest.getNewIndex() <= destColumn.getTasks().size()) {
+                    destColumn.getTasks().remove(task);
+                    destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
+                    updatePositions(destColumn.getTasks());
+                    return true;
+                } else {
+                    System.out.println("task could not be moved. New index: "+ updateTaskRequest.getNewIndex());
+                    return false;
+                }
             default:
                 return false;
         }

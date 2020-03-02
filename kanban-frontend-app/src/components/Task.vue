@@ -38,7 +38,8 @@ export default {
         });
     },
     logTask(task) {
-      console.log("clicked" + task.id);
+      task.id;
+      // console.log("clicked" + task.id);
     }
   }
 };
