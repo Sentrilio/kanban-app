@@ -176,7 +176,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                         Trend trendToSave = new Trend();
                         trendToSave.setColumn(column);
                         trendToSave.setDate(startDate.toDate());
-                        trendToSave.setElements(random.nextInt(3) + 1);
+                        trendToSave.setElements(random.nextInt(5) + 1);
                         trendRepository.save(trendToSave);
                     }
                     startDate = startDate.plusDays(1);

@@ -32,7 +32,7 @@ public class BColumn {
     private Board board;
 
     //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "position", unique = true, nullable = false)
+    @Column(name = "position", nullable = false)
     private Integer position;
 
     @JsonManagedReference
