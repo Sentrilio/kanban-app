@@ -22,7 +22,7 @@
       <draggable
         class="list-group"
         :list="column.tasks"
-        :group="{name: 'task',put: false}"
+        :group="{name: 'task', put: false}"
         @change="change($event, column)"
       >
         <div v-for="task in column.tasks" :key="task.id">
@@ -170,11 +170,11 @@ export default {
           this.$emit("refresh");
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err);
         });
     },
     updateTask(event, column, operation) {
-      console.log(event);
       let updateObject = {
         taskId: event.element.id,
         columnId: column.id,
@@ -182,15 +182,44 @@ export default {
         oldIndex: event.oldIndex,
         operation: operation
       };
+      console.log(event);
       console.log(updateObject);
-      TaskService.updateTask(updateObject)
-        .then(response => {
-          console.log(response.status);
-          this.$emit("refresh");
-        })
-        .catch(err => {
-          console.log(err);
-        });
+
+      if (updateObject.newIndex >= 0) {
+        TaskService.updateTask(updateObject)
+          .then(response => {
+            console.log(response.status);
+            // this.$emit("refresh");
+          })
+          .catch(err => {
+            this.$emit("refresh");
+            console.log("error:" + err);
+          });
+      } 
+      else {
+        this.$emit("refresh");
+        console.log("new index < 0");
+        console.log("proper new index: " + updateObject.newIndex);
+
+        // let properIndex = this.column.tasks.findIndex(
+          // x => x.id === event.element.id
+        // );
+        // updateObject.newIndex = properIndex;
+        // if (updateObject.newIndex >= 0) {
+        //   TaskService.updateTask(updateObject)
+        //     .then(response => {
+        //       console.log(response.status);
+        //       this.$emit("refresh");
+        //     })
+        //     .catch(err => {
+        //       this.$emit("refresh");
+        //       console.log("error:" + err);
+        //     });
+        // } else {
+        //   this.$emit("refresh");
+        //   console.log("proper index is still < 0");
+        // }
+      }
     },
     change: function(evt, column) {
       if (evt.added) {
