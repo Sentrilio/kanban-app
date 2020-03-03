@@ -17,8 +17,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -48,11 +51,15 @@ public class TaskServiceImpl implements TaskService {
             if (permissionService.hasPermissionTo(task.get())) {
                 if (handleTaskUpdate(task.get(), destColumn.get(), updateTaskRequest)) {
                     trendService.updateBoardTrends(task.get().getColumn().getBoard());
-                    template.convertAndSend("/topic/board/" + destColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+                    String dest = "/topic/board/" + destColumn.get().getBoard().getId();
+//                    System.out.println(dest);
+                    template.convertAndSend(dest, new MessageResponse("board updated"));
                     return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
                 } else {
                     System.out.println("task could not be updated.");
-                    template.convertAndSend("/topic/board/" + destColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+                    String dest = "/topic/board/" + destColumn.get().getBoard().getId();
+                    System.out.println(dest);
+                    template.convertAndSend(dest, new MessageResponse("board updated"));
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
@@ -122,7 +129,7 @@ public class TaskServiceImpl implements TaskService {
                         updateImportance(task, destColumn);
                         long oldColumnId = task.getColumn().getId();
                         task.setColumn(destColumn);
-                        taskRepository.save(task);
+                        taskRepository.save(task);//?
                         destColumn.getTasks().add(updateTaskRequest.getNewIndex(), task);
                         BColumn updatedColumn = bColumnRepository.save(destColumn);
                         updatePositions(updatedColumn.getTasks());
@@ -151,7 +158,7 @@ public class TaskServiceImpl implements TaskService {
                     updatePositions(destColumn.getTasks());
                     return true;
                 } else {
-                    System.out.println("task could not be moved. New index: "+ updateTaskRequest.getNewIndex());
+                    System.out.println("task could not be moved. New index: " + updateTaskRequest.getNewIndex());
                     return false;
                 }
             default:
@@ -161,8 +168,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updatePositions(List<Task> tasks) {
-        for (int i = 0; i < tasks.size(); i++) {
-            Optional<Task> task = taskRepository.findById(tasks.get(i).getId());
+        List<Task> listWithoutNulls = tasks.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        for (int i = 0; i < listWithoutNulls.size(); i++) {
+            Optional<Task> task = taskRepository.findById(listWithoutNulls.get(i).getId());
             if (task.isPresent()) {
                 task.get().setPosition(i);
                 taskRepository.save(task.get());
