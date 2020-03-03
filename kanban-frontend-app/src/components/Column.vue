@@ -189,36 +189,15 @@ export default {
         TaskService.updateTask(updateObject)
           .then(response => {
             console.log(response.status);
-            // this.$emit("refresh");
           })
           .catch(err => {
             this.$emit("refresh");
             console.log("error:" + err);
           });
-      } 
-      else {
+      } else {
         this.$emit("refresh");
         console.log("new index < 0");
         console.log("proper new index: " + updateObject.newIndex);
-
-        // let properIndex = this.column.tasks.findIndex(
-          // x => x.id === event.element.id
-        // );
-        // updateObject.newIndex = properIndex;
-        // if (updateObject.newIndex >= 0) {
-        //   TaskService.updateTask(updateObject)
-        //     .then(response => {
-        //       console.log(response.status);
-        //       this.$emit("refresh");
-        //     })
-        //     .catch(err => {
-        //       this.$emit("refresh");
-        //       console.log("error:" + err);
-        //     });
-        // } else {
-        //   this.$emit("refresh");
-        //   console.log("proper index is still < 0");
-        // }
       }
     },
     change: function(evt, column) {
