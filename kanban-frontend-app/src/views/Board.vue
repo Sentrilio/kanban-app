@@ -80,6 +80,7 @@ export default {
           this.getBoard();
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err);
         });
     },
@@ -99,6 +100,7 @@ export default {
           this.columns = this.board.columns;
         })
         .catch(error => {
+          this.$emit("refresh");
           console.log(error);
           if (error.response.status === 401) {
             this.$router.push("/home"); // to do component with info about not having perrmision redirection
@@ -156,6 +158,7 @@ export default {
           console.log(response);
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err);
         });
     }

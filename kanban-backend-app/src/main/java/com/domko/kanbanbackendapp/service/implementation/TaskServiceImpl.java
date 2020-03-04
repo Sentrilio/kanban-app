@@ -65,9 +65,9 @@ public class TaskServiceImpl implements TaskService {
                     }
                 } else {
                     System.out.println("task could not be updated.");
-                    String dest = "/topic/board/" + destColumn.get().getBoard().getId();
-                    System.out.println(dest);
-                    template.convertAndSend(dest, new MessageResponse("board updated"));
+//                    String dest = "/topic/board/" + destColumn.get().getBoard().getId();
+//                    System.out.println(dest);
+//                    template.convertAndSend(dest, new MessageResponse("board updated"));
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
