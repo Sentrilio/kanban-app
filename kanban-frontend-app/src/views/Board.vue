@@ -80,6 +80,7 @@ export default {
           this.getBoard();
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err);
         });
     },
@@ -99,6 +100,7 @@ export default {
           this.columns = this.board.columns;
         })
         .catch(error => {
+          this.$emit("refresh");
           console.log(error);
           if (error.response.status === 401) {
             this.$router.push("/home"); // to do component with info about not having perrmision redirection
@@ -111,11 +113,16 @@ export default {
       WebSocketService.connect(this.$route.params.boardId, this.messageHandle);
     },
     messageHandle(data) {
-      if (JSON.parse(data.body).message === "board updated") {
+      if (JSON.parse(data.body).message === "board") {
+        console.log("message: 'board'");
+        this.board = JSON.parse(data.body).board;
+        this.columns = this.board.columns;
+      } else if (JSON.parse(data.body).message === "board updated") {
+        console.log("message: 'board updated'");
         this.refresh();
-      }else{
-        console.log("message != board updated");
-        console.log(data);
+      } else {
+        console.log("something else came");
+        console.log(JSON.parse(data.body).message);
       }
     },
     setBoard() {
@@ -151,6 +158,7 @@ export default {
           console.log(response);
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err);
         });
     }
@@ -196,11 +204,10 @@ div.legend {
   border-radius: 4px;
   background-color: #ecece8;
   vertical-align: middle;
-
 }
-.icon{
+.icon {
   vertical-align: middle;
-  font-size:17px;
+  font-size: 17px;
 }
 .btn {
   background-color: #ebebe0;

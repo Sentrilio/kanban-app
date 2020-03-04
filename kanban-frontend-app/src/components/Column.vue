@@ -128,10 +128,10 @@ export default {
     deleteColumn(column) {
       ColumnService.deleteColumn(column.id)
         .then(response => {
-          this.$emit("refresh");
           console.log(response);
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err.response);
         });
     },
@@ -139,10 +139,10 @@ export default {
       TaskService.createTask(this.column.id, this.taskDescription)
         .then(response => {
           console.log(response);
-          this.$emit("refresh");
           this.taskDescription = "";
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err);
         });
     },
@@ -167,7 +167,6 @@ export default {
       ColumnService.updateColumnLimit(data)
         .then(response => {
           console.log(response);
-          this.$emit("refresh");
         })
         .catch(err => {
           this.$emit("refresh");
@@ -189,36 +188,15 @@ export default {
         TaskService.updateTask(updateObject)
           .then(response => {
             console.log(response.status);
-            // this.$emit("refresh");
           })
           .catch(err => {
             this.$emit("refresh");
             console.log("error:" + err);
           });
-      } 
-      else {
+      } else {
         this.$emit("refresh");
         console.log("new index < 0");
         console.log("proper new index: " + updateObject.newIndex);
-
-        // let properIndex = this.column.tasks.findIndex(
-          // x => x.id === event.element.id
-        // );
-        // updateObject.newIndex = properIndex;
-        // if (updateObject.newIndex >= 0) {
-        //   TaskService.updateTask(updateObject)
-        //     .then(response => {
-        //       console.log(response.status);
-        //       this.$emit("refresh");
-        //     })
-        //     .catch(err => {
-        //       this.$emit("refresh");
-        //       console.log("error:" + err);
-        //     });
-        // } else {
-        //   this.$emit("refresh");
-        //   console.log("proper index is still < 0");
-        // }
       }
     },
     change: function(evt, column) {

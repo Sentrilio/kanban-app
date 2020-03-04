@@ -1,11 +1,13 @@
 package com.domko.kanbanbackendapp.service.implementation;
 
 import com.domko.kanbanbackendapp.model.BColumn;
+import com.domko.kanbanbackendapp.model.Board;
 import com.domko.kanbanbackendapp.model.Task;
 import com.domko.kanbanbackendapp.payload.request.CreateTaskRequest;
 import com.domko.kanbanbackendapp.payload.request.UpdateTaskRequest;
 import com.domko.kanbanbackendapp.payload.response.MessageResponse;
 import com.domko.kanbanbackendapp.repository.BColumnRepository;
+import com.domko.kanbanbackendapp.repository.BoardRepository;
 import com.domko.kanbanbackendapp.repository.TaskRepository;
 import com.domko.kanbanbackendapp.service.PermissionService;
 import com.domko.kanbanbackendapp.service.TaskService;
@@ -17,7 +19,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,15 +30,17 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final BColumnRepository bColumnRepository;
+    private final BoardRepository boardRepository;
     private final TrendService trendService;
     private final PermissionService permissionService;
     private final SimpMessagingTemplate template;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, BColumnRepository bColumnRepository, TrendService trendService,
+    public TaskServiceImpl(TaskRepository taskRepository, BColumnRepository bColumnRepository, BoardRepository boardRepository, TrendService trendService,
                            PermissionService permissionService, SimpMessagingTemplate template) {
         this.taskRepository = taskRepository;
         this.bColumnRepository = bColumnRepository;
+        this.boardRepository = boardRepository;
         this.trendService = trendService;
         this.permissionService = permissionService;
         this.template = template;
@@ -52,14 +55,19 @@ public class TaskServiceImpl implements TaskService {
                 if (handleTaskUpdate(task.get(), destColumn.get(), updateTaskRequest)) {
                     trendService.updateBoardTrends(task.get().getColumn().getBoard());
                     String dest = "/topic/board/" + destColumn.get().getBoard().getId();
-//                    System.out.println(dest);
-                    template.convertAndSend(dest, new MessageResponse("board updated"));
-                    return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() + " on task successful", HttpStatus.OK);
+                    Optional<Board> board = boardRepository.findById(destColumn.get().getBoard().getId());
+                    if (board.isPresent()) {
+                        template.convertAndSend(dest, new MessageResponse("board", board.get()));
+                        return new ResponseEntity<>("Operation " + updateTaskRequest.getOperation() +
+                                " on task successful", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("Board does not exists", HttpStatus.BAD_REQUEST);
+                    }
                 } else {
                     System.out.println("task could not be updated.");
-                    String dest = "/topic/board/" + destColumn.get().getBoard().getId();
-                    System.out.println(dest);
-                    template.convertAndSend(dest, new MessageResponse("board updated"));
+//                    String dest = "/topic/board/" + destColumn.get().getBoard().getId();
+//                    System.out.println(dest);
+//                    template.convertAndSend(dest, new MessageResponse("board updated"));
                     return new ResponseEntity<>("Task could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
@@ -81,12 +89,15 @@ public class TaskServiceImpl implements TaskService {
                     bColumnRepository.save(column.get());
                     trendService.updateBoardTrends(task.getColumn().getBoard());
                     trendService.updateNumberOfTasks(task.getColumn().getBoard().getId());
-//                    if (task.getColumn().getPosition() == 0) {// adds statistics only if added into first column
                     trendService.incrementArrivalOfTasks(task.getColumn().getBoard().getId());
-//                    }
-                    template.convertAndSend("/topic/board/" + task.getColumn().getBoard().getId(),
-                            new MessageResponse("board updated"));
-                    return new ResponseEntity<>("Task created", HttpStatus.CREATED);
+                    Optional<Board> board = boardRepository.findById(task.getColumn().getBoard().getId());
+                    if (board.isPresent()) {
+                        String dest = "/topic/board/" + task.getColumn().getBoard().getId();
+                        template.convertAndSend(dest, new MessageResponse("board", board.get()));
+                        return new ResponseEntity<>("Task created", HttpStatus.CREATED);
+                    } else {
+                        return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 } else {
                     return new ResponseEntity<>("Task could not be created", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
@@ -110,8 +121,14 @@ public class TaskServiceImpl implements TaskService {
                 taskRepository.delete(task.get());
                 trendService.updateBoardTrends(task.get().getColumn().getBoard());
                 trendService.updateNumberOfTasks(boardId);
-                template.convertAndSend("/topic/board/" + task.get().getColumn().getBoard().getId(), new MessageResponse("board updated"));
-                return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
+                Optional<Board> board = boardRepository.findById(boardId);
+                if (board.isPresent()) {
+                    String dest = "/topic/board/" + boardId;
+                    template.convertAndSend(dest, new MessageResponse("board", board.get()));
+                    return new ResponseEntity<>("Task Deleted", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
             }

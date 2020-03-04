@@ -15,6 +15,7 @@ class WebSocketService {
         stompClient.onclose = function (e) {
             console.log("onclose: " + e);
         };
+        stompClient.debug = null // disables logging entire messages
     }
 
     disconnect() {

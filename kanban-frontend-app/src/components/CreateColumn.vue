@@ -66,9 +66,9 @@ export default {
       ColumnService.createColumn(data)
         .then(response => {
           console.log(response);
-          this.$emit("refresh");
         })
         .catch(err => {
+          this.$emit("refresh");
           console.log(err);
         });
     }

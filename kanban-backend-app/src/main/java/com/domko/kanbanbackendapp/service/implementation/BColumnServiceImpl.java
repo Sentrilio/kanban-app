@@ -17,6 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +77,7 @@ public class BColumnServiceImpl implements BColumnService {
         column.setWipLimit(createColumnRequest.getWipLimit());
         column.setBoard(board);
         column.setPosition(board.getColumns().size());
+        column.setTasks(new ArrayList<>());
         return bColumnRepository.save(column);
     }
 
@@ -86,11 +88,16 @@ public class BColumnServiceImpl implements BColumnService {
             if (permissionService.hasPermissionTo(board.get())) {
                 BColumn column = createColumn(board.get(), createColumnRequest);
                 if (column != null) {
-//                    board.get().getColumns().add(column);
-//                    Board updatedBoard = boardRepository.save(board.get());
-                    template.convertAndSend("/topic/board/" + column.getBoard().getId(),
-                            new MessageResponse("board updated"));
-                    return new ResponseEntity<>("Column created", HttpStatus.CREATED);
+                    board.get().getColumns().add(column);
+                    boardRepository.save(board.get());
+                    Optional<Board> updatedBoard = boardRepository.findById(board.get().getId());
+                    if (updatedBoard.isPresent()) {
+                        String dest = "/topic/board/" + updatedBoard.get().getId();
+                        template.convertAndSend(dest, new MessageResponse("board", updatedBoard.get()));
+                        return new ResponseEntity<>("Column created", HttpStatus.CREATED);
+                    } else {
+                        return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 } else {
                     return new ResponseEntity<>("Creation unsuccessful", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
@@ -108,11 +115,17 @@ public class BColumnServiceImpl implements BColumnService {
         if (bColumn.isPresent()) {
             if (permissionService.hasPermissionTo(bColumn.get())) {
                 if (updateBColumn(bColumn.get(), updateColumnRequest)) {
-                    template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
-                    return new ResponseEntity<>("Operation " + updateColumnRequest.getOperation() + " on column successful", HttpStatus.OK);
+                    Optional<Board> board = boardRepository.findById(bColumn.get().getBoard().getId());
+                    if (board.isPresent()) {
+                        String dest = "/topic/board/" + bColumn.get().getBoard().getId();
+                        template.convertAndSend(dest, new MessageResponse("board", board.get()));
+                        return new ResponseEntity<>("Operation " + updateColumnRequest.getOperation() +
+                                " on column successful", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 } else {
-                    System.out.println("new column index: " + updateColumnRequest.getNewIndex());
-                    template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(), new MessageResponse("board updated"));
+                    System.out.println("update bColumn unsuccessful. New index: " + updateColumnRequest.getNewIndex());
                     return new ResponseEntity<>("Column could not be updated", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
@@ -134,9 +147,14 @@ public class BColumnServiceImpl implements BColumnService {
                 boardRepository.save(bColumn.get().getBoard());
                 bColumnRepository.delete(bColumn.get());
                 updatePositions(bColumn.get().getBoard().getColumns());
-                template.convertAndSend("/topic/board/" + bColumn.get().getBoard().getId(),
-                        new MessageResponse("board updated"));
-                return new ResponseEntity<>("Column Deleted", HttpStatus.OK);
+                Optional<Board> board = boardRepository.findById(bColumn.get().getBoard().getId());
+                if (board.isPresent()) {
+                    String dest = "/topic/board/" + bColumn.get().getBoard().getId();
+                    template.convertAndSend(dest, new MessageResponse("board", board.get()));
+                    return new ResponseEntity<>("Column Deleted", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             } else {
                 return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
             }
@@ -153,8 +171,14 @@ public class BColumnServiceImpl implements BColumnService {
                 if (updateWiPLimit.getLimit() >= 0) {
                     column.get().setWipLimit(updateWiPLimit.getLimit());
                     bColumnRepository.save(column.get());
-                    template.convertAndSend("/topic/board/" + column.get().getBoard().getId(), new MessageResponse("board updated"));
-                    return new ResponseEntity<>("Column's limit changed", HttpStatus.ACCEPTED);
+                    Optional<Board> board = boardRepository.findById(column.get().getBoard().getId());
+                    if (board.isPresent()) {
+                        String dest = "/topic/board/" + column.get().getBoard().getId();
+                        template.convertAndSend(dest, new MessageResponse("board", board.get()));
+                        return new ResponseEntity<>("Column's limit changed", HttpStatus.ACCEPTED);
+                    } else {
+                        return new ResponseEntity<>("Board does not exists", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 } else {
                     return new ResponseEntity<>("Limit is not in range 0-15", HttpStatus.BAD_REQUEST);
                 }
